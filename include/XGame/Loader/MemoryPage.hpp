@@ -3,36 +3,60 @@
 
 #include <cstdint>
 #include <XGame/Core/Config.hpp>
+#include <memory>
 
 namespace xgame{
-class XGAME_API MemoryPage{
-	MemoryPage();
-	MemoryPage(const MemoryPage&);
-	MemoryPage(MemoryPage&&);
-	MemoryPage& operator=(const MemoryPage&);
-	MemoryPage& operator=(MemoryPage&&);
-	~MemoryPage();
 
-	inline void Delete();
-	inline const size_t GetSize() const;
+	class XGAME_API MemoryPage{
+	public:
+		//! Costruttore di default
+		MemoryPage();
 
-private:
-	uint8_t* prtMemory;
-	size_t sizePage;
-};
+		//! Costruttore di copia
+		MemoryPage(const MemoryPage&);
+
+		//! Costruttore di move
+		MemoryPage(MemoryPage&&);
+
+		//! Operatore di assegnazione
+		MemoryPage& operator=(const MemoryPage&);
+
+		//! Operatore di move
+		MemoryPage& operator=(MemoryPage&&);
+
+		//! Distruttore
+		~MemoryPage();
+
+		//! Dealloca la pagina di memoria rilasciando tutte le risorse ad essa associate.
+		inline void Delete();
+
+		//! @return la dimensione (in bytes) della pagina di memoria.
+		inline const size_t GetSize() const;
 
 
-inline const size_t MemoryPage::GetSize() const{
-	return this->sizePage;
-}
 
-inline void MemoryPage::Delete(){
-	if(this->prtMemory!=nullptr){
-		delete[] this->prtMemory;
-		this->prtMemory=nullptr;
-		this->sizePage=0;
+
+
+				/*---------------PRIVATE DATA-----------------*/
+	private:	
+		uint8_t* prtMemory;
+		size_t sizePage;
+		friend class ModuleCryp;
+		friend class ModuleLoader;
+	};
+
+
+	inline const size_t MemoryPage::GetSize() const{
+		return this->sizePage;
 	}
-}
+
+	inline void MemoryPage::Delete(){
+		if(this->prtMemory!=nullptr){
+			delete[] this->prtMemory;
+			this->prtMemory=nullptr;
+			this->sizePage=0;
+		}
+	}
 
 }
 
