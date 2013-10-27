@@ -84,7 +84,7 @@ namespace xgame{
 			@param [in] namefile		Il nome del file che si vuole caricare in memoria.
 			@param [out]outpage			La pagina di memoria dove verrà ricopiato tutto il conenuto del file.
 		*/
-		bool LoadFile_onMemoryPage(const std::string& namefile, MemoryPage& outpage) throw(Error);
+		void LoadFile_onMemoryPage(const std::string& namefile, MemoryPage& outpage) throw(Error);
 
 
 		/*! Scrive il contenuto di una pagina di memoria su un file (sulla memoria di massa).

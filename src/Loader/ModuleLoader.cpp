@@ -33,8 +33,7 @@ namespace xgame{
 		}
 	}
 
-	bool ModuleLoader::LoadFile_onMemoryPage(const std::string& namefile, MemoryPage& outpage) throw(Error){
-		//TODO: eliminare il return bool! tanto non serve!
+	void ModuleLoader::LoadFile_onMemoryPage(const std::string& namefile, MemoryPage& outpage) throw(Error){
 		if(namefile.size()==0) throw Error("ModuleLoader","LoadFile_onMemoryPage","Parametro di ingresso del file nullo!");
 		try{
 			bool finded_in_caches = false;
@@ -42,7 +41,7 @@ namespace xgame{
 				std::unique_lock<std::mutex> cache_lock(m_mutex_modulecaches);
 				finded_in_caches = m_modulecaches.Find_and_Give_Caches(namefile,outpage);
 				cache_lock.unlock();
-				if(finded_in_caches) return true;
+				if(finded_in_caches) return;
 			}
 
 			std::ifstream file;
@@ -77,12 +76,9 @@ namespace xgame{
 				this->m_modulecaches.InsertMemoryPage_intoCaches(outpage,namefile);
 				cache_lock.unlock();
 			}
-			
-			return true;
 		}catch(std::exception& err){
 			throw Error("ModuleLoader","LoadFile_onMemoryPage",err.what());
 		}
-		return false;
 	}
 
 	void ModuleLoader::WriteMemoryPage_onFile(const MemoryPage& inputpage, const std::string& namefile){
