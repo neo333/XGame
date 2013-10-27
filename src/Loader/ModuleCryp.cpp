@@ -9,7 +9,7 @@ namespace xgame{
 		this->m_keyCryp.reserve(40);
 	}
 
-	void ModuleCryp::Set_Passphrase(const std::string& passphrase) throw(Error){
+	void ModuleCryp::Set_Passphrase(const std::string& passphrase){
 		if(passphrase.size()==0){
 			m_keyCryp.clear();
 		}else{

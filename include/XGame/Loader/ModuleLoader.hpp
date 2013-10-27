@@ -95,7 +95,7 @@ namespace xgame{
 			@param [in] namefile	Il nome del file che si desidera scrivere.
 									Attenzione: se il file esiste il conenuto precedente del file verrà completamente cancellato!
 		*/
-		bool WriteMemoryPage_onFile(const MemoryPage& inputpage, const std::string& namefile);
+		void WriteMemoryPage_onFile(const MemoryPage& inputpage, const std::string& namefile);
 
 
 		/*! Scrive il contenuto di un pacchetto di pagine di memoria su un file (sulla memoria di massa).

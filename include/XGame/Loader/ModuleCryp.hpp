@@ -21,7 +21,7 @@ namespace xgame{
 										le pagine.
 										Immettere una stringa VUOTA per evitare operazioni di cifratura o decifratura!
 		*/
-		void Set_Passphrase(const std::string& passphrase) throw(Error);
+		void Set_Passphrase(const std::string& passphrase);
 
 
 		/*! Critta la pagina di memoria tramite la passphrase del modulo (immessa tramite l'apposito metodo).

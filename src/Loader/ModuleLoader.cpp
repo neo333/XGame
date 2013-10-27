@@ -34,6 +34,7 @@ namespace xgame{
 	}
 
 	bool ModuleLoader::LoadFile_onMemoryPage(const std::string& namefile, MemoryPage& outpage) throw(Error){
+		//TODO: eliminare il return bool! tanto non serve!
 		if(namefile.size()==0) throw Error("ModuleLoader","LoadFile_onMemoryPage","Parametro di ingresso del file nullo!");
 		try{
 			bool finded_in_caches = false;
@@ -78,13 +79,13 @@ namespace xgame{
 			}
 			
 			return true;
-		}catch(std::exception err){
+		}catch(std::exception& err){
 			throw Error("ModuleLoader","LoadFile_onMemoryPage",err.what());
 		}
 		return false;
 	}
 
-	bool ModuleLoader::WriteMemoryPage_onFile(const MemoryPage& inputpage, const std::string& namefile){
+	void ModuleLoader::WriteMemoryPage_onFile(const MemoryPage& inputpage, const std::string& namefile){
 		if(namefile.size()==0) throw Error("ModuleLoader","WriteMemoryPage_onFile","Parametro di ingresso del file nullo!");
 		
 		std::ofstream file;

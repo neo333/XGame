@@ -33,7 +33,8 @@ namespace xgame{
 		//! @return la dimensione (in bytes) della pagina di memoria.
 		inline const size_t GetSize() const;
 
-
+		//! @return Il puntatore all'area di memoria associata alla memory page.
+		inline const void* Get_PtrMemory() const;
 
 
 
@@ -58,6 +59,9 @@ namespace xgame{
 		}
 	}
 
+	inline const void* MemoryPage::Get_PtrMemory() const{
+		return static_cast<const void*>(this->prtMemory);
+	}
 }
 
 #endif
