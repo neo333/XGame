@@ -34,11 +34,15 @@ namespace xgame{
 		*/
 		void LoadTexture_fromMemoryPage(const MemoryPage& input_page, const ScreenVideo& makerVideo) throw(...);
 
-		//! @return	La dimensione W (rispetto all porzione di disegno) della texture (0 in caso la texture sia vuota!)
-		inline int Get_WsizeDrawable() const throw();
+		/*! @return		La dimensione in pixel in larghezza della texture tenendo presente le trasformazioni operate
+						su di essa (ridimensionamento, taglio dell'area di disegno, ecc..);
+		*/
+		inline int Get_WsizeDrawn() const throw();
 
-		//! @return	La dimensione H (rispetto all porzione di disegno) della texture (0 in caso la texture sia vuota!)
-		inline int Get_HsizeDrawable() const throw();
+		/*! @return		La dimensione in pixel in altezza della texture tenendo presente le trasformazioni operate
+						su di essa (ridimensionamento, taglio dell'area di disegno, ecc..);
+		*/
+		inline int Get_HsizeDrawn() const throw();
 
 
 		//! Costruttore di copia
@@ -61,12 +65,24 @@ namespace xgame{
 			@note	Questo metodo va chiamato dopo aver caricato la texture! Ad ogni nuovo caricamento della texture
 					la porzione disegnabile verrà ripristinata!
 			@note	Utilizzare un rettangolo con dimensioni negative per indicare 'tutta la dimensione della texture'
+			@note	Chiamando questa funzione vengono perse le modifiche fatte sullo ridimensionamento della texture!
 		*/
 		inline void Set_DrawnableArea(const Rect area) throw();
 
 		//! @return		La porzione della texture che può essere disegnata sullo schermo.
-		inline const Rect Get_DrawnableArea() const throw();
+		inline const Rect& Get_DrawnableArea() const throw();
 
+		/*! Setta una nuova dimensione in pixel in larghezza.
+			Al prossimo render la texture verrà scalata per rientrare nella nuova dimensione richiesta.
+			@note Il metodo 'Texture::Set_DrawnableArea' annulla le trasformazioni fatte da questo metodo.
+		*/
+		inline void Resize_W_Texture(const size_t w_size) throw();
+
+		/*! Setta una nuova dimensione in pixel in altezza.
+			Al prossimo render la texture verrà scalata per rientrare nella nuova dimensione richiesta.
+			@note Il metodo 'Texture::Set_DrawnableArea' annulla le trasformazioni fatte da questo metodo.
+		*/
+		inline void Resize_H_Texture(const size_t h_size) throw();
 
 	private:
 		SDL_Texture* m_texture;
@@ -74,6 +90,8 @@ namespace xgame{
 		int m_w_size;
 		int m_h_size;
 		Rect m_drawnable_area;
+		int m_w_size_scaled;
+		int m_h_size_scaled;
 
 		friend class ScreenVideo;
 
@@ -84,12 +102,12 @@ namespace xgame{
 		static SDL_Texture* CopyInternalTexture(const Texture& src) throw(...);
 	};
 
-	inline int Texture::Get_WsizeDrawable() const throw(){
-		return this->m_drawnable_area.Get_Wcomponent();
+	inline int Texture::Get_WsizeDrawn() const throw(){
+		return this->m_w_size_scaled;
 	}
 
-	inline int Texture::Get_HsizeDrawable() const throw(){
-		return this->m_drawnable_area.Get_Hcomponent();
+	inline int Texture::Get_HsizeDrawn() const throw(){
+		return this->m_h_size_scaled;
 	}
 
 	inline const bool Texture::IsVoid() const throw(){
@@ -108,9 +126,19 @@ namespace xgame{
 			m_drawnable_area.Set_Wcomponent(m_w_size - m_drawnable_area.Get_Xcomponent());
 		if(m_drawnable_area.Get_Hcomponent() > m_h_size - m_drawnable_area.Get_Ycomponent()) 
 			m_drawnable_area.Set_Hcomponent(m_h_size - m_drawnable_area.Get_Ycomponent());
+
+		this->m_w_size_scaled = m_drawnable_area.Get_Wcomponent();
+		this->m_h_size_scaled = m_drawnable_area.Get_Hcomponent();
 	}
 
-	inline const Rect Texture::Get_DrawnableArea() const throw(){ return this->m_drawnable_area; }
+	inline const Rect& Texture::Get_DrawnableArea() const throw(){ return this->m_drawnable_area; }
+
+	inline void Texture::Resize_W_Texture(const size_t w_size) throw(){
+		m_w_size_scaled = w_size;
+	}
+	inline void Texture::Resize_H_Texture(const size_t h_size) throw(){
+		m_h_size_scaled = h_size;
+	}
 }
 
 #endif

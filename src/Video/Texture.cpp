@@ -4,7 +4,7 @@
 
 namespace xgame{
 
-	Texture::Texture()throw():m_render(nullptr),m_texture(nullptr),m_w_size(0),m_h_size(0){
+	Texture::Texture()throw():m_render(nullptr),m_texture(nullptr),m_w_size(0),m_h_size(0),m_w_size_scaled(0),m_h_size_scaled(0){
 
 	}
 
@@ -14,6 +14,8 @@ namespace xgame{
 			this->m_texture=nullptr;
 			this->m_w_size=0;
 			this->m_h_size=0;
+			this->m_w_size_scaled=0;
+			this->m_h_size_scaled=0;
 			this->m_drawnable_area.Set_AllComponent(0,0,0,0);
 		}
 	}
@@ -67,6 +69,8 @@ namespace xgame{
 
 				m_w_size = image_opt->w;
 				m_h_size = image_opt->h;
+				m_w_size_scaled = image_opt->w;
+				m_h_size_scaled = image_opt->h;
 				m_drawnable_area.Set_AllComponent(0,0,image_opt->w,image_opt->h);
 				
 				SDL_FreeSurface(image_opt);
@@ -80,7 +84,8 @@ namespace xgame{
 	}
 
 	Texture::Texture(const Texture& oth):m_render(oth.m_render),m_w_size(oth.m_w_size),m_h_size(oth.m_h_size),
-		m_texture(Texture::CopyInternalTexture(oth)),m_drawnable_area(oth.m_drawnable_area){
+		m_texture(Texture::CopyInternalTexture(oth)),m_drawnable_area(oth.m_drawnable_area),m_w_size_scaled(oth.m_w_size_scaled),
+		m_h_size_scaled(oth.m_h_size_scaled){
 
 	}
 
@@ -92,15 +97,20 @@ namespace xgame{
 			this->m_h_size = oth.m_h_size;
 			this->m_texture = Texture::CopyInternalTexture(oth);
 			this->m_drawnable_area = oth.m_drawnable_area;
+			this->m_w_size_scaled = oth.m_w_size_scaled;
+			this->m_h_size_scaled = oth.m_h_size_scaled;
 		}
 		return *this;
 	}
 
-	Texture::Texture(Texture&& oth):m_render(oth.m_render),m_w_size(oth.m_w_size),m_h_size(oth.m_h_size),m_texture(oth.m_texture),m_drawnable_area(oth.m_drawnable_area){
+	Texture::Texture(Texture&& oth):m_render(oth.m_render),m_w_size(oth.m_w_size),m_h_size(oth.m_h_size),m_texture(oth.m_texture),
+		m_drawnable_area(oth.m_drawnable_area),m_w_size_scaled(oth.m_w_size_scaled),m_h_size_scaled(oth.m_h_size_scaled){
 		oth.m_texture = nullptr;
 		oth.m_w_size = 0;
 		oth.m_h_size = 0;
 		oth.m_drawnable_area.Set_AllComponent(0,0,0,0);
+		oth.m_w_size_scaled=0;
+		oth.m_h_size_scaled=0;
 	}
 
 	Texture& Texture::operator=(Texture&& oth) throw(){
@@ -111,10 +121,15 @@ namespace xgame{
 			this->m_w_size = oth.m_w_size;
 			this->m_h_size = oth.m_h_size;
 			this->m_drawnable_area = oth.m_drawnable_area;
+			this->m_w_size_scaled = oth.m_w_size_scaled;
+			this->m_h_size_scaled = oth.m_h_size_scaled;
+
 			oth.m_texture = nullptr;
 			oth.m_w_size =0;
 			oth.m_h_size =0;
 			oth.m_drawnable_area.Set_AllComponent(0,0,0,0);
+			oth.m_w_size_scaled=0;
+			oth.m_h_size_scaled=0;
 		}
 		return *this;
 	}

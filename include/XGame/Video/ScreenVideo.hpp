@@ -112,7 +112,6 @@ namespace xgame{
 
 
 		inline void DrawTexture(const Texture& src_texture, const Point& xy_onRenderer, const Rect& area_renderer_active = Rect(0,0,-1,-1)) throw(...);
-		inline void DrawTextureScaled(const Texture& src_texture, const Point& xy_onRenderer, const size_t w_size, const size_t h_size,const Rect& area_renderer_active = Rect(0,0,-1,-1)) throw(...);
 
 	private:
 		SDL_Window* m_window;
@@ -166,17 +165,14 @@ namespace xgame{
 			color_setting.Get_GreenComponent(),color_setting.Get_BlueComponent(),color_setting.Get_AlphaComponent());
 	}
 
-	inline void ScreenVideo::DrawTexture(const Texture& src_texture, const Point& xy_onRenderer, const Rect& area_renderer_active) throw(...){
-		this->DrawTextureScaled(src_texture,xy_onRenderer,src_texture.Get_WsizeDrawable(),src_texture.Get_HsizeDrawable(),area_renderer_active);
-	}
 
-	inline void ScreenVideo::DrawTextureScaled(const Texture& src_texture, const Point& xy_onRenderer, const size_t w_size, const size_t h_size,const Rect& area_renderer_active) throw(...){
+	inline void ScreenVideo::DrawTexture(const Texture& src_texture, const Point& xy_onRenderer,const Rect& area_renderer_active) throw(...){
 		if(src_texture.IsVoid()) return;
 		SDL_Rect dest_rect;
 		dest_rect.x = xy_onRenderer.Get_X_Component();
 		dest_rect.y = xy_onRenderer.Get_Y_Component();
-		dest_rect.w = w_size;
-		dest_rect.h = h_size;
+		dest_rect.w = src_texture.m_w_size_scaled;
+		dest_rect.h = src_texture.m_h_size_scaled;
 
 		if(area_renderer_active.Get_Xcomponent()==0 && area_renderer_active.Get_Ycomponent()==0 
 			&& area_renderer_active.Get_Wcomponent()==-1 && area_renderer_active.Get_Hcomponent()==-1){
