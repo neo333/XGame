@@ -26,12 +26,6 @@ namespace xgame{
 		//! Distruttore di default.
 		virtual ~ScreenVideo();
 
-		/*! Crea una Texture vuota secondo le tipologie grafiche definite sul corrente ScreenVideo.
-			@note		Lo screenVideo deve essere NECESSARIAMENTE 'open' prima di chiamare questo metodo!
-			@return		Una Texture VUOTA.
-		*/
-		inline Texture MakeVoidTexture() const throw(...);
-
 		//! Chiude lo ScreenVideo deallocando tutte le risorse dedicate ad esso.
 		void Close() throw();
 
@@ -117,8 +111,8 @@ namespace xgame{
 		static std::vector<ptrSDL_DisplayMode> GetAll_AvailableDisplayMode(const int index_display) throw(...);
 
 
-		inline void DrawTexture(const Texture& src_texture, const Point xy_onRenderer, const Rect area_renderer_active = Rect(0,0,-1,-1)) throw(...);
-		inline void DrawTextureScaled(const Texture& src_texture, const Point xy_onRenderer, const size_t w_size, const size_t h_size,const Rect area_renderer_active = Rect(0,0,-1,-1)) throw(...);
+		inline void DrawTexture(const Texture& src_texture, const Point& xy_onRenderer, const Rect& area_renderer_active = Rect(0,0,-1,-1)) throw(...);
+		inline void DrawTextureScaled(const Texture& src_texture, const Point& xy_onRenderer, const size_t w_size, const size_t h_size,const Rect& area_renderer_active = Rect(0,0,-1,-1)) throw(...);
 
 	private:
 		SDL_Window* m_window;
@@ -130,15 +124,12 @@ namespace xgame{
 		std::string m_title_win;
 		Uint32 m_ms_last_present_call;
 		Uint32 m_ms_min_call_present;
+
+		friend class Texture;
+
 	protected:
 		virtual void NotificationEvent(const SDL_Event& event) override;
 	};
-
-	inline Texture ScreenVideo::MakeVoidTexture() const throw(...){
-		if(this->m_renderer==nullptr) 
-			throw Error("ScreenVideo","MakeVoidTexture","Impossibile instanziare una texture senza un 'renderer' definito!");
-		return Texture(this->m_renderer);
-	}
 
 	inline const bool ScreenVideo::IsOpen() const throw(){
 		if(m_window!=nullptr) return true;
@@ -175,13 +166,17 @@ namespace xgame{
 			color_setting.Get_GreenComponent(),color_setting.Get_BlueComponent(),color_setting.Get_AlphaComponent());
 	}
 
-	inline void ScreenVideo::DrawTexture(const Texture& src_texture, const Point xy_onRenderer, const Rect area_renderer_active) throw(...){
+	inline void ScreenVideo::DrawTexture(const Texture& src_texture, const Point& xy_onRenderer, const Rect& area_renderer_active) throw(...){
+		this->DrawTextureScaled(src_texture,xy_onRenderer,src_texture.Get_WsizeDrawable(),src_texture.Get_HsizeDrawable(),area_renderer_active);
+	}
+
+	inline void ScreenVideo::DrawTextureScaled(const Texture& src_texture, const Point& xy_onRenderer, const size_t w_size, const size_t h_size,const Rect& area_renderer_active) throw(...){
 		if(src_texture.IsVoid()) return;
 		SDL_Rect dest_rect;
 		dest_rect.x = xy_onRenderer.Get_X_Component();
 		dest_rect.y = xy_onRenderer.Get_Y_Component();
-		dest_rect.w = src_texture.Get_WsizeDrawable();
-		dest_rect.h = src_texture.Get_HsizeDrawable();
+		dest_rect.w = w_size;
+		dest_rect.h = h_size;
 
 		if(area_renderer_active.Get_Xcomponent()==0 && area_renderer_active.Get_Ycomponent()==0 
 			&& area_renderer_active.Get_Wcomponent()==-1 && area_renderer_active.Get_Hcomponent()==-1){
@@ -196,10 +191,6 @@ namespace xgame{
 
 		if(SDL_RenderCopy(m_renderer,src_texture.m_texture,src_texture.m_drawnable_area,&dest_rect)!=0)
 			throw Error("ScreenVideo","DrawTexture","Impossibile effettuare il rendering della texture richiesta!\n%s",SDL_GetError());
-	}
-
-	inline void ScreenVideo::DrawTextureScaled(const Texture& src_texture, const Point xy_onRenderer, const size_t w_size, const size_t h_size,const Rect area_renderer_active) throw(...){
-
 	}
 }
 

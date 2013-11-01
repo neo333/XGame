@@ -1,8 +1,10 @@
 #include <XGame/Video/Texture.hpp>
+#include <XGame/Video/ScreenVideo.hpp>
 #include <SDL/SDL_image.h>
 
 namespace xgame{
-	Texture::Texture(SDL_Renderer* render_subject)throw():m_render(render_subject),m_texture(nullptr),m_w_size(0),m_h_size(0){
+
+	Texture::Texture()throw():m_render(nullptr),m_texture(nullptr),m_w_size(0),m_h_size(0){
 
 	}
 
@@ -21,8 +23,11 @@ namespace xgame{
 	}
 
 
-	void Texture::LoadTexture_fromMemoryPage(const MemoryPage& input_page) throw(...){
+	void Texture::LoadTexture_fromMemoryPage(const MemoryPage& input_page, const ScreenVideo& makerVideo) throw(...){
 		this->Clean();
+		if(makerVideo.m_renderer==nullptr)
+			throw Error("Texture","LoadTexture_fromMemoryPage","Impossibile caricare una texture con uno specifico renderer nullo!");
+		if(makerVideo.m_renderer!=m_render) m_render = makerVideo.m_renderer;
 		if(input_page.GetSize()==0) return;
 		if(m_render==nullptr) 
 			throw Error("Texture","LoadTexture_fromMemoryPage","Impossibile caricare la texture richiesta!\nRenderer non inizializzato!");

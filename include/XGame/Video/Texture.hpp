@@ -8,8 +8,14 @@
 #include <SDL/SDL.h>
 
 namespace xgame{
+
+	class ScreenVideo;
+
 	class XGAME_API Texture{
 	public:
+		//! Costruttore di default. Instanzia una Texture vuota.
+		Texture() throw();
+
 		//! Distruttore
 		virtual ~Texture();
 		
@@ -21,10 +27,12 @@ namespace xgame{
 
 			@param [in]	input_page		La pagina di memoria dove sono i conservati i dati relativi ad una determinata
 										immagine memorizzata correttamente secondo un formato conosciuto.
+			@param [in] makerVideo		Uno ScreenVideo 'NECESSARIAMENTE APERTO' per il formato del driver video.
 			@throw Error				Lancia un'eccezione nel caso la lettura della pagina di memoria non vada a buon fine.
+										O in caso si tenti di caricare la texture con uno ScreenVideo non caricato.
 			@note						Questa funzione ripristina l'area di disegno della texture.
 		*/
-		void LoadTexture_fromMemoryPage(const MemoryPage& input_page) throw(...);
+		void LoadTexture_fromMemoryPage(const MemoryPage& input_page, const ScreenVideo& makerVideo) throw(...);
 
 		//! @return	La dimensione W (rispetto all porzione di disegno) della texture (0 in caso la texture sia vuota!)
 		inline int Get_WsizeDrawable() const throw();
@@ -67,9 +75,7 @@ namespace xgame{
 		int m_h_size;
 		Rect m_drawnable_area;
 
-		//! Costruttore di inizializzazione con renderer
 		friend class ScreenVideo;
-		Texture(SDL_Renderer* render_subject) throw();
 
 		/*Ritorna una COPIA della texture interna di una class.Texture
 			NOTA: ritorna 'nullptr' in caso di sorgente vuota.
