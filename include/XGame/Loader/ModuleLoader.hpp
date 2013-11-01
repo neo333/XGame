@@ -14,6 +14,11 @@
 #include <mutex>
 #include <vector>
 
+#ifdef WIN32 
+#pragma warning(disable:4251)
+#pragma warning(disable:4275)
+#endif
+
 namespace xgame{
 	class XGAME_API ModuleLoader: private boost::noncopyable{
 	public:
@@ -28,7 +33,7 @@ namespace xgame{
 			@return const time_t	Il time (data/ora) dell'ultima modifica apportata al file specificato nel parametro di ingresso.
 			@throw Error	In caso il parametro non sia corretto o il file non esiste o è inaccessibile.
 		*/
-		static const time_t GetLastMod_file(const std::string& file_name) throw (Error);
+		static const time_t GetLastMod_file(const std::string& file_name) throw (...);
 
 
 		/*! Ottiene una firma riguardo il conenuto del file specificato sul parametro. Ogni variazione sul contenuto
@@ -37,7 +42,7 @@ namespace xgame{
 			@return const std::string	La stringa rappresentate la firma del file (in esadecimale).
 			@throw Error	In caso il parametro non sia corretto o il file non esiste o è inaccessibile.
 		*/
-		static const std::string GetSignature_file(const std::string& file_name) throw(Error);
+		static const std::string GetSignature_file(const std::string& file_name) throw(...);
 
 
 		/*! Ricava la dimensione in bytes del file specificato nel parametro di ingresso.
@@ -45,7 +50,7 @@ namespace xgame{
 			@return const size_t	La dimensione in bytes del file.
 			@throw Error	In caso il parametro non sia corretto o il file non esiste o è inaccessibile.
 		*/
-		inline static const size_t GetSize_file(const std::string& file_name) throw(Error);
+		inline static const size_t GetSize_file(const std::string& file_name) throw(...);
 
 
 		/*! Attiva il modulo di crittografia interno!
@@ -54,11 +59,11 @@ namespace xgame{
 			@param [in]	passhrase	La 'passhrase' con la quale sono state crittografati i file sul disco eventualmente.
 			@throw Error			In caso di errore del modulo.
 		*/
-		void ActiveModuleCryp(const std::string& passhrase) throw(Error);
+		void ActiveModuleCryp(const std::string& passhrase) throw(...);
 
 
 		//! Disattiva il modulo di crittografia interno! Le pagine verranno caricate dal disco senza operazioni di decrittografia!
-		void DisableModuleCryp() throw(Error);
+		void DisableModuleCryp() throw(...);
 
 
 		/*! Attiva il modulo di caching interno.
@@ -84,7 +89,8 @@ namespace xgame{
 			@param [in] namefile		Il nome del file che si vuole caricare in memoria.
 			@param [out]outpage			La pagina di memoria dove verrà ricopiato tutto il conenuto del file.
 		*/
-		void LoadFile_onMemoryPage(const std::string& namefile, MemoryPage& outpage) throw(Error);
+		void LoadFile_onMemoryPage(const std::string& namefile, MemoryPage& outpage) throw(...);
+		inline MemoryPage LoadFile_onMemoryPage(const std::string& namefile) throw(...);
 
 
 		/*! Scrive il contenuto di una pagina di memoria su un file (sulla memoria di massa).
@@ -158,7 +164,7 @@ namespace xgame{
 		return *ModuleLoader::s_prtInstance;
 	}
 
-	inline const size_t ModuleLoader::GetSize_file(const std::string& file_name) throw(Error){
+	inline const size_t ModuleLoader::GetSize_file(const std::string& file_name) throw(...){
 		std::ifstream file;
 		file.open(file_name,std::ios_base::binary);
 		if(file.fail())
@@ -173,7 +179,13 @@ namespace xgame{
 		return m_modulecaches;
 	}
 
-#define Loader xgame::ModuleLoader::GetGlobalInstance()
+	inline MemoryPage ModuleLoader::LoadFile_onMemoryPage(const std::string& namefile) throw(...){
+		MemoryPage rts;
+		this->LoadFile_onMemoryPage(namefile,rts);
+		return rts;
+	}
 }
+
+#define Loader xgame::ModuleLoader::GetGlobalInstance()
 
 #endif

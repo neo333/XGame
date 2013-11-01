@@ -12,7 +12,7 @@ namespace xgame{
 
 	ModuleLoader::ModuleLoader():m_modulecryp_active(false),m_modulecaches_active(true){ }
 
-	const time_t ModuleLoader::GetLastMod_file(const std::string& file_name) throw (Error){
+	const time_t ModuleLoader::GetLastMod_file(const std::string& file_name) throw (...){
 		if(file_name.size()==0) throw Error("ModuleLoader","GetLastMod_file","Parametro nullo!");
 		struct stat info_file;
 		int rts = stat(file_name.c_str(),&info_file);
@@ -21,7 +21,7 @@ namespace xgame{
 		return info_file.st_mtime;
 	}
 
-	const std::string ModuleLoader::GetSignature_file(const std::string& file_name) throw(Error){
+	const std::string ModuleLoader::GetSignature_file(const std::string& file_name) throw(...){
 		if(file_name.size()==0) throw Error("ModuleLoader","GetSignature_file","Parametro nullo!");
 		try{
 			hashwrapper* engine_cryp = new sha1wrapper();
@@ -33,7 +33,7 @@ namespace xgame{
 		}
 	}
 
-	void ModuleLoader::LoadFile_onMemoryPage(const std::string& namefile, MemoryPage& outpage) throw(Error){
+	void ModuleLoader::LoadFile_onMemoryPage(const std::string& namefile, MemoryPage& outpage) throw(...){
 		if(namefile.size()==0) throw Error("ModuleLoader","LoadFile_onMemoryPage","Parametro di ingresso del file nullo!");
 		try{
 			bool finded_in_caches = false;
@@ -117,12 +117,12 @@ namespace xgame{
 		}
 	}
 
-	void ModuleLoader::ActiveModuleCryp(const std::string& passhrase) throw(Error){
+	void ModuleLoader::ActiveModuleCryp(const std::string& passhrase) throw(...){
 		m_modulecryp.Set_Passphrase(passhrase);
 		m_modulecryp_active=true;
 	}
 
-	void ModuleLoader::DisableModuleCryp() throw(Error){
+	void ModuleLoader::DisableModuleCryp() throw(...){
 		m_modulecryp.Set_Passphrase(std::string());
 		m_modulecryp_active=false;
 	}

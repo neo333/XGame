@@ -7,6 +7,11 @@
 #include <XGame/Loader/MemoryPage.hpp>
 #include <string>
 
+#ifdef WIN32 
+#pragma warning(disable:4251)
+#pragma warning(disable:4275)
+#endif
+
 namespace xgame{
 	class XGAME_API ModuleCryp: private boost::noncopyable{
 	public:

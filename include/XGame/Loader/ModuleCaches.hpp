@@ -8,6 +8,11 @@
 #include <list>
 #include <unordered_map>
 
+#ifdef WIN32 
+#pragma warning(disable:4251)
+#pragma warning(disable:4275)
+#endif
+
 namespace xgame{
 	class XGAME_API ModuleCaches: private boost::noncopyable{
 	public:
@@ -35,7 +40,7 @@ namespace xgame{
 
 			@throw Error				In caso il file non esista!
 		*/
-		bool InsertMemoryPage_intoCaches(const MemoryPage& input_page, const std::string& ref_filename) throw(Error);
+		bool InsertMemoryPage_intoCaches(const MemoryPage& input_page, const std::string& ref_filename) throw(...);
 
 
 		//! Svuota tutte le caches!
@@ -57,7 +62,7 @@ namespace xgame{
 
 			@throw Error				In caso il file di riferimento non esista!
 		*/
-		bool Find_and_Give_Caches(const std::string& ref_filename, MemoryPage& output_page) throw(Error);
+		bool Find_and_Give_Caches(const std::string& ref_filename, MemoryPage& output_page) throw(...);
 
 
 		//! @return		Il numero di bytes totali occupati attualmente dalle caches.

@@ -13,7 +13,7 @@ namespace xgame{
 		engine_cryp=nullptr;
 	}
 
-	bool ModuleCaches::InsertMemoryPage_intoCaches(const MemoryPage& input_page, const std::string& ref_filename) throw(Error){
+	bool ModuleCaches::InsertMemoryPage_intoCaches(const MemoryPage& input_page, const std::string& ref_filename) throw(...){
 		if(ref_filename.size()==0) throw Error("ModuleCaches","InsertMemoryPage_intoCaches","Parametro di input non valido!");
 		if(input_page.GetSize() > m_max_dimCache) return false;
 		time_t time_last_mod_file = ModuleLoader::GetLastMod_file(ref_filename);
@@ -31,7 +31,7 @@ namespace xgame{
 		return true;
 	}
 
-	bool ModuleCaches::Find_and_Give_Caches(const std::string& ref_filename, MemoryPage& output_page) throw(Error){
+	bool ModuleCaches::Find_and_Give_Caches(const std::string& ref_filename, MemoryPage& output_page) throw(...){
 		if(ref_filename.size()==0) throw Error("ModuleCaches","Find_and_Give_Caches","Parametro di input non valido!");
 		time_t time_last_mod_file = ModuleLoader::GetLastMod_file(ref_filename);
 		const std::string str_time_last_mod_file = ctime(&time_last_mod_file);

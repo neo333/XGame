@@ -7,6 +7,12 @@
 #include <unordered_map>
 #include <vector>
 
+#ifdef WIN32 
+#ifdef XGAME_BUILD_DLL
+#pragma warning(disable:4251)
+#endif
+#endif
+
 namespace xgame{
 	class XGAME_API PackMemoryPage{
 	public:
