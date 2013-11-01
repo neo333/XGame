@@ -3,6 +3,7 @@
 
 #include <XGame/Core/Config.hpp>
 #include <XGame/Event/ObjectInteractive.hpp>
+#include <XGame/Event/ObjectDynamic.hpp>
 #include <boost/noncopyable.hpp>
 #include <SDL/SDL.h>
 #include <unordered_map>
@@ -23,18 +24,37 @@ namespace xgame{
 			@param [in] object		Un puntatore ad un oggetto interattivo.
 			@note					Se l'oggetto è già registrato questo metodo non farà nulla!
 		*/
-		void RegisterObject(ObjectInteractive* const object);
+		void RegisterObjectInteractive(ObjectInteractive* const object);
 
 		/*! Deassocia una registrazione fatta in precedenza per un oggetto interattivo.
 
 			@param [in] object		Un puntatore ad un oggetto interattivo che si vuole deassociare.
 			@note					Se l'oggetto non è mai stato registrato questo metodo non farà nulla!
 		*/
-		void UnRegisterObject(ObjectInteractive* const object);
+		void UnRegisterObjectInteractive(ObjectInteractive* const object);
 		
+
+		/*! Registra un oggetto dinamico al gestore di eventi.
+
+			@param [in] object		Un puntatore ad un oggetto dinamico.
+			@note					Se l'oggetto è già registrato questo metodo non farà nulla!
+		*/
+		void RegisterObjectDynamic(ObjectDynamic* const object) throw();
+
+		/*! Deassocia una registrazione fatta in precedenza per un oggetto dinamico.
+
+			@param [in] object		Un puntatore ad un oggetto dinamico che si vuole deassociare.
+			@note					Se l'oggetto non è mai stato registrato questo metodo non farà nulla!
+		*/
+		void UnRegisterObjectDynamic(ObjectDynamic* const object) throw();
+
+
+
 		/*! Chiama varie system-call per verificare tutti gli eventi mandati dal sistema operativo al processo.
 			Questa funzione andrebbe chiamata a loop.
 			Tutti gli oggetti interattivi veranno notificati tramite la chiamata dell'aposito metodo della loro classe.
+
+			Inoltre successivamente vengono aggioranti tutti gli oggetti dinamici!
 		*/
 		void UpdateAll();
 
@@ -47,9 +67,11 @@ namespace xgame{
 		struct InfoObject{
 			inline InfoObject(){ }
 		};
-		typedef std::unordered_map<ObjectInteractive*, InfoObject> RegistroObjects;
+		typedef std::unordered_map<ObjectInteractive*, InfoObject> RegistroObjectsInteractive;
+		typedef std::unordered_map<ObjectDynamic*,InfoObject> RegistroObjectDynamic;
 
-		RegistroObjects m_registro;
+		RegistroObjectsInteractive m_registro_interactive;
+		RegistroObjectDynamic m_registro_dynamic;
 	};
 
 

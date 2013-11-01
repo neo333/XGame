@@ -3,10 +3,10 @@
 
 namespace xgame{
 	ObjectInteractive::~ObjectInteractive(){
-		EventManager::Get_GlobalInstance().UnRegisterObject(this);
+		EventManager::Get_GlobalInstance().UnRegisterObjectInteractive(this);
 	}
 
 	ObjectInteractive::ObjectInteractive(){
-		EventManager::Get_GlobalInstance().RegisterObject(this);
+		EventManager::Get_GlobalInstance().RegisterObjectInteractive(this);
 	}
 }
