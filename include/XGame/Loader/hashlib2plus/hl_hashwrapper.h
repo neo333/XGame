@@ -220,7 +220,7 @@ class hashwrapper
 			/*
 			 * we update the context with the given text
 			 */
-			updateContext((unsigned char*) text.c_str(),text.length());
+			updateContext((unsigned char*) text.c_str(),static_cast<unsigned int>(text.length()));
 
 			/*
 			 * now we can close the hash process 
@@ -277,7 +277,7 @@ class hashwrapper
 			 * read the file in 1024b blocks and
 			 * update the context for every block
 			 */
-			while( (len = fread(buffer,1,1024,file)) )
+			while( (len = static_cast<int>(fread(buffer,1,1024,file))) )
 			{
 				updateContext(buffer, len);
 			}
