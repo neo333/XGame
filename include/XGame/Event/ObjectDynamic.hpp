@@ -1,10 +1,10 @@
-#ifndef __OBJECT_DYNAMIC_XGAME__HPP
+﻿#ifndef __OBJECT_DYNAMIC_XGAME__HPP
 #define __OBJECT_DYNAMIC_XGAME__HPP
 
-#include <XGame/Core/Config.hpp>
+#include <XGame/Event/Config.hpp>
 
 namespace xgame{
-	class XGAME_API ObjectDynamic{
+	class XGAME_API_EVENT ObjectDynamic{
 	public:
 		//! Distruttore. Deassocia la registrazione presso l'EventManager.
 		virtual ~ObjectDynamic() throw();

@@ -1,11 +1,11 @@
-#ifndef __OBJECT_INTERACTIVE__XGAME__HPP
+﻿#ifndef __OBJECT_INTERACTIVE__XGAME__HPP
 #define __OBJECT_INTERACTIVE__XGAME__HPP
 
-#include <XGame/Core/Config.hpp>
+#include <XGame/Event/Config.hpp>
 #include <SDL/SDL.h>
 
 namespace xgame{
-	class XGAME_API ObjectInteractive{
+	class XGAME_API_EVENT ObjectInteractive{
 	public:
 		//! Distruttore. Deassocia la registrazione presso l'EventManager.
 		virtual ~ObjectInteractive();

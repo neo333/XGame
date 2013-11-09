@@ -1,7 +1,7 @@
-#ifndef __MODULE_CACHES__HPP
+Ôªø#ifndef __MODULE_CACHES__HPP
 #define __MODULE_CACHES__HPP
 
-#include <XGame/Core/Config.hpp>
+#include <XGame/Loader/Config.hpp>
 #include <XGame/Core/Error.hpp>
 #include <XGame/Loader/MemoryPage.hpp>
 #include <boost/noncopyable.hpp>
@@ -14,31 +14,31 @@
 #endif
 
 namespace xgame{
-	class XGAME_API ModuleCaches: private boost::noncopyable{
+	class XGAME_API_LOADER ModuleCaches : private boost::noncopyable{
 	public:
 		//! Costruttore di default
 		ModuleCaches();
 
 		/*! Inserisce una pagina di memoria all'interno del modulo di caching.
-			Verr‡ creata una COPIA della pagina di input e memorizzata nelle caches.
-			Questa operazione puÚ risultare utile quando la pagina di memoria, che Ë stata precedentemente caricata dall'hard disk,
-			potrebbe essere necessaria in futuro. Infatti, tramite l'apposito metodo del modulo, Ë possibile riottenere la stessa pagina
+			Verr√† creata una COPIA della pagina di input e memorizzata nelle caches.
+			Questa operazione pu√≤ risultare utile quando la pagina di memoria, che √® stata precedentemente caricata dall'hard disk,
+			potrebbe essere necessaria in futuro. Infatti, tramite l'apposito metodo del modulo, √® possibile riottenere la stessa pagina
 			in un secondo momento.
 			NOTA BENE: Per funzionare in maniera corretta il meccanismo di caching mappa una determinata pagina di memoria con un
-				relativo file! Per inserire una pagina di memoria all'interno di questo modulo Ë necessario specificare, inoltre,
-				il file dal quale quella pagina di memoria Ë stata caricata. Il file deve necessariamente ESISTERE e avere
+				relativo file! Per inserire una pagina di memoria all'interno di questo modulo √® necessario specificare, inoltre,
+				il file dal quale quella pagina di memoria √® stata caricata. Il file deve necessariamente ESISTERE e avere
 				in questo momento lo stesso contenuto della pagina di input.
 
-			@param [in] input_page		Pagina di memoria appena caricata da un file che si vuole salvare per un riutilizzo futuro.
-			@param [in] ref_filename	Il nome del file dalla quale si ha APPENA caricata la pagina di memoria!
+			\param [in] input_page		Pagina di memoria appena caricata da un file che si vuole salvare per un riutilizzo futuro.
+			\param [in] ref_filename	Il nome del file dalla quale si ha APPENA caricata la pagina di memoria!
 										Il contenuto del file deve essere (all'atto della chiamata di questo metodo) lo stesso della
 										pagina di memoria!
 
-			@return						'true' se la pagina di memoria viene inserita correttamente nelle caches
-										'false' se la pagina di memoria Ë troppo grande per la dimensione massima delle caches
-											o gi‡ esiste all'interno del modulo (in quel caso non verr‡ inserita!)
+			\return						'true' se la pagina di memoria viene inserita correttamente nelle caches
+										'false' se la pagina di memoria √® troppo grande per la dimensione massima delle caches
+											o gi√† esiste all'interno del modulo (in quel caso non verr√† inserita!)
 
-			@throw Error				In caso il file non esista!
+			\throw Error				In caso il file non esista!
 		*/
 		bool InsertMemoryPage_intoCaches(const MemoryPage& input_page, const std::string& ref_filename) throw(...);
 
@@ -48,34 +48,38 @@ namespace xgame{
 
 		
 		/*! Prova una ricerca all'interno delle caches.
-			Questa funzione serve quando si vuole caricare un file in memoria centrale. Se quel file Ë stato gi‡ caricato e la 
-			relativa pagina memorizzata nelle caches, non sar‡ necessario effettura una lettura del file completo, ma sar‡
+			Questa funzione serve quando si vuole caricare un file in memoria centrale. Se quel file √® stato gi√† caricato e la 
+			relativa pagina memorizzata nelle caches, non sar√† necessario effettura una lettura del file completo, ma sar√†
 			possibile ricavare il contenuto velocemente tramite questo apposito metodo.
-			Se la cache viene trovata la pagina di memoria di output sar‡ scritta, altrimenti non verr‡ toccata!
+			Se la cache viene trovata la pagina di memoria di output sar√† scritta, altrimenti non verr√† toccata!
 
-			@param [in]	ref_filename	Il nome del file che si vorrebbe caricare in memoria centrale.
-			@param [out]output_page		La pagina di memoria dove, in caso sia stata memorizzata in precedenza la cache relativa del
-										file di ingresso, verr‡ salvato il contenuto del file direttamente.
+			\param [in]	ref_filename	Il nome del file che si vorrebbe caricare in memoria centrale.
+			\param [out]output_page		La pagina di memoria dove, in caso sia stata memorizzata in precedenza la cache relativa del
+										file di ingresso, verr√† salvato il contenuto del file direttamente.
 
-			@return						'true' se la cache viene trovata e scritta sulla pagina di memoria di output
-										'false' se la cache non viene trovata (cache-miss) e la pagina di memoria di output non verr‡ toccata!
+			\return						'true' se la cache viene trovata e scritta sulla pagina di memoria di output
+										'false' se la cache non viene trovata (cache-miss) e la pagina di memoria di output non verr√† toccata!
 
-			@throw Error				In caso il file di riferimento non esista!
+			\throw Error				In caso il file di riferimento non esista!
 		*/
 		bool Find_and_Give_Caches(const std::string& ref_filename, MemoryPage& output_page) throw(...);
 
 
-		//! @return		Il numero di bytes totali occupati attualmente dalle caches.
+		//! \return		Il numero di bytes totali occupati attualmente dalle caches.
 		inline const size_t Get_SizeCurrentCaches() const;
 
 
-		//! @return		Il numero di bytes massimi riservati per il modulo di caching.
+		//! \return		Il numero di bytes massimi riservati per il modulo di caching.
 		inline const size_t Get_MaxSizeCaches() const;
 
 		/*! Setta il numero massimo in bytes occupabili dal modulo di caching.
-			@param [in] max_dim		La dimensione in bytes massima riservata al modulo di caching.
+			\param [in] max_dim		La dimensione in bytes massima riservata al modulo di caching.
 		*/
 		void Set_MaxSizeCaches(const size_t max_dim);
+
+
+
+
 
 	private:
 		struct Cache{

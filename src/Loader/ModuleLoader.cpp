@@ -274,4 +274,12 @@ namespace xgame{
 		return true;
 	}
 
+	void ModuleLoader::MakeMemoryPage_fromMemory(const void* memory_input, const size_t size_input, MemoryPage& page_out) const throw(...){
+		page_out.Delete();
+		if (memory_input == nullptr || size_input==0) return;
+		page_out.prtMemory = new uint8_t[size_input];
+		page_out.sizePage = size_input;
+		memcpy(static_cast<void*>(page_out.prtMemory), memory_input, size_input);
+	}
+
 }

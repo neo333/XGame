@@ -1,7 +1,7 @@
-#ifndef __EVENT_MANAGER_XGAME__HPP
+Ôªø#ifndef __EVENT_MANAGER_XGAME__HPP
 #define __EVENT_MANAGER_XGAME__HPP
 
-#include <XGame/Core/Config.hpp>
+#include <XGame/Event/Config.hpp>
 #include <XGame/Event/ObjectInteractive.hpp>
 #include <XGame/Event/ObjectDynamic.hpp>
 #include <boost/noncopyable.hpp>
@@ -14,7 +14,7 @@
 #endif
 
 namespace xgame{
-	class XGAME_API EventManager: private boost::noncopyable{
+	class XGAME_API_EVENT EventManager : private boost::noncopyable{
 	public:
 		//! @return L'istanza globale della classe.
 		static inline EventManager& Get_GlobalInstance();
@@ -22,14 +22,14 @@ namespace xgame{
 		/*! Registra un oggetto interattivo al gestore di eventi.
 
 			@param [in] object		Un puntatore ad un oggetto interattivo.
-			@note					Se l'oggetto Ë gi‡ registrato questo metodo non far‡ nulla!
+			@note					Se l'oggetto √® gi√† registrato questo metodo non far√† nulla!
 		*/
 		void RegisterObjectInteractive(ObjectInteractive* const object);
 
 		/*! Deassocia una registrazione fatta in precedenza per un oggetto interattivo.
 
 			@param [in] object		Un puntatore ad un oggetto interattivo che si vuole deassociare.
-			@note					Se l'oggetto non Ë mai stato registrato questo metodo non far‡ nulla!
+			@note					Se l'oggetto non √® mai stato registrato questo metodo non far√† nulla!
 		*/
 		void UnRegisterObjectInteractive(ObjectInteractive* const object);
 		
@@ -37,14 +37,14 @@ namespace xgame{
 		/*! Registra un oggetto dinamico al gestore di eventi.
 
 			@param [in] object		Un puntatore ad un oggetto dinamico.
-			@note					Se l'oggetto Ë gi‡ registrato questo metodo non far‡ nulla!
+			@note					Se l'oggetto √® gi√† registrato questo metodo non far√† nulla!
 		*/
 		void RegisterObjectDynamic(ObjectDynamic* const object) throw();
 
 		/*! Deassocia una registrazione fatta in precedenza per un oggetto dinamico.
 
 			@param [in] object		Un puntatore ad un oggetto dinamico che si vuole deassociare.
-			@note					Se l'oggetto non Ë mai stato registrato questo metodo non far‡ nulla!
+			@note					Se l'oggetto non √® mai stato registrato questo metodo non far√† nulla!
 		*/
 		void UnRegisterObjectDynamic(ObjectDynamic* const object) throw();
 

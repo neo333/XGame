@@ -1,41 +1,41 @@
-#ifndef __POINT_XGAME__HPP
+﻿#ifndef __POINT_XGAME__HPP
 #define __POINT_XGAME__HPP
 
-#include <XGame/Core/Config.hpp>
+#include <XGame/Video/Config.hpp>
 #include <cmath>
 #include <SDL/SDL.h>
 
 namespace xgame{
-	class XGAME_API Point{
+	class XGAME_API_VIDEO Point{
 	public:
 		//! Costruttore di default
 		inline Point(const int x =0, const int y =0);
 		
-		//! @return		La componente X del punto.
+		//! \return		La componente X del punto.
 		inline int Get_X_Component() const;
 
-		//! @return		La componente Y del punto.
+		//! \return		La componente Y del punto.
 		inline int Get_Y_Component() const;
 
-		//! @param [in] x	Setta la componente X del punto.
+		//! \param [in] x	Setta la componente X del punto.
 		inline void Set_X_Component(const int x);
 
-		//! @param [in] y	Setta la componente Y del punto.
+		//! \param [in] y	Setta la componente Y del punto.
 		inline void Set_Y_Component(const int y);
 
-		//! @return		La somma di due punti
+		//! \return		La somma di due punti
 		inline Point operator+(const Point& oth) const;
 
 		//! Aggiunge un punto a questo punto
 		inline Point& operator+=(const Point& oth);
 
-		//! @return		La differenze di due punti
+		//! \return		La differenze di due punti
 		inline Point operator-(const Point& oth) const;
 
 		//! Sottrae un punto a questo punto
 		inline Point& operator-=(const Point& oth);
 
-		//! @return		Il modulo del punto
+		//! \return		Il modulo del punto
 		inline double Get_Module() const;
 
 		//! Casting in SDL_point

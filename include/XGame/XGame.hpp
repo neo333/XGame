@@ -1,4 +1,4 @@
-#ifndef __XGAME__HPP
+﻿#ifndef __XGAME__HPP
 #define __XGAME__HPP
 
 #include <XGame/Event/EventManager.hpp>

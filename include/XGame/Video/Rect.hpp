@@ -1,11 +1,12 @@
-#ifndef __RECT_XGAME__HPP
+﻿#ifndef __RECT_XGAME__HPP
 #define __RECT_XGAME__HPP
 
-#include <XGame/Core/Config.hpp>
+#include <XGame/Video/Config.hpp>
 #include <SDL/SDL.h>
+#include <XGame/Video/Point.hpp>
 
 namespace xgame{
-	class XGAME_API Rect{
+	class XGAME_API_VIDEO Rect{
 	public:
 		//! Costruttore di default
 		inline Rect(int x=0, int y=0, int w=0, int h=0);
@@ -13,17 +14,31 @@ namespace xgame{
 		//! Costruttore da SDL_Rect
 		inline Rect(const SDL_Rect& oth);
 
-		//! Metodi 'setting' delle componenti.
+		//! Setta la componente X del rettangolo.
 		inline void Set_Xcomponent(const int x_set) throw();
+
+		//! Setta la componente Y del rettangolo.
 		inline void Set_Ycomponent(const int y_set) throw();
+
+		//! Setta la componente LARGHEZZA del rettangolo.
 		inline void Set_Wcomponent(const int w_size_set) throw();
+
+		//! Setta la componente ALTEZZA del rettangolo.
 		inline void Set_Hcomponent(const int h_size_set) throw();
+
+		//! Setta tutte le componente con una sola chiamata a funzione.
 		inline void Set_AllComponent(const int x, const int y, const int w, const int h);
 
-		//! Metodi 'getting' delle componenti.
+		//! \return La componente X del rettangolo.
 		inline int Get_Xcomponent() const throw();
+
+		//! \return La componente Y del rettangolo.
 		inline int Get_Ycomponent() const throw();
+
+		//! \return La componente LARGHEZZA del rettangolo.
 		inline int Get_Wcomponent() const throw();
+
+		//! \return La componente ALTEZZA del rettangolo.
 		inline int Get_Hcomponent() const throw();
 
 		//! Operatore di assegnazione con SDL_Rect.
@@ -35,11 +50,16 @@ namespace xgame{
 		inline operator SDL_Rect*();
 		inline operator const SDL_Rect*() const;
 
-		//! @return		'true' se due l'intersezione di due rettangoli in ingresso � non nulla!
+		//! \return		'true' se due l'intersezione di due rettangoli in ingresso è non nulla!
 		inline static const bool Rects_HasIntersection(const Rect& rect_1, const Rect& rect_2) throw();
 
-		//! @return		Il rettangolo risultante dall'intersezione di due rettangoli.
+		//! \return		Il rettangolo risultante dall'intersezione di due rettangoli.
 		inline static const bool Rects_Intersection(const Rect& rect_1, const Rect& rect_2, Rect& rect_out) throw();
+
+
+		//! \return		'true' se il punto è dentro il rettangolo.
+		inline const bool Point_is_In(const Point& xy) const throw();
+
 
 	private:
 		SDL_Rect m_data;
@@ -91,6 +111,12 @@ namespace xgame{
 	inline int Rect::Get_Ycomponent() const throw(){ return this->m_data.y; }
 	inline int Rect::Get_Wcomponent() const throw(){ return this->m_data.w; }
 	inline int Rect::Get_Hcomponent() const throw(){ return this->m_data.h; }
+
+	inline const bool Rect::Point_is_In(const Point& xy) const throw(){
+		if (xy.Get_X_Component() >= m_data.x && xy.Get_X_Component() <= m_data.x + m_data.w &&
+			xy.Get_Y_Component() >= m_data.y && xy.Get_Y_Component() <= m_data.y + m_data.h) return true;
+		return false;
+	}
 }
 
 #endif

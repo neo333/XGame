@@ -1,4 +1,4 @@
-#ifndef __ERROR__HPP
+﻿#ifndef __ERROR__HPP
 #define __ERROR__HPP
 
 #include <exception>
@@ -8,18 +8,18 @@
 #include <cstdarg>
 
 namespace xgame{
-	class Error: public std::exception{
+	class Error : public std::exception{
 	public:
-		/** Costruttore
-			@param [in] name_class		Il nome della classe che ha originato l'errore. E' una stringa identificativa.
-			@param [in] name_method		Il nome del metodo/funzione dove si � originato l'errore. E' una stringa identificativa.
-			@param [in] what			Una descrizione dell'errore!
+		/*! Costruttore
+			\param [in] name_class		Il nome della classe che ha originato l'errore. E' una stringa identificativa.
+			\param [in] name_method		Il nome del metodo/funzione dove si è originato l'errore. E' una stringa identificativa.
+			\param [in] what			Una descrizione dell'errore!
 										E' possibile utilizzare la notazione %s per indicare una sostituizione con una stringa.
-			@param [in]	...				Tutte le possibili stringhe che vanno a rimpiazzare i %s nella descrizione
+			\param [in]	...				Tutte le possibili stringhe che vanno a rimpiazzare i %s nella descrizione
 		*/
 		inline Error(const char* name_class, const char* name_method, const char* what, ...);
 
-		/** @return La descrizione formattata dell'errore!*/
+		// @return La descrizione formattata dell'errore!
 		inline virtual const char* what() const throw();
 
 

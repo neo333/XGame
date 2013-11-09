@@ -1,13 +1,13 @@
-#ifndef __MEMORY_PAGE__HPP
+﻿#ifndef __MEMORY_PAGE__HPP
 #define __MEMORY_PAGE__HPP
 
+#include <XGame/Loader/Config.hpp>
 #include <cstdint>
-#include <XGame/Core/Config.hpp>
 #include <memory>
 
 namespace xgame{
 
-	class XGAME_API MemoryPage{
+	class XGAME_API_LOADER MemoryPage{
 	public:
 		//! Costruttore di default
 		MemoryPage();

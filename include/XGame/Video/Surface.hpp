@@ -1,0 +1,140 @@
+﻿#ifndef __SURFACE_XGAME__HPP
+#define __SURFACE_XGAME__HPP
+
+#include <XGame/Video/Config.hpp>
+#include <XGame/Core/Error.hpp>
+#include <XGame/Loader/MemoryPage.hpp>
+#include <XGame/Video/Rect.hpp>
+#include <XGame/Video/Color.hpp>
+#include <SDL/SDL.h>
+
+namespace xgame{
+	class XGAME_API_VIDEO Surface{
+	public:
+		//! Costruttore di default. Costruisce una surface vuota!
+		Surface() = default;
+
+		//! Costruisce una Surface di dimensioni designate con pixel di nero trasparente.
+		Surface(const size_t w, const size_t h) throw(...);
+
+		//! Costruisce una Surface di dimensioni designate con pixel di un colore definito.
+		Surface(const size_t w, const size_t h, const Color& pixels_color) throw(...);
+
+		//! Costruttore di copia.
+		Surface(const Surface& oth) throw(...);
+
+
+		//! Costruttore di move.
+		Surface(Surface&& oth) throw();
+
+
+		//! Distruttore.
+		inline virtual ~Surface();
+
+
+		//! Operatore di assegnazione.
+		Surface& operator=(const Surface& oth) throw(...);
+
+
+		//!	Operatore di move.
+		Surface& operator=(Surface&& oth) throw();
+
+
+		//! Pulisce la surface deallocando le risorse.
+		void Clean() throw();
+
+
+		/*!	Carica la surface da un'immagine memorizzata su una pagina di memoria.
+			
+			\param [in] page_input		Pagina di memoria contenente un'immagine (in formato png,jpg,tiff,...) da caricare
+										sulla surface.
+
+			\throw Error				In caso la pagina di memoria non sia valida, o qualche errore di caricamento interno.
+		*/
+		void LoadSurface_fromMemoryPage(const MemoryPage& page_input) throw(...);
+
+		//!	\return 'true' se la Surface è vuota.
+		inline const bool Is_Void() const throw();
+		
+		//!	\return	La larghezza totale della surface.
+		inline const size_t Get_W() const throw();
+
+		//!	\return	L' altezza totale della surface.
+		inline const size_t Get_H() const throw();
+
+		//! Setta un color-key (pixel trasparente) per la surface.
+		inline void Set_ColorKey(const Color& color_trasparent) throw(...);
+
+		/*!	"Incolla" una surface di input su questa. Esegue un blit veloce in memoria centrale.
+			
+			\param [in] input_surface		La surface che deve essere incollata.
+			\param [in] xy_blit				La posizione sulla surface destinazione (l'oggetto in questione) dove eseguire il blit.
+			\param [in,out] area_cut		La porzione della surface di input da incollare.
+
+			\note Questa funzione tiene in conto delle trasparenze della surface di input, ma non quelle della surface destinazione.
+					Se la destione contiene delle aree trasparenti non verrà eseguito il blit su quelle aree.
+
+			\throw Error					In caso di errori interni.
+		*/
+		inline void BlitSurfaceOnThis(const Surface& input_surface, const Point& xy_blit =Point(0,0), Rect& area_cut = Rect(0,0,-1,-1)) throw(...);
+
+		//! Operatore di conversione per SDL_Surface.
+		inline explicit operator SDL_Surface*() throw();
+
+		//! Operatore di conversione per const SDL_Surface.
+		inline explicit operator const SDL_Surface*() const throw();
+
+	private:
+		SDL_Surface* m_surface = nullptr;
+		friend class Texture;
+
+		static const Uint32 rmask = 0xff000000;
+		static const Uint32 gmask = 0x00ff0000;
+		static const Uint32 bmask = 0x0000ff00;
+		static const Uint32 amask = 0x000000ff;
+	};
+
+	inline Surface::~Surface(){
+		this->Clean();
+	}
+
+	inline Surface::operator SDL_Surface*() throw(){ return this->m_surface; }
+
+	inline Surface::operator const SDL_Surface*() const throw(){ return this->m_surface; }
+
+	inline const bool Surface::Is_Void() const throw(){ 
+		if (m_surface == nullptr) return true;
+		return false;
+	}
+
+	inline const size_t Surface::Get_W() const throw(){
+		if (m_surface!=nullptr)
+			return m_surface->w;
+		return 0;
+	}
+
+	inline const size_t Surface::Get_H() const throw(){
+		if (m_surface!=nullptr)
+			return m_surface->h;
+		return 0;
+	}
+
+	inline void Surface::BlitSurfaceOnThis(const Surface& input_surface, const Point& xy_blit, Rect& area_cut) throw(...){
+		if (input_surface.Is_Void()) return;
+		if (area_cut.Get_Wcomponent() < 0) area_cut.Set_Wcomponent(input_surface.Get_W() - area_cut.Get_Xcomponent());
+		if (area_cut.Get_Hcomponent() < 0) area_cut.Set_Hcomponent(input_surface.Get_H() - area_cut.Get_Ycomponent());
+
+		if (SDL_BlitSurface(input_surface.m_surface, area_cut, m_surface,
+			Rect(xy_blit.Get_X_Component(), xy_blit.Get_Y_Component(), area_cut.Get_Wcomponent(), area_cut.Get_Hcomponent())) != 0)
+		{
+			throw Error("Surface", "BlitSurfaceOnThis", "Impossibile eseguire il blit della surface\n%s", SDL_GetError());
+		}
+	}
+
+	inline void Surface::Set_ColorKey(const Color& color_trasparent) throw(...){
+		if (SDL_SetColorKey(m_surface, SDL_TRUE, static_cast<Uint32>(color_trasparent)) != 0)
+			throw Error("Surface", "Set_ColorKey", "Impossibile impostare un colorkey per la surface\n%s", SDL_GetError());
+	}
+}
+
+#endif

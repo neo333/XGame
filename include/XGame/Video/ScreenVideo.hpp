@@ -1,7 +1,7 @@
-#ifndef __SCREEN_VIDEO_XGAME__HPP
+Ôªø#ifndef __SCREEN_VIDEO_XGAME__HPP
 #define __SCREEN_VIDEO_XGAME__HPP
 
-#include <XGame/Core/Config.hpp>
+#include <XGame/Video/Config.hpp>
 #include <XGame/Core/Error.hpp>
 #include <XGame/Event/ObjectInteractive.hpp>
 #include <XGame/Video/Texture.hpp>
@@ -18,100 +18,137 @@
 
 namespace xgame{
 
-	class XGAME_API ScreenVideo: public boost::noncopyable, public ObjectInteractive{
+	class XGAME_API_VIDEO ScreenVideo : public boost::noncopyable, public ObjectInteractive{
 	public:
 		//! Costruttore di default. Specificare i parametri dimensionali dell'area del RENDERER
 		ScreenVideo(const size_t w_size_renderer =0, const size_t h_size_renderer =0);
 
+
 		//! Distruttore di default.
 		virtual ~ScreenVideo();
+
 
 		//! Chiude lo ScreenVideo deallocando tutte le risorse dedicate ad esso.
 		void Close() throw();
 
-		//! @return		'true' se lo ScreenVideo Ë stato lanciato ed Ë attivo, 'false' altrimenti.
+
+		//! \return		'true' se lo ScreenVideo √® stato lanciato ed √® attivo, 'false' altrimenti.
 		inline const bool IsOpen() const throw();
 
+
 		/*! Lancia lo ScreenVideo (finestra grafica applicativa che contiene il renderer grafico).
-			@note			Prima di lanciare lo ScreenVideo, assicurarsi di settare tutte le impostazioni preferite.
-			@throw	Error	In caso di errore critico!
+			\note			Prima di lanciare lo ScreenVideo, assicurarsi di settare tutte le impostazioni preferite.
+			\throw	Error	In caso di errore critico!
 		*/
 		void Open() throw(...);
 
-		//! @return		La larghezza in pixel del renderer.
+
+		//! \return		La larghezza in pixel del renderer.
 		inline const size_t Get_WSizeRenderer() const throw();
 
-		//! @return		L'altezza in pixel del renderer.
+
+		//! \return		L'altezza in pixel del renderer.
 		inline const size_t Get_HSizeRenderer() const throw();
 
-		/*! @return		L'ID (univoco) della finestra grafica.
-			@note		Ritorna '-1' in caso la finestra grafica non sia stata ancora lanciata
+		/*! \return		L'ID (univoco) della finestra grafica.
+			\note		Ritorna '-1' in caso la finestra grafica non sia stata ancora lanciata
 		*/
 		inline const Uint32 Get_ID_Window() const throw();
 
+
 		/*! Modica e aggiorna la dimensione del renderer grafico.
-			@throw	Error		In caso l'aggiornamento non vada a buonfine.
-			@note	Se viene chiamato questo metodo quando lo ScreenVideo non Ë attivo le dimensione saranno effettive al prossimo avvio.
+			\throw	Error		In caso l'aggiornamento non vada a buonfine.
+			\note	Se viene chiamato questo metodo quando lo ScreenVideo non √® attivo le dimensione saranno effettive al prossimo avvio.
 		*/
 		void UpdateSize_Renderer(const size_t wSize_renderer, const size_t hSize_renderer) throw(...);
+
 
 		//! Modifica e aggiorna la dimensione della finestra che contiene il renderer grafico.
 		void UpdateSize_GraphicWindow(const size_t wSize_window, const size_t hSize_window) throw();
 
+
 		//! Modifica ed aggiorna il titolo della finestra che contiene il render grafico.
 		void UpdateName_GraphicWindow(const std::string& title_set) throw();
 
-		/*! Setta la modalit‡ 'fullscreen' o 'window' per la finestra grafica.
-			@note	Se lo ScreenVideo Ë stato gi‡ stato aperto Ë necessario chiudere e riaprire lo ScreenVideo.
+
+		/*! Setta la modalit√† 'fullscreen' o 'window' per la finestra grafica.
+			\note	Se lo ScreenVideo √® stato gi√† stato aperto √® necessario chiudere e riaprire lo ScreenVideo.
 		*/
 		void Set_FullScreenWindow(const bool fullscreen_active) throw();
 
-		/*! Setta il numero di volte MASSIMO che il renderer puÚ essere presentato sulla finestra grafica.
-			@note	Inserire '0' come parametro per disattivare il controllo sui fps massimi (default)
+
+		/*! Setta il numero di volte MASSIMO che il renderer pu√≤ essere presentato sulla finestra grafica.
+			\note	Inserire '0' come parametro per disattivare il controllo sui fps massimi (default)
 		*/
 		void Set_FramesPerSecond_MAX(const size_t fps_max) throw();
 
+
 		/*! Abilita o meno il v-sync.
-			@note	Probabilmente Ë necessario chiamare questo metodo all'avvio dell'applicazione.
-			@throw	Error	In caso non il vsync non sia attivabile.
+			\note	Probabilmente √® necessario chiamare questo metodo all'avvio dell'applicazione.
+			\throw	Error	In caso non il vsync non sia attivabile.
 		*/
 		void SetHint_VSync(const bool vsync_active) throw(...);
 
-		/*! Setta la qualit‡ dello scaling del renderer.
-			@note	La qualit‡ 'HIGH_QUALITY' Ë disponibile solo per driver grafici 'direct3D'; mentre la qualit‡ 'MEDIUM_QUALITY'
-					Ë supportata sia per 'opengl' che per 'direct3D'.
-			@throw	Error	In caso non la qualit‡ non sia supportata dal driver video.
-		*/
+
+		//! Opzioni di qualit√† per lo SCALING da applicare al motore grafico.
 		enum class SCALING_QUALITY{
 			LOW_QUALITY,
 			MEDIUM_QUALITY,
 			HIGH_QUALITY
 		};
+		/*! Setta la qualit√† dello scaling del renderer.
+			\note				La qualit√† 'HIGH_QUALITY' √® disponibile solo per driver grafici 'direct3D'; mentre la qualit√† 'MEDIUM_QUALITY'
+								√® supportata sia per 'opengl' che per 'direct3D'.
+			\throw	Error		In caso non la qualit√† non sia supportata dal driver video.
+		*/
 		void SetScaleQuality(const SCALING_QUALITY setting_quality) throw(...);
 
-		/*! Effettua la prensentazione del renderer all'interno della finestra grafica.
-		*/
+
+		//! Effettua la prensentazione del renderer all'interno della finestra grafica.
 		inline void PresentRenderer() throw();
 
-		/*! Pulisce il renderer dello ScreenVideo.
-		*/
+
+		//! Pulisce il renderer dello ScreenVideo.
 		inline void CleanRenderer() throw();
+
 
 		//! Setta il colore di background del renderer.
 		inline void SetColorBackgroundRenderer(const Color& color_setting) throw();
 
-		//! @return		La stringa del nome del driver grafico.
+
+		//! \return		La stringa del nome del driver grafico.
 		static const std::string GetName_VideoDriver() throw();
 		
-		/*! @param [in] index_display	L'indice del display di cui si vuole conoscere l'informazione.
-			@return						Una lista di tutte le modalit‡ supportate dal monitor.
-			@throw						Se non esiste il monitor con l'indice espresso dal parametro di input.
-		*/
+
+		//! Puntatore ad un SDL_DisplayMode.
 		typedef std::shared_ptr<SDL_DisplayMode> ptrSDL_DisplayMode;
-		static std::vector<ptrSDL_DisplayMode> GetAll_AvailableDisplayMode(const int index_display) throw(...);
+		
+		/*! \param [in] index_display	L'indice del display di cui si vuole conoscere l'informazione.
+		\return						Una lista di tutte le modalit√† supportate dal monitor.
+		\throw						Se non esiste il monitor con l'indice espresso dal parametro di input.
+		*/
+		static std::vector<ptrSDL_DisplayMode> GetAll_AvailableDisplayMode(const int index_display =0) throw(...);
 
 
+		/*!	Disegna una texture sul renderer. La texture sar√† mostrata al prossimo 'PresentRenderer'.
+			
+			\param [in] src_texture				La texture di input da 'blittare' sul renderer.
+			\param [in] xy_onRenderer			La posizione (in pixel) sul renderer che indica DOVE disegnare la texture.
+												Nota: l'angolo in alto a sinistra rappresenta il pixel (0,0).
+			\param [in] area_renderer_active	L'area del renderer abilitata al disegno per questo disegno.
+												Se la texture non si trover√† all'interno di quest area non sar√† visibile.
+												Specificare le componenti '-1' per indicare tutto lo schermo.
+			
+			\throw Error						In caso di errore video interno.
+		*/
 		inline void DrawTexture(const Texture& src_texture, const Point& xy_onRenderer, const Rect& area_renderer_active = Rect(0,0,-1,-1)) throw(...);
+
+		//! Operatore di conversione per puntatore a SDL_Window.
+		inline explicit operator SDL_Window*() throw();
+
+		//! Operatore di conversione per puntatore a const SDL_Window.
+		inline explicit operator const SDL_Window*() const throw();
+
 
 	private:
 		SDL_Window* m_window;
@@ -187,6 +224,14 @@ namespace xgame{
 
 		if(SDL_RenderCopy(m_renderer,src_texture.m_texture,src_texture.m_drawnable_area,&dest_rect)!=0)
 			throw Error("ScreenVideo","DrawTexture","Impossibile effettuare il rendering della texture richiesta!\n%s",SDL_GetError());
+	}
+
+	inline ScreenVideo::operator SDL_Window*() throw(){
+		return this->m_window;
+	}
+
+	inline ScreenVideo::operator const SDL_Window*() const throw(){
+		return this->m_window;
 	}
 }
 

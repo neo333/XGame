@@ -1,11 +1,25 @@
 #include <XGame/Video/Texture.hpp>
 #include <XGame/Video/ScreenVideo.hpp>
 #include <SDL/SDL_image.h>
+#include <chrono>
 
 namespace xgame{
 
 	Texture::Texture()throw():m_render(nullptr),m_texture(nullptr),m_w_size(0),m_h_size(0),m_w_size_scaled(0),m_h_size_scaled(0){
 
+	}
+
+	Texture::Texture(const size_t w_size, const size_t h_size, const ScreenVideo& makerVideo) throw(...):
+			m_render(makerVideo.m_renderer),m_w_size(w_size),m_h_size(h_size),m_w_size_scaled(w_size),m_h_size_scaled(h_size),
+			m_drawnable_area(Rect(0,0,w_size,h_size)),
+			m_texture(SDL_CreateTexture(makerVideo.m_renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, w_size, h_size))
+	{
+		if (m_render == nullptr)
+			throw Error("Texture", "Texture", "Impossibile inizializzare una texture con uno specifico renderer nullo!");
+		if (m_texture == nullptr)
+			throw Error("Texture", "Texture", "Impossibile creare una texture grafica!\n%s", SDL_GetError());
+
+		SDL_SetTextureBlendMode(m_texture, SDL_BLENDMODE_BLEND);
 	}
 
 	void Texture::Clean() throw(){
@@ -81,6 +95,70 @@ namespace xgame{
 		}
 
 
+	}
+
+	void Texture::LoadTexture_fromSurface(const Surface& input_surface, const ScreenVideo& makerVideo, Rect& area_cut){
+		this->Clean();
+		if (makerVideo.m_renderer == nullptr)
+			throw Error("Texture", "LoadTexture_fromMemoryPage", "Impossibile caricare una texture con uno specifico renderer nullo!");
+		if (makerVideo.m_renderer != m_render) m_render = makerVideo.m_renderer;
+		if (input_surface.Is_Void()) return;
+		if (area_cut.Get_Xcomponent() < 0) area_cut.Set_Xcomponent(0);
+		if (area_cut.Get_Ycomponent() < 0) area_cut.Set_Ycomponent(0);
+		if (area_cut.Get_Wcomponent() < 0) area_cut.Set_Wcomponent(input_surface.Get_W() - area_cut.Get_Xcomponent());
+		if (area_cut.Get_Hcomponent() < 0) area_cut.Set_Hcomponent(input_surface.Get_H() - area_cut.Get_Ycomponent());
+		if (area_cut.Get_Wcomponent() + (size_t)area_cut.Get_Xcomponent() > input_surface.Get_W())
+			area_cut.Set_Wcomponent(input_surface.Get_W() - area_cut.Get_Xcomponent());
+		if (area_cut.Get_Hcomponent() + (size_t)area_cut.Get_Ycomponent() > input_surface.Get_H())
+			area_cut.Set_Hcomponent(input_surface.Get_H() - area_cut.Get_Ycomponent());
+
+		this->m_texture = SDL_CreateTexture(m_render, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, 
+			area_cut.Get_Wcomponent(), area_cut.Get_Hcomponent());
+		if (this->m_texture == nullptr)
+			throw Error("Texture", "LoadTexture_fromSurface", "Impossibile creare una texture grafica!\n%s", SDL_GetError());
+
+		void* data_texture;
+		int pitch_texture;
+
+		if (SDL_LockTexture(m_texture, NULL, &data_texture, &pitch_texture) != 0)
+			throw Error("Texture", "LoadTexture_fromSurface", "Impossibile scrivere la texture grafica!\n%s", SDL_GetError());
+		if (SDL_LockSurface(input_surface.m_surface) != 0){
+			SDL_UnlockTexture(m_texture);
+			throw Error("Texture", "LoadTexture_fromSurface", "Impossibile leggere la surface grafica!\n%s", SDL_GetError());
+		}
+			
+
+		try{
+			Uint8* texture_pixelb = static_cast<Uint8*>(data_texture);
+			const Uint8* surface_pixelb = static_cast<Uint8*>(input_surface.m_surface->pixels) +
+				area_cut.Get_Ycomponent() * input_surface.m_surface->pitch +
+				area_cut.Get_Xcomponent() * input_surface.m_surface->format->BytesPerPixel;
+
+			const int row_size = area_cut.Get_Wcomponent() * input_surface.m_surface->format->BytesPerPixel;
+
+			for (register int row = 0; row < area_cut.Get_Hcomponent(); ++row){
+				memcpy(texture_pixelb, surface_pixelb, row_size);
+				texture_pixelb += pitch_texture;
+				surface_pixelb += input_surface.m_surface->pitch;
+			}
+		}
+		catch (const std::exception& err){
+			SDL_UnlockTexture(m_texture);
+			SDL_UnlockSurface(input_surface.m_surface);
+			throw Error("Texture", "LoadTexture_fromSurface", "Impossibile copiare i dati nella destinazione!\n%s", err.what());
+		}
+
+		SDL_UnlockSurface(input_surface.m_surface);
+		SDL_UnlockTexture(m_texture);
+		data_texture = nullptr;
+
+		m_w_size = area_cut.Get_Wcomponent();
+		m_h_size = area_cut.Get_Hcomponent();
+		m_w_size_scaled = m_w_size;
+		m_h_size_scaled = m_h_size;
+		m_drawnable_area.Set_AllComponent(0, 0, m_w_size, m_h_size);
+
+		SDL_SetTextureBlendMode(m_texture, SDL_BLENDMODE_BLEND);
 	}
 
 	Texture::Texture(const Texture& oth):m_render(oth.m_render),m_w_size(oth.m_w_size),m_h_size(oth.m_h_size),
@@ -171,5 +249,138 @@ namespace xgame{
 
 		SDL_SetTextureBlendMode(rts,SDL_BLENDMODE_BLEND);
 		return rts;
+	}
+
+	void Texture::UpdateTexture_withBlend(const Texture& input_texture, Rect& input_cut, Point& out_xy) throw(...){
+		if (input_texture.IsVoid()) return;
+		if (input_cut.Get_Xcomponent() < 0) input_cut.Set_Xcomponent(0);
+		if (input_cut.Get_Ycomponent() < 0) input_cut.Set_Ycomponent(0);
+		if (input_cut.Get_Xcomponent() > input_texture.m_w_size) input_cut.Set_Xcomponent(input_texture.m_w_size);
+		if (input_cut.Get_Ycomponent() > input_texture.m_h_size) input_cut.Set_Ycomponent(input_texture.m_h_size);
+		if (input_cut.Get_Wcomponent() < 0) input_cut.Set_Wcomponent(input_texture.m_w_size - input_cut.Get_Xcomponent());
+		if (input_cut.Get_Hcomponent() < 0) input_cut.Set_Hcomponent(input_texture.m_h_size - input_cut.Get_Ycomponent());
+		if (input_cut.Get_Wcomponent() + input_cut.Get_Xcomponent() > input_texture.m_w_size)
+			input_cut.Set_Wcomponent(input_texture.m_w_size - input_cut.Get_Xcomponent());
+		if (input_cut.Get_Hcomponent() + input_cut.Get_Ycomponent() > input_texture.m_h_size)
+			input_cut.Set_Hcomponent(input_texture.m_h_size - input_cut.Get_Ycomponent());
+		if (input_cut.Get_Wcomponent() > m_w_size - out_xy.Get_X_Component())
+			input_cut.Set_Wcomponent(m_w_size - out_xy.Get_X_Component());
+		if (input_cut.Get_Hcomponent() > m_h_size - out_xy.Get_Y_Component())
+			input_cut.Set_Hcomponent(m_h_size - out_xy.Get_Y_Component());
+
+		void* src_pixel_data = nullptr;
+		void* dest_pixel_data = nullptr;
+		int src_pitch = 0;
+		int dest_pitch = 0;
+
+		if (SDL_LockTexture(input_texture.m_texture, input_cut, &src_pixel_data, &src_pitch) != 0){
+			throw Error("Texture", "UpdateTexture_withBlend", "Impossibile accedere ai dati della sorgente!\n%s", SDL_GetError());
+		}
+		if (SDL_LockTexture(m_texture, Rect(out_xy.Get_X_Component(), out_xy.Get_Y_Component(), input_cut.Get_Wcomponent(), input_cut.Get_Hcomponent()), 
+			&dest_pixel_data, &dest_pitch) != 0)
+		{
+			SDL_UnlockTexture(input_texture.m_texture);
+			throw Error("Texture", "UpdateTexture_withBlend", "Impossibile accedere ai dati della destinazione!\n%s", SDL_GetError());
+		}
+
+		try{
+			const Uint32* p_src = static_cast<Uint32*>(src_pixel_data);
+			Uint32* p_dest = static_cast<Uint32*>(dest_pixel_data);
+			const int len = input_cut.Get_Wcomponent();
+			const Uint8 alpha_mod_input = input_texture.Get_AlphaMod();
+			for (register int row = 0; row < input_cut.Get_Hcomponent(); ++row){
+				for (register int i = 0; i < len; i++){
+					Color& pixel_dest= Color(p_dest[i]);
+					Color& pixel_src = Color(p_src[i]);
+					if (pixel_src.Get_AlphaComponent() != 0 && alpha_mod_input!=255){
+						pixel_src.Set_AlphaComponent(pixel_src.Get_AlphaComponent() - (255 - alpha_mod_input));
+					}
+
+					pixel_dest.Set_RedComponent(static_cast<Uint8>((pixel_src.Get_RedComponent() * pixel_src.Get_AlphaComponentNormalized()) +
+						(pixel_dest.Get_RedComponent()*(1.f - pixel_src.Get_AlphaComponentNormalized()))));
+					pixel_dest.Set_GreenComponent((static_cast<Uint8>((pixel_src.Get_GreenComponent() * pixel_src.Get_AlphaComponentNormalized()) +
+						(pixel_dest.Get_GreenComponent()*(1.f - pixel_src.Get_AlphaComponentNormalized())))));
+					pixel_dest.Set_BlueComponent((static_cast<Uint8>((pixel_src.Get_BlueComponent() * pixel_src.Get_AlphaComponentNormalized()) +
+						(pixel_dest.Get_BlueComponent()*(1.f - pixel_src.Get_AlphaComponentNormalized())))));
+
+					pixel_dest.Set_AlphaComponentNormalized(pixel_src.Get_AlphaComponentNormalized() +
+						(pixel_dest.Get_AlphaComponentNormalized()*(1.f - pixel_src.Get_AlphaComponentNormalized())));
+					
+					p_dest[i] = static_cast<Uint32>(pixel_dest);
+				}
+				p_src += src_pitch / 4;
+				p_dest += dest_pitch / 4;
+			}
+
+		}
+		catch (std::exception& err){
+			SDL_UnlockTexture(input_texture.m_texture);
+			SDL_UnlockTexture(m_texture);
+			throw Error("Texture", "UpdateTexture_withBlend", "Impossibile copiare i dati nella destinazione!\n%s", err.what());
+		}
+
+		SDL_UnlockTexture(input_texture.m_texture);
+		SDL_UnlockTexture(m_texture);
+		src_pixel_data = nullptr;
+		dest_pixel_data = nullptr;
+	}
+
+	void Texture::UpdateTexture_withoutAlphaMod(const Texture& input_texture, Rect& input_cut, Point& out_xy) throw(...){
+		if (input_texture.IsVoid()) return;
+		if (input_cut.Get_Xcomponent() < 0) input_cut.Set_Xcomponent(0);
+		if (input_cut.Get_Ycomponent() < 0) input_cut.Set_Ycomponent(0);
+		if (input_cut.Get_Xcomponent() > input_texture.m_w_size) input_cut.Set_Xcomponent(input_texture.m_w_size);
+		if (input_cut.Get_Ycomponent() > input_texture.m_h_size) input_cut.Set_Ycomponent(input_texture.m_h_size);
+		if (input_cut.Get_Wcomponent() < 0) input_cut.Set_Wcomponent(input_texture.m_w_size - input_cut.Get_Xcomponent());
+		if (input_cut.Get_Hcomponent() < 0) input_cut.Set_Hcomponent(input_texture.m_h_size - input_cut.Get_Ycomponent());
+		if (input_cut.Get_Wcomponent() + input_cut.Get_Xcomponent() > input_texture.m_w_size)
+			input_cut.Set_Wcomponent(input_texture.m_w_size - input_cut.Get_Xcomponent());
+		if (input_cut.Get_Hcomponent() + input_cut.Get_Ycomponent() > input_texture.m_h_size)
+			input_cut.Set_Hcomponent(input_texture.m_h_size - input_cut.Get_Ycomponent());
+		if (input_cut.Get_Wcomponent() > m_w_size - out_xy.Get_X_Component())
+			input_cut.Set_Wcomponent(m_w_size - out_xy.Get_X_Component());
+		if (input_cut.Get_Hcomponent() > m_h_size - out_xy.Get_Y_Component())
+			input_cut.Set_Hcomponent(m_h_size - out_xy.Get_Y_Component());
+
+		void* src_pixel_data = nullptr;
+		void* dest_pixel_data = nullptr;
+		int src_pitch = 0;
+		int dest_pitch = 0;
+
+		
+		if (SDL_LockTexture(input_texture.m_texture, input_cut, &src_pixel_data, &src_pitch) != 0){
+			throw Error("Texture", "UpdateTexture_withBlend", "Impossibile accedere ai dati della sorgente!\n%s", SDL_GetError());
+		}
+		if (SDL_LockTexture(m_texture, Rect(out_xy.Get_X_Component(),out_xy.Get_Y_Component(),input_cut.Get_Wcomponent(),input_cut.Get_Hcomponent()), 
+					&dest_pixel_data, &dest_pitch) != 0)
+		{
+			SDL_UnlockTexture(input_texture.m_texture);
+			throw Error("Texture", "UpdateTexture_withBlend", "Impossibile accedere ai dati della destinazione!\n%s", SDL_GetError());
+		}
+
+		try{
+			const Uint32* p_src = static_cast<Uint32*>(src_pixel_data);
+			Uint32* p_dest = static_cast<Uint32*>(dest_pixel_data);
+			int len = input_cut.Get_Wcomponent();
+			
+			for (register int row = 0; row < input_cut.Get_Hcomponent(); ++row){
+				for (register int i = 0; i < len; i++){
+					if ((p_src[i] & 0x000000ff) != 0)
+						p_dest[i] = p_src[i];
+				}
+				p_src += src_pitch / 4;
+				p_dest += dest_pitch / 4;
+			}
+
+			
+		}
+		catch (std::exception& err){
+			SDL_UnlockTexture(input_texture.m_texture);
+			SDL_UnlockTexture(m_texture);
+			throw Error("Texture", "UpdateTexture_withBlend", "Impossibile copiare i dati nella destinazione!\n%s", err.what());
+		}
+
+		SDL_UnlockTexture(input_texture.m_texture);
+		SDL_UnlockTexture(m_texture);
 	}
 }
