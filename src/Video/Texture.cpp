@@ -97,7 +97,7 @@ namespace xgame{
 
 	}
 
-	void Texture::LoadTexture_fromSurface(const Surface& input_surface, const ScreenVideo& makerVideo, Rect& area_cut){
+	void Texture::LoadTexture_fromSurface(const Surface& input_surface, const ScreenVideo& makerVideo, Rect& area_cut) throw(...){
 		this->Clean();
 		if (makerVideo.m_renderer == nullptr)
 			throw Error("Texture", "LoadTexture_fromMemoryPage", "Impossibile caricare una texture con uno specifico renderer nullo!");

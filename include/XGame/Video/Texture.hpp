@@ -43,9 +43,19 @@ namespace xgame{
 		*/
 		void LoadTexture_fromMemoryPage(const MemoryPage& input_page, const ScreenVideo& makerVideo) throw(...);
 
-		// TODO
-		void LoadTexture_fromSurface(const Surface& input_surface, const ScreenVideo& makerVideo, Rect& area_cut = Rect(0, 0, -1, -1));
+		/*! Carica l'oggetto texture copiandone i data pixels da una Surface.
+			Spesso conviene utilizzare questa strategia per comporre un'immagine con più parti.
+			Le Surface sono strutture dati memorizzate in RAM, ma permettono una più rapida e facile gestione: una volta
+			composta la surface finale utilizzando questo metodo è possibile trasferirne il contenuto su una Texture.
+			Le Texture sono memorizzate in VIDEO RAM ed ottimizzate dalla scheda video per il disegno.
 
+			\param [in]	input_surface		La surface da cui copiare il contenuto grafico.
+			\param [in]	makerVideo			Uno ScreenVideo 'NECESSARIAMENTE APERTO' per il formato del driver video.
+			\param [in]	area_cut			La porzione della Surface che si vuole copiare.
+
+			\throw Error					In caso di errore grafico interno.
+		*/
+		void LoadTexture_fromSurface(const Surface& input_surface, const ScreenVideo& makerVideo, Rect& area_cut = Rect(0, 0, -1, -1)) throw(...);
 
 		/*! \return		La dimensione in pixel in larghezza della texture tenendo presente le trasformazioni operate
 						su di essa (ridimensionamento, taglio dell'area di disegno, ecc..);
@@ -127,17 +137,21 @@ namespace xgame{
 			\param [in,out] out_xy				La posizione su questa texture dove deve essere fatta la copia.
 												
 
-			\note 'input_cut' e 'out_xy' sono anche parametri di uscita perché POSSONO essere modificati dalla funzione.
-				La funzione modificherà opportunamente questi parametri di ingresso se le dimensioni (o le posizioni)
-				specificate non siano coerenti.
-				(Es. si inserisce una posizione negativa, allora la funzione correggerà quel punto).
-			\note Specificare parametri negativi per le dimensioni per indicare 'tutta quella dimensione disponibile'.
-			\note 'With Blend' significa che il blit tra le due texture verrà eseguito con la modalità BLEND (le trasparenze
-					si sovrappongo; vengono considerate). E' un metodo più lento, ma accurato.
+			\note								'input_cut' e 'out_xy' sono anche parametri di uscita perché POSSONO 
+												essere modificati dalla funzione.
+												La funzione modificherà opportunamente questi parametri di ingresso 
+												se le dimensioni (o le posizioni) specificate non siano coerenti.
+													(Es. si inserisce una posizione negativa, allora la funzione correggerà quel punto).
+			\note								Specificare parametri negativi per le dimensioni per indicare 'tutta quella dimensione disponibile'.
+			\note								'With Blend' significa che il blit tra le due texture verrà eseguito con 
+												la modalità BLEND (le trasparenze si sovrappongo; vengono considerate). 
+												E' un metodo più lento, ma accurato.
+			\note								Per composizioni grafiche più veloci è vivamente cosigliato lavorare utilizzando le xgame::Surface e
+												poi, una volta completata la composizione finale, salvare il tutto su una Texture.
 			
-			\see Texture::UpdateTexture_withoutAlphaMod
+			\see								Texture::UpdateTexture_withoutAlphaMod
 			
-			\throw Error	In caso di problemi grafici interni.
+			\throw Error						In caso di problemi grafici interni.
 		*/
 		void UpdateTexture_withBlend(const Texture& input_texture, Rect& input_cut, Point& out_xy) throw(...);
 
@@ -152,6 +166,9 @@ namespace xgame{
 			\see Texture::UpdateTexture_withBlend
 
 			\note									Questa funzione non tiene conto della modifica alpha della texture di input.
+			\note									Per composizioni grafiche più veloci è vivamente cosigliato lavorare utilizzando 
+													le xgame::Surface e poi, una volta completata la composizione finale, salvare 
+													il tutto su una Texture.
 
 			\throw Error							In caso di problemi grafici interni.
 		*/
