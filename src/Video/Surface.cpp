@@ -88,4 +88,23 @@ namespace xgame{
 			}
 		}
 	}
+
+	void Surface::Set_ModAlpha_forThisColor(const Color& color_select, const Uint8 alpha_set) throw(...){
+		if (m_surface == nullptr) return;
+		if (SDL_LockSurface(m_surface) != 0)
+			throw Error("Surface", "Set_ColorKey", "Impossibile accedere ai dati della surface!\n%s", SDL_GetError());
+		for (register int row = 0; row < m_surface->h; row++){
+			for (register int index = 0; index < m_surface->w; index++){
+				Uint32& pixel = static_cast<Uint32*>(this->m_surface->pixels)[index + row*m_surface->pitch / 4];
+				if ((pixel&Surface::rmask) == color_select.Get_RedComponent() &&
+					(pixel&Surface::gmask) == color_select.Get_GreenComponent() &&
+					(pixel&Surface::bmask) == color_select.Get_BlueComponent())
+				{
+					pixel = static_cast<Uint32>(Color(color_select.Get_RedComponent(), color_select.Get_GreenComponent(),
+						color_select.Get_BlueComponent(), alpha_set));
+				}
+			}
+		}
+		SDL_UnlockSurface(m_surface);
+	}
 }

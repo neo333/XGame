@@ -63,8 +63,15 @@ namespace xgame{
 		//!	\return	L' altezza totale della surface.
 		inline const size_t Get_H() const throw();
 
-		//! Setta un color-key (pixel trasparente) per la surface.
-		inline void Set_ColorKey(const Color& color_trasparent) throw(...);
+		/*! Setta l'alpha per tutti i pixel del colore di input presenti sulla surface.
+			
+			\param [in] color_select		Un colore che si vuole controllare della surface.
+			\param [in] alpha_set			Il valore di alpha da settare per tutti i pixel della surface di quella surface.
+
+			\note	Se la surface è vuota questo metodo non farà nulla.
+			\note	La componente 'Alpha' del parametro di ingresso 'color_select' non è di interesse.
+		*/
+		void Set_ModAlpha_forThisColor(const Color& color_select,const Uint8 alpha_set) throw(...);
 
 		/*!	"Incolla" una surface di input su questa. Esegue un blit veloce in memoria centrale.
 			
@@ -130,11 +137,6 @@ namespace xgame{
 		{
 			throw Error("Surface", "BlitSurfaceOnThis", "Impossibile eseguire il blit della surface\n%s", SDL_GetError());
 		}
-	}
-
-	inline void Surface::Set_ColorKey(const Color& color_trasparent) throw(...){
-		if (SDL_SetColorKey(m_surface, SDL_TRUE, static_cast<Uint32>(color_trasparent)) != 0)
-			throw Error("Surface", "Set_ColorKey", "Impossibile impostare un colorkey per la surface\n%s", SDL_GetError());
 	}
 }
 
