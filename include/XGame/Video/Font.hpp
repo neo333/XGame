@@ -49,10 +49,35 @@ namespace xgame{
 		*/
 		void LoadFont_fromMemoryPage(const MemoryPage& input_page, const size_t ptsize_font) throw(...);
 	
-	
+
+		//! Wrapper degli stili dei font.
+		enum STYLE_FONT{
+			STYLE_NORMAL = TTF_STYLE_NORMAL,
+			STYLE_BOLD = TTF_STYLE_BOLD,
+			STYLE_ITALIC = TTF_STYLE_ITALIC,
+			STYLE_UNDERLINE = TTF_STYLE_UNDERLINE
+		};
+
+		/*!	Setta lo stile del font.
+			
+			\param [in] style_set		Lo stile da settare. Non sono esclusivi!
+										(E' possibile effettuare una concatenazione di più stili).
+			
+			\see Font::STYLE_FONT
+			
+			\note						Se il font viene ricaricato gli stili vengono resettati (verrà reimpostato lo stile di default).
+
+			\throw	Error				In caso di errore grafico interno.
+		*/
+		void SetStyle(const STYLE_FONT style_set) throw(...);
+
+		//!	\return Gli stili applicati correntemente al font.
+		inline const STYLE_FONT GetStyle() const throw();
+
 	private:
 		TTF_Font* m_font = nullptr;
 		size_t m_size_font = 0;
+		int m_style_font = TTF_STYLE_NORMAL;
 
 		friend class TextSurface;
 	};
@@ -67,6 +92,9 @@ namespace xgame{
 	}
 	inline Font::operator const TTF_Font*() const throw(){
 		return m_font;
+	}
+	inline auto Font::GetStyle() const throw() -> const STYLE_FONT{
+		return static_cast<STYLE_FONT>(m_style_font);
 	}
 }
 
