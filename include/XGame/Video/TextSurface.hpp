@@ -17,25 +17,51 @@ namespace xgame{
 
 		//!	Enumerazione per la qualità del render del testo.
 		enum class QUALITY_RENDER_FONT{
-			LOW_QUALITY, MEDIUM_QUALITY, HIGH_QUALITY
+			LOW_QUALITY, HIGH_QUALITY
 		};
 
 		//! Enumerazione per la codifica di input per il render del testo.
 		enum class CODEC_RENDER_FONT{
-			INPUT_LATIN1, INPUT_UTF8, INPUT_UNICODE
+			INPUT_LATIN1, INPUT_UTF8
 		};
 
-		/*!
+		/*! Carica la surface renderizzando un testo tramite uno specifico font.
+			
+			\param [in] input_font			Il font da usare per il rendering del testo.
+			\param [in] str_input			La stringa di input da renderizzare.
+			\param [in] color_text			Il colore con quale si vuole renderizzare il testo.
+			\param [in] quality				La qualità dell'operazione di rendering.
+			\param [in] codec				La codifica della stringa di ingresso.
+			
+			\see TextSurface::QUALITY_RENDER_FONT
+			\see TextSurface::CODEC_RENDER_FONT
+			
+			\note							A bassa qualità il caricamento è un pò più veloce, ma le scritte non supportano
+											le sfumature.
 		*/
-		void LoadSurface_fromFont(const Font& input_font, const std::string& str_input, const Color& color_text, const Color& color_background =Color(0,0,0),
-			const QUALITY_RENDER_FONT quality = QUALITY_RENDER_FONT::LOW_QUALITY,
+		void LoadSurface_fromFont(const Font& input_font, const std::string& str_input, const Color& color_text,
+			const QUALITY_RENDER_FONT quality = QUALITY_RENDER_FONT::HIGH_QUALITY,
 			const CODEC_RENDER_FONT codec = CODEC_RENDER_FONT::INPUT_LATIN1) throw(...);
 
+		//!	\return		La stringa utilizzata per il render. Una stringa vuota in caso la surface sia vuota.
+		inline const std::string& Get_String() const throw();
+
+		//! Costruttore di default.
 		TextSurface() = default;
+
+		//! Costruttore di copia di default.
 		TextSurface(const TextSurface& oth) = default;
+
+		//! Operatore di assegnazione di default.
 		TextSurface& operator=(const TextSurface& oth) = default;
+
+		//! Costruttore di move.
 		inline TextSurface(TextSurface&& oth);
+
+		//! Operatore di move.
 		inline TextSurface& operator=(TextSurface&& oth);
+
+
 	private:
 		std::string m_this_text;
 	};
@@ -48,9 +74,9 @@ namespace xgame{
 		return *this;
 	}
 
-	inline TextSurface::TextSurface(TextSurface&& oth):Surface(std::move(oth)),m_this_text(std::move(oth.m_this_text)){
+	inline TextSurface::TextSurface(TextSurface&& oth):Surface(std::move(oth)),m_this_text(std::move(oth.m_this_text)){ }
 
-	}
+	inline const std::string& TextSurface::Get_String() const throw(){ return this->m_this_text; }
 }
 
 #endif
