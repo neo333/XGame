@@ -40,6 +40,13 @@ namespace xgame{
 	Surface::Surface(const Surface& oth) throw(...){
 		if (oth.m_surface)
 			m_surface = SDL_ConvertSurfaceFormat(oth.m_surface, SDL_PIXELFORMAT_RGBA8888, 0);
+
+		if (m_surface){
+			SDL_SetSurfaceRLE(m_surface, 1);
+			SDL_SetSurfaceBlendMode(m_surface, SDL_BLENDMODE_BLEND);
+		}
+		else
+			throw("Surface", "Surface", "Impossibile inizializzare una surface copiata!\n%s", SDL_GetError());
 	}
 
 	Surface::Surface(Surface&& oth) throw():m_surface(oth.m_surface){
@@ -51,6 +58,11 @@ namespace xgame{
 			this->Clean();
 			if (oth.m_surface)
 				m_surface = SDL_ConvertSurfaceFormat(oth.m_surface, SDL_PIXELFORMAT_RGBA8888, 0);
+			if (m_surface){
+				SDL_SetSurfaceRLE(m_surface, 1);
+				SDL_SetSurfaceBlendMode(m_surface, SDL_BLENDMODE_BLEND);
+			}else
+				throw("Surface", "operator=", "Impossibile riscrivere una surface copiata!\n%s", SDL_GetError());
 		}
 		return *this;
 	}
@@ -106,5 +118,20 @@ namespace xgame{
 			}
 		}
 		SDL_UnlockSurface(m_surface);
+	}
+
+	Surface& Surface::operator=(SDL_Surface* oth_surface) throw(...){
+		if (this->m_surface != oth_surface){
+			this->Clean();
+			if (oth_surface!=nullptr)
+				m_surface = SDL_ConvertSurfaceFormat(oth_surface, SDL_PIXELFORMAT_RGBA8888, 0);
+			if (m_surface){
+				SDL_SetSurfaceRLE(m_surface, 1);
+				SDL_SetSurfaceBlendMode(m_surface, SDL_BLENDMODE_BLEND);
+			}
+			else
+				throw("Surface", "operator=", "Impossibile riscrivere una SDL_surface copiata!\n%s", SDL_GetError());
+		}
+		return *this;
 	}
 }

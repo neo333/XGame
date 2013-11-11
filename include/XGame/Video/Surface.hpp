@@ -92,6 +92,11 @@ namespace xgame{
 		//! Operatore di conversione per const SDL_Surface.
 		inline explicit operator const SDL_Surface*() const throw();
 
+		/*! Operatore di assegnazione di una SDL_Surface a basso livello.
+			\note	Verrà fatta una COPIA della SDL_Surface* di input.
+		*/
+		Surface& operator=(SDL_Surface* oth_surface) throw(...);
+
 	protected:
 		SDL_Surface* m_surface = nullptr;
 		friend class Texture;
