@@ -67,5 +67,12 @@ namespace xgame{
 
 		SDL_SetSurfaceRLE(m_surface, 1);
 		SDL_SetSurfaceBlendMode(m_surface, SDL_BLENDMODE_BLEND);
+
+		m_this_text = str_input;
+	}
+
+	void TextSurface::Clean() throw(){
+		Surface::Clean();
+		m_this_text.clear();
 	}
 }

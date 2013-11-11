@@ -41,7 +41,7 @@ namespace xgame{
 
 
 		//! Pulisce la surface deallocando le risorse.
-		void Clean() throw();
+		virtual void Clean() throw();
 
 
 		/*!	Carica la surface da un'immagine memorizzata su una pagina di memoria.

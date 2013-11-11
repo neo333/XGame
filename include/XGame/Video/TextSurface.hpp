@@ -5,9 +5,15 @@
 #include <XGame/Video/Surface.hpp>
 #include <XGame/Video/Font.hpp>
 
+#ifdef WIN32 
+#pragma warning(disable:4251)
+#endif
+
 namespace xgame{
 	class XGAME_API_VIDEO TextSurface: public Surface{
 	public:
+
+		virtual void Clean() throw() override;
 
 		//!	Enumerazione per la qualità del render del testo.
 		enum class QUALITY_RENDER_FONT{
@@ -24,7 +30,27 @@ namespace xgame{
 		void LoadSurface_fromFont(const Font& input_font, const std::string& str_input, const Color& color_text, const Color& color_background =Color(0,0,0),
 			const QUALITY_RENDER_FONT quality = QUALITY_RENDER_FONT::LOW_QUALITY,
 			const CODEC_RENDER_FONT codec = CODEC_RENDER_FONT::INPUT_LATIN1) throw(...);
+
+		TextSurface() = default;
+		TextSurface(const TextSurface& oth) = default;
+		TextSurface& operator=(const TextSurface& oth) = default;
+		inline TextSurface(TextSurface&& oth);
+		inline TextSurface& operator=(TextSurface&& oth);
+	private:
+		std::string m_this_text;
 	};
+
+	inline TextSurface& TextSurface::operator=(TextSurface&& oth){
+		if (this != &oth){
+			Surface::operator=(std::move(oth));
+			m_this_text = std::move(oth.m_this_text);
+		}
+		return *this;
+	}
+
+	inline TextSurface::TextSurface(TextSurface&& oth):Surface(std::move(oth)),m_this_text(std::move(oth.m_this_text)){
+
+	}
 }
 
 #endif
