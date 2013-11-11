@@ -53,6 +53,7 @@ namespace xgame{
 		*/
 		void LoadSurface_fromMemoryPage(const MemoryPage& page_input) throw(...);
 
+
 		//!	\return 'true' se la Surface è vuota.
 		inline const bool Is_Void() const throw();
 		
@@ -84,7 +85,7 @@ namespace xgame{
 		//! Operatore di conversione per const SDL_Surface.
 		inline explicit operator const SDL_Surface*() const throw();
 
-	private:
+	protected:
 		SDL_Surface* m_surface = nullptr;
 		friend class Texture;
 
