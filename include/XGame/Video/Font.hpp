@@ -4,6 +4,7 @@
 #include <XGame/Video/Config.hpp>
 #include <XGame/Loader/MemoryPage.hpp>
 #include <XGame/Core/Error.hpp>
+#include <XGame/Video/Rect.hpp>
 #include <SDL/SDL_ttf.h>
 
 namespace xgame{
@@ -74,10 +75,27 @@ namespace xgame{
 		//!	\return Gli stili applicati correntemente al font.
 		inline const STYLE_FONT GetStyle() const throw();
 
+
+		/*!	Calcola la dimensione occupata da un'eventuale surface ottenuta renderizzando la stringa di ingresso.
+			Questa funzione non effettua nessun rendering o modifca sul font, ma può essere utilizzata per effettuare
+			un pre-calcolo sulle dimensioni di un eventuale rendering di testo.
+
+			\param [in] str_input		La stringa che verrà eventualmente renderizzata.
+			
+			\return Rect				Sulle componenti W e H la dimensione di un'eventuale surface renderizzata dalla stringa.
+
+			\throw Error				In caso di errore interno.
+		*/
+		const Rect CalculateSizeText_withThisFont(const std::string& str_input) const throw(...);
+
+		//!	\return		La dimensione (in pixel) che dovrebbe intercorrere tra una riga e l'altra per il font.
+		inline const int Get_H_LineSkyp() const throw();
+
 	private:
 		TTF_Font* m_font = nullptr;
 		size_t m_size_font = 0;
 		int m_style_font = TTF_STYLE_NORMAL;
+		int m_h_lineskyp = 0;
 
 		friend class TextSurface;
 	};
@@ -95,6 +113,10 @@ namespace xgame{
 	}
 	inline auto Font::GetStyle() const throw() -> const STYLE_FONT{
 		return static_cast<STYLE_FONT>(m_style_font);
+	}
+
+	inline const int Font::Get_H_LineSkyp() const throw(){
+		return m_h_lineskyp;
 	}
 }
 

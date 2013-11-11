@@ -11,13 +11,17 @@ namespace xgame{
 			m_font = nullptr;
 			m_size_font = 0;
 			m_style_font = TTF_STYLE_NORMAL;
+			m_h_lineskyp = 0;
 		}
 	}
 
-	Font::Font(Font&& oth) throw():m_font(oth.m_font),m_size_font(oth.m_size_font),m_style_font(oth.m_style_font){
+	Font::Font(Font&& oth) throw():m_font(oth.m_font),m_size_font(oth.m_size_font),m_style_font(oth.m_style_font),
+									m_h_lineskyp(oth.m_h_lineskyp)
+	{
 		oth.m_font = nullptr;
 		oth.m_size_font = 0;
 		oth.m_style_font = TTF_STYLE_NORMAL;
+		oth.m_h_lineskyp = 0;
 	}
 
 	Font& Font::operator=(Font&& oth) throw(){
@@ -26,9 +30,11 @@ namespace xgame{
 			this->m_font = oth.m_font;
 			this->m_size_font = oth.m_size_font;
 			this->m_style_font = oth.m_style_font;
+			this->m_h_lineskyp = oth.m_h_lineskyp;
 			oth.m_font = nullptr;
 			oth.m_size_font = 0;
-			oth.m_style_font;
+			oth.m_style_font = TTF_STYLE_NORMAL;
+			oth.m_h_lineskyp = 0;
 		}
 		return *this;
 	}
@@ -43,6 +49,7 @@ namespace xgame{
 		if (m_font==nullptr)
 			throw Error("Font", "LoadFont_fromMemoryPage", "Impossibile caricare il font richiesto!\n%s", SDL_GetError());
 		m_size_font = ptsize_font;
+		m_h_lineskyp = TTF_FontLineSkip(m_font);
 	}
 
 	void Font::SetStyle(const STYLE_FONT style_set) throw(...){
@@ -54,5 +61,13 @@ namespace xgame{
 		catch (const std::exception& err){
 			throw Error("Font", "SetStyle", err.what());
 		}
+	}
+
+	const Rect Font::CalculateSizeText_withThisFont(const std::string& str_input) const throw(...){
+		if (m_font == nullptr) return Rect(0,0,0,0);
+		int _w, _h;
+		if (TTF_SizeText(m_font, str_input.c_str(), &_w, &_h) != 0)
+			throw Error("Font", "CalculateSizeText_withThisFont", "Impossibile determinare la dimensione renderizzata del testo!\n%s", TTF_GetError());
+		return Rect(0, 0, _w, _h);
 	}
 }
