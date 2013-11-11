@@ -115,19 +115,19 @@ namespace xgame{
 		m_texture_button_on_formatted.Clean();
 	}
 
-	void XButton::DrawOnScreenVideo(ScreenVideo& screen_out, const Rect& area_clip) throw(...){
-		GraphicComponent::DrawOnScreenVideo(screen_out, area_clip);
+	void XButton::DrawOnScreenVideo(ScreenVideo& screen_out, const Point& abs_xy, const Rect& area_clip) throw(...){
+		GraphicComponent::DrawOnScreenVideo(screen_out, abs_xy,area_clip);
 
 		if (m_button_on)
-			screen_out.DrawTexture(m_texture_button_on_formatted, this->m_xy_relative, area_clip);
+			screen_out.DrawTexture(m_texture_button_on_formatted, abs_xy, area_clip);
 		else
-			screen_out.DrawTexture(m_texture_button_off_formatted, this->m_xy_relative, area_clip);
+			screen_out.DrawTexture(m_texture_button_off_formatted, abs_xy, area_clip);
 	}
 
 	void XButton::NotificationEvent(const SDL_Event& event){
 		if (event.type == SDL_MOUSEMOTION){
 			Rect region_interactive_button;
-			if (Rect::Rects_Intersection(Rect(m_xy_relative.Get_X_Component(), m_xy_relative.Get_Y_Component(), m_wSize_but, m_hSize_but),
+			if (Rect::Rects_Intersection(Rect(this->GetXYabs().Get_X_Component(), this->GetXYabs().Get_Y_Component(), m_wSize_but, m_hSize_but),
 				this->GetRendererAreaClip(), region_interactive_button))
 			{
 				if (region_interactive_button.Point_is_In(Point(event.motion.x, event.motion.y))){
@@ -137,6 +137,15 @@ namespace xgame{
 					m_button_on = false;
 				}
 			}	
+		}
+		else{
+			if (event.type == SDL_MOUSEBUTTONDOWN){
+				if (m_button_on){
+					m_button_on = false;
+					if (static_cast<const bool>(this->m_action_on_clic) == true)
+						this->m_action_on_clic();
+				}
+			}
 		}
 	}
 }

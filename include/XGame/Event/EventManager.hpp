@@ -16,35 +16,35 @@
 namespace xgame{
 	class XGAME_API_EVENT EventManager : private boost::noncopyable{
 	public:
-		//! @return L'istanza globale della classe.
+		//! \return L'istanza globale della classe.
 		static inline EventManager& Get_GlobalInstance();
 
 		/*! Registra un oggetto interattivo al gestore di eventi.
 
-			@param [in] object		Un puntatore ad un oggetto interattivo.
-			@note					Se l'oggetto è già registrato questo metodo non farà nulla!
+			\param [in] object		Un puntatore ad un oggetto interattivo.
+			\note					Se l'oggetto è già registrato questo metodo non farà nulla!
 		*/
 		void RegisterObjectInteractive(ObjectInteractive* const object);
 
 		/*! Deassocia una registrazione fatta in precedenza per un oggetto interattivo.
 
-			@param [in] object		Un puntatore ad un oggetto interattivo che si vuole deassociare.
-			@note					Se l'oggetto non è mai stato registrato questo metodo non farà nulla!
+			\param [in] object		Un puntatore ad un oggetto interattivo che si vuole deassociare.
+			\note					Se l'oggetto non è mai stato registrato questo metodo non farà nulla!
 		*/
 		void UnRegisterObjectInteractive(ObjectInteractive* const object);
 		
 
 		/*! Registra un oggetto dinamico al gestore di eventi.
 
-			@param [in] object		Un puntatore ad un oggetto dinamico.
-			@note					Se l'oggetto è già registrato questo metodo non farà nulla!
+			\param [in] object		Un puntatore ad un oggetto dinamico.
+			\note					Se l'oggetto è già registrato questo metodo non farà nulla!
 		*/
 		void RegisterObjectDynamic(ObjectDynamic* const object) throw();
 
 		/*! Deassocia una registrazione fatta in precedenza per un oggetto dinamico.
 
-			@param [in] object		Un puntatore ad un oggetto dinamico che si vuole deassociare.
-			@note					Se l'oggetto non è mai stato registrato questo metodo non farà nulla!
+			\param [in] object		Un puntatore ad un oggetto dinamico che si vuole deassociare.
+			\note					Se l'oggetto non è mai stato registrato questo metodo non farà nulla!
 		*/
 		void UnRegisterObjectDynamic(ObjectDynamic* const object) throw();
 

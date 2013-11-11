@@ -149,6 +149,10 @@ namespace xgame{
 		//! Operatore di conversione per puntatore a const SDL_Window.
 		inline explicit operator const SDL_Window*() const throw();
 
+		//! Operatore di conversione per puntatore a SDL_Renderer
+		inline explicit operator SDL_Renderer*() throw();
+
+		inline explicit operator const SDL_Renderer*() const throw();
 
 	private:
 		SDL_Window* m_window;
@@ -232,6 +236,14 @@ namespace xgame{
 
 	inline ScreenVideo::operator const SDL_Window*() const throw(){
 		return this->m_window;
+	}
+
+	inline ScreenVideo::operator SDL_Renderer*() throw(){
+		return this->m_renderer;
+	}
+
+	inline ScreenVideo::operator const SDL_Renderer*() const throw(){
+		return this->m_renderer;
 	}
 }
 
