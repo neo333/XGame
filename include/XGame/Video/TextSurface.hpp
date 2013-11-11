@@ -38,6 +38,7 @@ namespace xgame{
 			
 			\note							A bassa qualità il caricamento è un pò più veloce, ma le scritte non supportano
 											le sfumature.
+			\note							Questo metodo supporta il carattere '\n'. Creando una Surface con più linee.
 		*/
 		void LoadSurface_fromFont(const Font& input_font, const std::string& str_input, const Color& color_text,
 			const QUALITY_RENDER_FONT quality = QUALITY_RENDER_FONT::HIGH_QUALITY,
