@@ -10,31 +10,31 @@ namespace xgame{
 	class XGAME_API_LOADER MemoryPage{
 	public:
 		//! Costruttore di default
-		MemoryPage();
+		MemoryPage() throw();
 
 		//! Costruttore di copia
 		MemoryPage(const MemoryPage&);
 
 		//! Costruttore di move
-		MemoryPage(MemoryPage&&);
+		MemoryPage(MemoryPage&&) throw();
 
 		//! Operatore di assegnazione
 		MemoryPage& operator=(const MemoryPage&);
 
 		//! Operatore di move
-		MemoryPage& operator=(MemoryPage&&);
+		MemoryPage& operator=(MemoryPage&&) throw();
 
 		//! Distruttore
-		~MemoryPage();
+		~MemoryPage() throw();
 
 		//! Dealloca la pagina di memoria rilasciando tutte le risorse ad essa associate.
-		inline void Delete();
+		inline void Delete() throw();
 
 		//! @return la dimensione (in bytes) della pagina di memoria.
-		inline const size_t GetSize() const;
+		inline const size_t GetSize() const throw();
 
 		//! @return Il puntatore all'area di memoria associata alla memory page.
-		inline const void* Get_PtrMemory() const;
+		inline const void* Get_PtrMemory() const throw();
 
 
 
@@ -47,11 +47,11 @@ namespace xgame{
 	};
 
 
-	inline const size_t MemoryPage::GetSize() const{
+	inline const size_t MemoryPage::GetSize() const throw(){
 		return this->sizePage;
 	}
 
-	inline void MemoryPage::Delete(){
+	inline void MemoryPage::Delete() throw(){
 		if(this->prtMemory!=nullptr){
 			delete[] this->prtMemory;
 			this->prtMemory=nullptr;
@@ -59,7 +59,7 @@ namespace xgame{
 		}
 	}
 
-	inline const void* MemoryPage::Get_PtrMemory() const{
+	inline const void* MemoryPage::Get_PtrMemory() const throw(){
 		return static_cast<const void*>(this->prtMemory);
 	}
 }

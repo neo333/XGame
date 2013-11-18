@@ -1,8 +1,8 @@
 ﻿#ifndef __ERROR__HPP
 #define __ERROR__HPP
 
-#include <exception>
 #include <XGame/Core/Config.hpp>
+#include <exception>
 #include <string>
 #include <vector>
 #include <cstdarg>
@@ -34,7 +34,7 @@ namespace xgame{
 	};
 
 	inline Error::Error(const char* name_class, const char* name_method, const char* what, ...):
-				m_name_class(name_class),m_name_method(name_method),m_what(what),exception(what){
+				exception(),m_name_class(name_class),m_name_method(name_method),m_what(what){
 		va_list args;
 		va_start(args,what);
 		size_t off_set=0;

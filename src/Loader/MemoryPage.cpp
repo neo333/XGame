@@ -3,11 +3,11 @@
 
 namespace xgame{
 
-	MemoryPage::MemoryPage():prtMemory(nullptr),sizePage(0){
+	MemoryPage::MemoryPage() throw():prtMemory(nullptr), sizePage(0){
 
 	}
 
-	MemoryPage::~MemoryPage(){
+	MemoryPage::~MemoryPage() throw(){
 		this->Delete();
 	}
 
@@ -15,7 +15,7 @@ namespace xgame{
 		std::memcpy(static_cast<void*>(this->prtMemory),static_cast<void*>(oth.prtMemory),oth.sizePage);
 	}
 
-	MemoryPage::MemoryPage(MemoryPage&& oth){
+	MemoryPage::MemoryPage(MemoryPage&& oth) throw(){
 		this->prtMemory = oth.prtMemory;
 		this->sizePage = oth.sizePage;
 		oth.prtMemory = nullptr;
@@ -32,7 +32,7 @@ namespace xgame{
 		return *this;
 	}
 
-	MemoryPage& MemoryPage::operator=(MemoryPage&& oth){
+	MemoryPage& MemoryPage::operator=(MemoryPage&& oth) throw(){
 		if(this!=&oth){
 			delete[] this->prtMemory;
 			this->prtMemory = oth.prtMemory;
