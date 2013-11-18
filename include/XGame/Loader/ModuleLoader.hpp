@@ -172,7 +172,7 @@ namespace xgame{
 			std::vector<size_t> len_name_page;
 			std::vector<size_t> len_page;
 
-			Header_packFile();
+			Header_packFile() = default;
 			Header_packFile(const PackMemoryPage& pack_input);
 
 			const Header_packFile& operator>>(std::ofstream& os) const;

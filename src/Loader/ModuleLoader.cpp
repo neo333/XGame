@@ -6,6 +6,7 @@
 #include <vector>
 #include <limits>
 #include <future>
+#include <stdexcept>
 
 namespace xgame{
 	ModuleLoader* ModuleLoader::s_prtInstance = nullptr;
@@ -139,7 +140,6 @@ namespace xgame{
 		this->m_modulecaches.Set_MaxSizeCaches(0);
 	}
 
-	ModuleLoader::Header_packFile::Header_packFile(){ }
 	ModuleLoader::Header_packFile::Header_packFile(const PackMemoryPage& pack_input):n_pages(pack_input.GetSize()){
 		this->len_name_page.resize(this->n_pages);
 		this->name_page.resize(this->n_pages);
@@ -168,7 +168,7 @@ namespace xgame{
 		this->len_page.clear();
 		is.read(reinterpret_cast<char*>(&this->n_pages),sizeof(size_t));
 		if(is.gcount()!=sizeof(size_t)) 
-			throw std::exception("File corrotto!");
+			throw std::runtime_error("File corrotto!");
 
 		this->len_name_page.resize(this->n_pages);
 		this->name_page.resize(this->n_pages);
@@ -177,18 +177,18 @@ namespace xgame{
 		for(size_t i=0; i<this->n_pages; i++){
 			is.read(reinterpret_cast<char*>(&(this->len_name_page[i])),sizeof(size_t));
 			if(is.gcount()!=sizeof(size_t)) 
-				throw std::exception("File corrotto!");
+				throw std::runtime_error("File corrotto!");
 
 			char* buffer_name = new char[this->len_name_page[i]];
 			is.read(buffer_name,this->len_name_page[i]);
 			if(is.gcount()!=this->len_name_page[i]) 
-				throw std::exception("File corrotto!");
+				throw std::runtime_error("File corrotto!");
 			this->name_page[i].assign(buffer_name,this->len_name_page[i]);
 			delete[] buffer_name;
 
 			is.read(reinterpret_cast<char*>(&(this->len_page[i])),sizeof(size_t));
 			if(is.gcount()!=sizeof(size_t)) 
-				throw std::exception("File corrotto!");
+				throw std::runtime_error("File corrotto!");
 		}
 
 		return *this;
