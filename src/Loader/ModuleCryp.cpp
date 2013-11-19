@@ -1,15 +1,21 @@
 #include <XGame/Loader/ModuleCryp.hpp>
 #include <XGame/Loader/hashlib2plus/hashlibpp.h>
 #include <limits>
+#include <iostream>
 
 namespace xgame{
 	const size_t ModuleCryp::EndPage = std::numeric_limits<size_t>::max();
 
-	ModuleCryp::ModuleCryp(){ 
-		this->m_keyCryp.reserve(40);
+	ModuleCryp::ModuleCryp() throw(){
+		try{
+			this->m_keyCryp.reserve(40);
+		}
+		catch (const std::exception& err){
+			std::cerr << "[XGAME.DLL]@ModuleCryp:ModuleCryp() -> " << err.what() << '\n';
+		}
 	}
 
-	void ModuleCryp::Set_Passphrase(const std::string& passphrase){
+	void ModuleCryp::Set_Passphrase(const std::string& passphrase) throw(Error){
 		if(passphrase.size()==0){
 			m_keyCryp.clear();
 		}else{

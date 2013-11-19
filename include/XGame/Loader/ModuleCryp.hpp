@@ -9,14 +9,14 @@
 
 #ifdef WIN32 
 #pragma warning(disable:4251)
-#pragma warning(disable:4275)
+#pragma warning(disable:4290)
 #endif
 
 namespace xgame{
 	class XGAME_API_LOADER ModuleCryp : private boost::noncopyable{
 	public:
 		//! Costruttore di default
-		ModuleCryp();
+		ModuleCryp() throw();
 
 
 		/*! Setta la 'password' di cifratura/decifratura. Per decifrare una pagina occerrerà utilizzare la stessa 'passphrase'
@@ -26,7 +26,7 @@ namespace xgame{
 										le pagine.
 										Immettere una stringa VUOTA per evitare operazioni di cifratura o decifratura!
 		*/
-		void Set_Passphrase(const std::string& passphrase);
+		void Set_Passphrase(const std::string& passphrase) throw(Error);
 
 
 		/*! Critta la pagina di memoria tramite la passphrase del modulo (immessa tramite l'apposito metodo).
