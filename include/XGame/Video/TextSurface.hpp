@@ -13,6 +13,7 @@ namespace xgame{
 	class XGAME_API_VIDEO TextSurface: public Surface{
 	public:
 
+		//! Pulisce la surface deallocando le risorse.
 		virtual void Clean() throw() override;
 
 		//!	Enumerazione per la qualità del render del testo.
