@@ -4,12 +4,14 @@
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__)
 #define DLL_EXPORT __declspec(dllexport)
 #define DLL_IMPORT __declspec(dllimport)
+#define XGAME_WINDOWS_OS
 
 #else
 
-#if  defined(linux) || defined(_linux)
+#if  defined(linux) || defined(_linux) || defined(__linux__)
 #define DLL_EXPORT		//TODO: controllato?!
 #define DLL_IMPORT
+#define XGAME_LINUX_OS
 #endif
 
 #endif
