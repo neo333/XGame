@@ -11,13 +11,14 @@
 #ifdef WIN32 
 #pragma warning(disable:4251)
 #pragma warning(disable:4275)
+#pragma warning(disable:4290)
 #endif
 
 namespace xgame{
 	class XGAME_API_LOADER ModuleCaches : private boost::noncopyable{
 	public:
 		//! Costruttore di default
-		ModuleCaches();
+		ModuleCaches() throw();
 
 		/*! Inserisce una pagina di memoria all'interno del modulo di caching.
 			Verrà creata una COPIA della pagina di input e memorizzata nelle caches.
@@ -40,11 +41,11 @@ namespace xgame{
 
 			\throw Error				In caso il file non esista!
 		*/
-		bool InsertMemoryPage_intoCaches(const MemoryPage& input_page, const std::string& ref_filename) throw(...);
+		bool InsertMemoryPage_intoCaches(const MemoryPage& input_page, const std::string& ref_filename) throw(Error);
 
 
 		//! Svuota tutte le caches!
-		void CleanAllCaches();
+		void CleanAllCaches() throw();
 
 		
 		/*! Prova una ricerca all'interno delle caches.
@@ -62,20 +63,20 @@ namespace xgame{
 
 			\throw Error				In caso il file di riferimento non esista!
 		*/
-		bool Find_and_Give_Caches(const std::string& ref_filename, MemoryPage& output_page) throw(...);
+		bool Find_and_Give_Caches(const std::string& ref_filename, MemoryPage& output_page) throw(Error);
 
 
 		//! \return		Il numero di bytes totali occupati attualmente dalle caches.
-		inline const size_t Get_SizeCurrentCaches() const;
+		inline const size_t Get_SizeCurrentCaches() const throw();
 
 
 		//! \return		Il numero di bytes massimi riservati per il modulo di caching.
-		inline const size_t Get_MaxSizeCaches() const;
+		inline const size_t Get_MaxSizeCaches() const throw();
 
 		/*! Setta il numero massimo in bytes occupabili dal modulo di caching.
 			\param [in] max_dim		La dimensione in bytes massima riservata al modulo di caching.
 		*/
-		void Set_MaxSizeCaches(const size_t max_dim);
+		void Set_MaxSizeCaches(const size_t max_dim) throw(Error);
 
 
 
@@ -113,8 +114,12 @@ namespace xgame{
 	};
 
 
-	inline const size_t ModuleCaches::Get_SizeCurrentCaches() const{
+	inline const size_t ModuleCaches::Get_SizeCurrentCaches() const throw(){
 		return this->dimCaches;
+	}
+
+	inline const size_t ModuleCaches::Get_MaxSizeCaches() const throw(){
+		return this->m_max_dimCache;
 	}
 }
 

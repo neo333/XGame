@@ -4,50 +4,65 @@
 #include <XGame/Loader/hashlib2plus/hashlibpp.h>
 
 namespace xgame{
-	ModuleCaches::ModuleCaches():m_max_dimCache(ModuleCaches::sc_MAXDIMCACHES),dimCaches(0){ }
+	ModuleCaches::ModuleCaches() throw():m_max_dimCache(ModuleCaches::sc_MAXDIMCACHES), dimCaches(0){ }
 	
 	void ModuleCaches::_hashStrKey(std::string& str_key){
-		hashwrapper* engine_cryp = new sha1wrapper();
-		str_key = engine_cryp->getHashFromString(str_key);
-		delete engine_cryp;
-		engine_cryp=nullptr;
+		try{
+			std::shared_ptr<hashwrapper> engine_cryp(new sha1wrapper);
+			str_key = engine_cryp->getHashFromString(str_key);
+			engine_cryp.reset();
+		}catch(...){
+			throw std::runtime_error("Impossibile ricavare l'identificativo!");
+		}
 	}
 
-	bool ModuleCaches::InsertMemoryPage_intoCaches(const MemoryPage& input_page, const std::string& ref_filename) throw(...){
-		if(ref_filename.size()==0) throw Error("ModuleCaches","InsertMemoryPage_intoCaches","Parametro di input non valido!");
-		if(input_page.GetSize() > m_max_dimCache) return false;
-		time_t time_last_mod_file = ModuleLoader::GetLastMod_file(ref_filename);
-		const std::string str_time_last_mod_file = ctime(&time_last_mod_file);
-		std::string key_total = ref_filename;
-		key_total+=str_time_last_mod_file;
-		ModuleCaches::_hashStrKey(key_total);
+	bool ModuleCaches::InsertMemoryPage_intoCaches(const MemoryPage& input_page, const std::string& ref_filename) throw(Error){
+		if (ref_filename.size() == 0) throw Error("ModuleCaches", "InsertMemoryPage_intoCaches", "Parametro di input non valido!");
+		try{
+			if (input_page.GetSize() > m_max_dimCache) return false;
+			time_t time_last_mod_file = ModuleLoader::GetLastMod_file(ref_filename);
+			const std::string str_time_last_mod_file = ctime(&time_last_mod_file);
+			std::string key_total = ref_filename;
+			key_total += str_time_last_mod_file;
+			ModuleCaches::_hashStrKey(key_total);
 
-		if(m_index.find(key_total)!=m_index.end()) return false;
+			if (m_index.find(key_total) != m_index.end()) return false;
 
-		this->CleanOldCaches_toRemain(input_page.GetSize());
+			this->CleanOldCaches_toRemain(input_page.GetSize());
 
-		m_index.insert(std::pair<std::string,puntatoreLista>(key_total,this->m_caches_store.insert(this->m_caches_store.begin(),Cache(input_page,key_total))));
-		dimCaches+=input_page.GetSize();
-		return true;
+			m_index.insert(std::pair<std::string, puntatoreLista>(key_total, this->m_caches_store.insert(this->m_caches_store.begin(), Cache(input_page, key_total))));
+			dimCaches += input_page.GetSize();
+			return true;
+		}
+		catch (const std::exception& err){
+			throw Error("ModuleCaches", "InsertMemoryPage_intoCaches", err.what());
+		}
+		return false;
 	}
 
-	bool ModuleCaches::Find_and_Give_Caches(const std::string& ref_filename, MemoryPage& output_page) throw(...){
+	bool ModuleCaches::Find_and_Give_Caches(const std::string& ref_filename, MemoryPage& output_page) throw(Error){
 		if(ref_filename.size()==0) throw Error("ModuleCaches","Find_and_Give_Caches","Parametro di input non valido!");
-		time_t time_last_mod_file = ModuleLoader::GetLastMod_file(ref_filename);
-		const std::string str_time_last_mod_file = ctime(&time_last_mod_file);
-		std::string key_total = ref_filename;
-		key_total+=str_time_last_mod_file;
-		ModuleCaches::_hashStrKey(key_total);
+		try{
+			time_t time_last_mod_file = ModuleLoader::GetLastMod_file(ref_filename);
+			const std::string str_time_last_mod_file = ctime(&time_last_mod_file);
+			std::string key_total = ref_filename;
+			key_total += str_time_last_mod_file;
+			ModuleCaches::_hashStrKey(key_total);
 
-		MappaIndici::iterator index_cache_find = m_index.find(key_total);
-		if(index_cache_find == m_index.end()) return false;
+			MappaIndici::iterator index_cache_find = m_index.find(key_total);
+			if (index_cache_find == m_index.end()) return false;
 
-		output_page.Delete();
-		output_page = (*(*index_cache_find).second).page_data;
+			output_page.Delete();
+			output_page = (*(*index_cache_find).second).page_data;
 
-		this->UpdateKey(index_cache_find);
+			this->UpdateKey(index_cache_find);
 
-		return true;
+			return true;
+		}
+		catch (const std::exception& err){
+			throw Error("ModuleCaches", "Find_and_Give_Caches", err.what());
+		}
+		return false;
 	}
 
 	void ModuleCaches::CleanOldCaches_toRemain(const size_t space_avail){
@@ -67,7 +82,7 @@ namespace xgame{
 		}
 	}
 
-	void ModuleCaches::CleanAllCaches(){
+	void ModuleCaches::CleanAllCaches() throw(){
 		this->m_caches_store.clear();
 		this->m_index.clear();
 		this->dimCaches=0;
@@ -80,10 +95,15 @@ namespace xgame{
 		m_caches_store.erase(old_key);
 	}
 
-	void ModuleCaches::Set_MaxSizeCaches(const size_t max_dim){
-		this->m_max_dimCache=max_dim;
-		while(this->dimCaches > this->m_max_dimCache){
-			this->CleanOldCache();
+	void ModuleCaches::Set_MaxSizeCaches(const size_t max_dim) throw(Error){
+		try{
+			this->m_max_dimCache = max_dim;
+			while (this->dimCaches > this->m_max_dimCache){
+				this->CleanOldCache();
+			}
+		}
+		catch (const std::exception& err){
+			throw Error("ModuleCaches", "Set_MaxSizeCaches", err.what());
 		}
 	}
 }
