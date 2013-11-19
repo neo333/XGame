@@ -15,7 +15,7 @@ namespace xgame{
 	class XGAME_API_LOADER PackMemoryPage{
 	public:
 		//! Costruttore di default.
-		PackMemoryPage();
+		PackMemoryPage() throw();
 
 
 		/*! Inserisce una MemoryPage all'interno del pacchetto di pagine.
@@ -53,10 +53,10 @@ namespace xgame{
 		inline const MemoryPage& operator[](const std::string& page_name) const throw(...);
 
 		//! \return Il numero di pagine di memoria attualmente contenuto all'interno di questo pacchetto di pagine
-		inline const size_t GetSize() const;
+		inline const size_t GetSize() const throw();
 
 		//! Cancella tutte le pagine contenuto all'interno del pacchetto 'resettandolo'.
-		void Clear();
+		void Clear() throw();
 
 		/*! \param [in] index	L'indice di riferimento della pagina all'interno del pacchetto.
 			\return				Il nome di riferimento della pagina all'interno del pacchetto.
@@ -72,7 +72,7 @@ namespace xgame{
 		friend class ModuleLoader;
 	};
 
-	inline const size_t PackMemoryPage::GetSize() const{
+	inline const size_t PackMemoryPage::GetSize() const throw(){
 		return this->m_pack_pages.size();
 	}
 

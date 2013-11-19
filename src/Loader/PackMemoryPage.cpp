@@ -1,7 +1,7 @@
 #include <XGame/Loader/PackMemoryPage.hpp>
 
 namespace xgame{
-	PackMemoryPage::PackMemoryPage(){ }
+	PackMemoryPage::PackMemoryPage() throw(){ }
 
 	bool PackMemoryPage::InsertMemoryPage(MemoryPage&& input_page, const std::string& page_name){
 		if(page_name.size()==0) throw Error("PackMemoryPage","InsertMemoryPage","Parametro di ingresso nullo!");
@@ -13,7 +13,7 @@ namespace xgame{
 		return true;
 	}
 
-	void PackMemoryPage::Clear(){
+	void PackMemoryPage::Clear() throw(){
 		this->m_index_pages.clear();
 		this->m_pack_pages.clear();
 	}
