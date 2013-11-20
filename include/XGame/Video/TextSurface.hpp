@@ -43,7 +43,7 @@ namespace xgame{
 		*/
 		void LoadSurface_fromFont(const Font& input_font, const std::string& str_input, const Color& color_text,
 			const QUALITY_RENDER_FONT quality = QUALITY_RENDER_FONT::HIGH_QUALITY,
-			const CODEC_RENDER_FONT codec = CODEC_RENDER_FONT::INPUT_LATIN1) throw(...);
+			const CODEC_RENDER_FONT codec = CODEC_RENDER_FONT::INPUT_LATIN1);
 
 		//!	\return		La stringa utilizzata per il render. Una stringa vuota in caso la surface sia vuota.
 		inline const std::string& Get_String() const throw();
@@ -58,17 +58,17 @@ namespace xgame{
 		TextSurface& operator=(const TextSurface& oth) = default;
 
 		//! Costruttore di move.
-		inline TextSurface(TextSurface&& oth);
+		inline TextSurface(TextSurface&& oth) throw();
 
 		//! Operatore di move.
-		inline TextSurface& operator=(TextSurface&& oth);
+		inline TextSurface& operator=(TextSurface&& oth) throw();
 
 
 	private:
 		std::string m_this_text;
 	};
 
-	inline TextSurface& TextSurface::operator=(TextSurface&& oth){
+	inline TextSurface& TextSurface::operator=(TextSurface&& oth) throw(){
 		if (this != &oth){
 			Surface::operator=(std::move(oth));
 			m_this_text = std::move(oth.m_this_text);
@@ -76,7 +76,7 @@ namespace xgame{
 		return *this;
 	}
 
-	inline TextSurface::TextSurface(TextSurface&& oth):Surface(std::move(oth)),m_this_text(std::move(oth.m_this_text)){ }
+	inline TextSurface::TextSurface(TextSurface&& oth) throw():Surface(std::move(oth)),m_this_text(std::move(oth.m_this_text)){ }
 
 	inline const std::string& TextSurface::Get_String() const throw(){ return this->m_this_text; }
 }

@@ -1,9 +1,9 @@
 ﻿#include <XGame/Video/TextSurface.hpp>
-#include <codecvt>
+#include <functional>
 
 namespace xgame{
 	void TextSurface::LoadSurface_fromFont(const Font& input_font, const std::string& str_input, const Color& color_text,
-		const QUALITY_RENDER_FONT quality, const CODEC_RENDER_FONT codec) throw(...)
+		const QUALITY_RENDER_FONT quality, const CODEC_RENDER_FONT codec)
 	{
 		this->Clean();
 		if (input_font.IsVoid()) return;
@@ -58,7 +58,7 @@ namespace xgame{
 				throw Error("TextSurface", "LoadSurface_fromFont", "Impossibile ottimizzare la surface!\n%s", TTF_GetError());
 		}
 
-		int w_max=0;
+		size_t w_max=0;
 		for (auto& surf_lines : opt_lines_surface){
 			if (w_max < surf_lines.Get_W())
 				w_max = surf_lines.Get_W();
