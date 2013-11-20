@@ -149,9 +149,10 @@ namespace xgame{
 		//! Operatore di conversione per puntatore a const SDL_Window.
 		inline explicit operator const SDL_Window*() const throw();
 
-		//! Operatore di conversione per puntatore a SDL_Renderer
+		//! Operatore di conversione per puntatore a SDL_Renderer.
 		inline explicit operator SDL_Renderer*() throw();
 
+		//! Operatore di conversione per puntatore costante a SDL_Renderer.
 		inline explicit operator const SDL_Renderer*() const throw();
 
 	private:
