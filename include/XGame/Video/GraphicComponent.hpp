@@ -21,7 +21,7 @@ namespace xgame{
 			\param [in,out] screen_out		Lo ScreenVideo dove verrà disegnato il componente grafico.
 			\param [in] abs_xy				Le cordinate assolute di dove deve essere disegnato il componente sullo ScreenVideo.
 			\param [in] area_clip			La porzione dello ScreenVideo abilitata al disegno del suddetto componente
-											Verranno disegnate tutti i pixel del componente che si trovano in questa parte dello schermo.
+											Verranno disegnati tutti i pixel del componente che si trovano in questa parte dello schermo.
 		*/
 		virtual void DrawOnScreenVideo(ScreenVideo& screen_out, const Point& abs_xy, const Rect& area_clip =Rect(0,0,-1,-1));
 
@@ -39,7 +39,7 @@ namespace xgame{
 		//! Costruttore di default.
 		GraphicComponent() = default;
 
-		//! Distruttore
+		//! Distruttore.
 		virtual ~GraphicComponent();
 
 	protected:
