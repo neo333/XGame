@@ -127,52 +127,6 @@ namespace xgame{
 
 		//! \return la modifica alpha per questa texture.
 		inline Uint8 Get_AlphaMod() const throw();
-
-		
-		/*! Aggiorna un'area della texture corrente sovrapponendole un'area (delle stesse dimensioni) di un'altra texure.
-			Praticamente è possibile 'incollare' una porzione di un'altra texture su questa texture.
-
-			\param [in] input_texture			La texture 'esterna' da incollare su questa.
-			\param [in,out] input_cut			La porzione della texture 'esterna' da copiare.
-			\param [in,out] out_xy				La posizione su questa texture dove deve essere fatta la copia.
-												
-
-			\note								'input_cut' e 'out_xy' sono anche parametri di uscita perché POSSONO 
-												essere modificati dalla funzione.
-												La funzione modificherà opportunamente questi parametri di ingresso 
-												se le dimensioni (o le posizioni) specificate non siano coerenti.
-													(Es. si inserisce una posizione negativa, allora la funzione correggerà quel punto).
-			\note								Specificare parametri negativi per le dimensioni per indicare 'tutta quella dimensione disponibile'.
-			\note								'With Blend' significa che il blit tra le due texture verrà eseguito con 
-												la modalità BLEND (le trasparenze si sovrappongo; vengono considerate). 
-												E' un metodo più lento, ma accurato.
-			\note								Per composizioni grafiche più veloci è vivamente cosigliato lavorare utilizzando le xgame::Surface e
-												poi, una volta completata la composizione finale, salvare il tutto su una Texture.
-			
-			\see								Texture::UpdateTexture_withoutAlphaMod
-			
-			\throw Error						In caso di problemi grafici interni.
-		*/
-		void UpdateTexture_withBlend(const Texture& input_texture, Rect& input_cut, Point& out_xy);
-
-		/*! Aggiorna un'area della texture in questione sovrapponendole un'altra texture.
-			
-			\param [in] input_texture				La texture di input da sovrapporre.
-			\param [in,out] input_cut				La porzione della texture da copiare.
-													Se le dimensioni sono maggiori, verranno ridimensionate e portate in uscita.
-			\param [in,out] out_xy					La posizione dove sovrapporre la texture di input.
-													Se la posizione è sballata, verrà ricalibrata.
-			
-			\see Texture::UpdateTexture_withBlend
-
-			\note									Questa funzione non tiene conto della modifica alpha della texture di input.
-			\note									Per composizioni grafiche più veloci è vivamente cosigliato lavorare utilizzando 
-													le xgame::Surface e poi, una volta completata la composizione finale, salvare 
-													il tutto su una Texture.
-
-			\throw Error							In caso di problemi grafici interni.
-		*/
-		void UpdateTexture_withoutAlphaMod(const Texture& input_texture, Rect& input_cut, Point& out_xy);
 	
 
 		//! Converte l'oggetto texture in un puntatore a SDL_Texture
