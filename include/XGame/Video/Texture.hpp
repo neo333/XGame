@@ -22,10 +22,10 @@ namespace xgame{
 		/*! Costruisce una texture non vuota! Con una determinata area.
 			I pixel interni saranno tutti neri!
 		*/
-		Texture(const size_t w_size, const size_t h_size, const ScreenVideo& makerVideo) throw(...);
+		Texture(const size_t w_size, const size_t h_size, const ScreenVideo& makerVideo) throw(Error);
 
 		//! Distruttore.
-		virtual ~Texture();
+		virtual ~Texture() throw();
 		
 		//! Svuota la texture. La texture diventerà vuota.
 		void Clean() throw();
@@ -41,7 +41,7 @@ namespace xgame{
 										O in caso si tenti di caricare la texture con uno ScreenVideo non caricato.
 			\note						Questa funzione ripristina l'area di disegno della texture.
 		*/
-		void LoadTexture_fromMemoryPage(const MemoryPage& input_page, const ScreenVideo& makerVideo) throw(...);
+		void LoadTexture_fromMemoryPage(const MemoryPage& input_page, const ScreenVideo& makerVideo) throw(Error);
 
 		/*! Carica l'oggetto texture copiandone i data pixels da una Surface.
 			Spesso conviene utilizzare questa strategia per comporre un'immagine con più parti.
@@ -55,7 +55,7 @@ namespace xgame{
 
 			\throw Error					In caso di errore grafico interno.
 		*/
-		void LoadTexture_fromSurface(const Surface& input_surface, const ScreenVideo& makerVideo, Rect& area_cut = Rect(0, 0, -1, -1)) throw(...);
+		void LoadTexture_fromSurface(const Surface& input_surface, const ScreenVideo& makerVideo, Rect& area_cut = Rect(0, 0, -1, -1)) throw(Error);
 
 		/*! \return		La dimensione in pixel in larghezza della texture tenendo presente le trasformazioni operate
 						su di essa (ridimensionamento, taglio dell'area di disegno, ecc..);
@@ -70,15 +70,15 @@ namespace xgame{
 
 
 		//! Costruttore di copia
-		Texture(const Texture& oth) throw(...);
+		Texture(const Texture& oth) throw(Error);
 
 
 		//! Operatore di assegnazione
-		Texture& operator=(const Texture& oth) throw(...);
+		Texture& operator=(const Texture& oth) throw(Error);
 
 
 		//! Costruttore di move
-		Texture(Texture&& oth);
+		Texture(Texture&& oth) throw();
 
 
 		//! Operatore di move
@@ -122,7 +122,7 @@ namespace xgame{
 			\note	255 è opaco, 0 è trasparente!
 			\throw Error	In caso di errore grafico.
 		*/
-		inline void Set_AlphaMod(const Uint8 alpha_set) throw(...);
+		inline void Set_AlphaMod(const Uint8 alpha_set) throw(Error);
 		
 
 		//! \return la modifica alpha per questa texture.
@@ -153,7 +153,7 @@ namespace xgame{
 			
 			\throw Error						In caso di problemi grafici interni.
 		*/
-		void UpdateTexture_withBlend(const Texture& input_texture, Rect& input_cut, Point& out_xy) throw(...);
+		void UpdateTexture_withBlend(const Texture& input_texture, Rect& input_cut, Point& out_xy);
 
 		/*! Aggiorna un'area della texture in questione sovrapponendole un'altra texture.
 			
@@ -172,7 +172,7 @@ namespace xgame{
 
 			\throw Error							In caso di problemi grafici interni.
 		*/
-		void UpdateTexture_withoutAlphaMod(const Texture& input_texture, Rect& input_cut, Point& out_xy) throw(...);
+		void UpdateTexture_withoutAlphaMod(const Texture& input_texture, Rect& input_cut, Point& out_xy);
 	
 
 		//! Converte l'oggetto texture in un puntatore a SDL_Texture
@@ -199,7 +199,7 @@ namespace xgame{
 			NOTA: ritorna 'nullptr' in caso di sorgente vuota.
 			Lancia un'eccezione in caso di accesso non riuscito della sorgente
 		*/
-		static SDL_Texture* CopyInternalTexture(const Texture& src) throw(...);
+		static SDL_Texture* CopyInternalTexture(const Texture& src) throw(Error);
 	};
 
 	inline int Texture::Get_WsizeDrawn() const throw(){
@@ -240,7 +240,7 @@ namespace xgame{
 		m_h_size_scaled = h_size;
 	}
 
-	inline void Texture::Set_AlphaMod(const Uint8 alpha_set) throw(...){
+	inline void Texture::Set_AlphaMod(const Uint8 alpha_set) throw(Error){
 		if (m_texture == nullptr) return;
 		if (SDL_SetTextureAlphaMod(m_texture, alpha_set) != 0)
 			throw Error("Texture", "Set_AplhaMod", "Impossibile applicare la trasformazione alpha!\n%s", SDL_GetError());

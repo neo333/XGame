@@ -9,7 +9,7 @@ namespace xgame{
 
 	}
 
-	Texture::Texture(const size_t w_size, const size_t h_size, const ScreenVideo& makerVideo) throw(...):
+	Texture::Texture(const size_t w_size, const size_t h_size, const ScreenVideo& makerVideo) throw(Error):
 			m_render(makerVideo.m_renderer),m_w_size(w_size),m_h_size(h_size),m_w_size_scaled(w_size),m_h_size_scaled(h_size),
 			m_drawnable_area(Rect(0,0,w_size,h_size)),
 			m_texture(SDL_CreateTexture(makerVideo.m_renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, w_size, h_size))
@@ -34,12 +34,12 @@ namespace xgame{
 		}
 	}
 
-	Texture::~Texture(){
+	Texture::~Texture() throw(){
 		this->Clean();
 	}
 
 
-	void Texture::LoadTexture_fromMemoryPage(const MemoryPage& input_page, const ScreenVideo& makerVideo) throw(...){
+	void Texture::LoadTexture_fromMemoryPage(const MemoryPage& input_page, const ScreenVideo& makerVideo) throw(Error){
 		this->Clean();
 		if(makerVideo.m_renderer==nullptr)
 			throw Error("Texture","LoadTexture_fromMemoryPage","Impossibile caricare una texture con uno specifico renderer nullo!");
@@ -97,7 +97,7 @@ namespace xgame{
 
 	}
 
-	void Texture::LoadTexture_fromSurface(const Surface& input_surface, const ScreenVideo& makerVideo, Rect& area_cut) throw(...){
+	void Texture::LoadTexture_fromSurface(const Surface& input_surface, const ScreenVideo& makerVideo, Rect& area_cut) throw(Error){
 		this->Clean();
 		if (makerVideo.m_renderer == nullptr)
 			throw Error("Texture", "LoadTexture_fromMemoryPage", "Impossibile caricare una texture con uno specifico renderer nullo!");
@@ -161,13 +161,13 @@ namespace xgame{
 		SDL_SetTextureBlendMode(m_texture, SDL_BLENDMODE_BLEND);
 	}
 
-	Texture::Texture(const Texture& oth):m_render(oth.m_render),m_w_size(oth.m_w_size),m_h_size(oth.m_h_size),
+	Texture::Texture(const Texture& oth)throw(Error) :m_render(oth.m_render), m_w_size(oth.m_w_size), m_h_size(oth.m_h_size),
 		m_texture(Texture::CopyInternalTexture(oth)),m_drawnable_area(oth.m_drawnable_area),m_w_size_scaled(oth.m_w_size_scaled),
 		m_h_size_scaled(oth.m_h_size_scaled){
 
 	}
 
-	Texture& Texture::operator=(const Texture& oth){
+	Texture& Texture::operator=(const Texture& oth) throw(Error){
 		if(&oth!=this){
 			this->Clean();
 			this->m_render = oth.m_render;
@@ -181,7 +181,7 @@ namespace xgame{
 		return *this;
 	}
 
-	Texture::Texture(Texture&& oth):m_render(oth.m_render),m_w_size(oth.m_w_size),m_h_size(oth.m_h_size),m_texture(oth.m_texture),
+	Texture::Texture(Texture&& oth) throw():m_render(oth.m_render),m_w_size(oth.m_w_size),m_h_size(oth.m_h_size),m_texture(oth.m_texture),
 		m_drawnable_area(oth.m_drawnable_area),m_w_size_scaled(oth.m_w_size_scaled),m_h_size_scaled(oth.m_h_size_scaled){
 		oth.m_texture = nullptr;
 		oth.m_w_size = 0;
@@ -212,7 +212,7 @@ namespace xgame{
 		return *this;
 	}
 
-	SDL_Texture* Texture::CopyInternalTexture(const Texture& src) throw(...){
+	SDL_Texture* Texture::CopyInternalTexture(const Texture& src) throw(Error){
 		if(src.m_texture==nullptr || src.m_render==nullptr) return nullptr;
 
 		SDL_Texture* rts = SDL_CreateTexture(src.m_render,SDL_PIXELFORMAT_RGBA8888,SDL_TEXTUREACCESS_STREAMING,src.m_w_size,src.m_h_size);
@@ -251,7 +251,7 @@ namespace xgame{
 		return rts;
 	}
 
-	void Texture::UpdateTexture_withBlend(const Texture& input_texture, Rect& input_cut, Point& out_xy) throw(...){
+	void Texture::UpdateTexture_withBlend(const Texture& input_texture, Rect& input_cut, Point& out_xy){
 		if (input_texture.IsVoid()) return;
 		if (input_cut.Get_Xcomponent() < 0) input_cut.Set_Xcomponent(0);
 		if (input_cut.Get_Ycomponent() < 0) input_cut.Set_Ycomponent(0);
@@ -325,7 +325,7 @@ namespace xgame{
 		dest_pixel_data = nullptr;
 	}
 
-	void Texture::UpdateTexture_withoutAlphaMod(const Texture& input_texture, Rect& input_cut, Point& out_xy) throw(...){
+	void Texture::UpdateTexture_withoutAlphaMod(const Texture& input_texture, Rect& input_cut, Point& out_xy){
 		if (input_texture.IsVoid()) return;
 		if (input_cut.Get_Xcomponent() < 0) input_cut.Set_Xcomponent(0);
 		if (input_cut.Get_Ycomponent() < 0) input_cut.Set_Ycomponent(0);
