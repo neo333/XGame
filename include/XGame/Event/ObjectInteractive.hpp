@@ -2,7 +2,7 @@
 #define __OBJECT_INTERACTIVE__XGAME__HPP
 
 #include <XGame/Event/Config.hpp>
-#include <SDL/SDL.h>
+#include <SDL2/SDL.h>
 
 namespace xgame{
 	class XGAME_API_EVENT ObjectInteractive{

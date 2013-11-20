@@ -9,7 +9,7 @@
 #include <XGame/Video/Point.hpp>
 #include <XGame/Video/Rect.hpp>
 #include <boost/noncopyable.hpp>
-#include <SDL/SDL.h>
+#include <SDL2/SDL.h>
 
 #ifdef WIN32 
 #pragma warning(disable:4251)

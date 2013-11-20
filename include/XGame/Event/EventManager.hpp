@@ -5,7 +5,7 @@
 #include <XGame/Event/ObjectInteractive.hpp>
 #include <XGame/Event/ObjectDynamic.hpp>
 #include <boost/noncopyable.hpp>
-#include <SDL/SDL.h>
+#include <SDL2/SDL.h>
 #include <unordered_map>
 
 #ifdef WIN32 

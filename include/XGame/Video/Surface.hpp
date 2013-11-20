@@ -6,7 +6,7 @@
 #include <XGame/Loader/MemoryPage.hpp>
 #include <XGame/Video/Rect.hpp>
 #include <XGame/Video/Color.hpp>
-#include <SDL/SDL.h>
+#include <SDL2/SDL.h>
 
 namespace xgame{
 	class XGAME_API_VIDEO Surface{

@@ -1,6 +1,7 @@
 #include <XGame/Video/Texture.hpp>
 #include <XGame/Video/ScreenVideo.hpp>
-#include <SDL/SDL_image.h>
+#include <SDL2/SDL_image.h>
+#include <XGame/Video/TextSurface.hpp>
 #include <chrono>
 
 namespace xgame{
@@ -249,5 +250,15 @@ namespace xgame{
 
 		SDL_SetTextureBlendMode(rts,SDL_BLENDMODE_BLEND);
 		return rts;
+	}
+
+	void Texture::LoadTexture_fromFont(const std::string& input_str, const Font& input_font, const Color& str_color, const ScreenVideo& makerVideo) throw(Error){
+		this->Clean();
+		if (makerVideo.m_renderer == nullptr)
+			throw Error("Texture", "LoadTexture_fromMemoryPage", "Impossibile caricare una texture con uno specifico renderer nullo!");
+		if (input_str.size() == 0) return;
+		TextSurface temp_txt_surface;
+		temp_txt_surface.LoadSurface_fromFont(input_font, input_str, str_color);
+		this->LoadTexture_fromSurface(temp_txt_surface, makerVideo);
 	}
 }

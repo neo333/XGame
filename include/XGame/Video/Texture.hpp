@@ -8,7 +8,8 @@
 #include <XGame/Video/Point.hpp>
 #include <XGame/Video/Color.hpp>
 #include <XGame/Video/Surface.hpp>
-#include <SDL/SDL.h>
+#include <XGame/Video/Font.hpp>
+#include <SDL2/SDL.h>
 
 namespace xgame{
 
@@ -53,9 +54,30 @@ namespace xgame{
 			\param [in]	makerVideo			Uno ScreenVideo 'NECESSARIAMENTE APERTO' per il formato del driver video.
 			\param [in]	area_cut			La porzione della Surface che si vuole copiare.
 
+			\note							Questa funzione ripristina l'area di disegno della texture.
+
 			\throw Error					In caso di errore grafico interno.
 		*/
 		void LoadTexture_fromSurface(const Surface& input_surface, const ScreenVideo& makerVideo, Rect& area_cut = Rect(0, 0, -1, -1)) throw(Error);
+
+
+		/*! Carica la texture renderizzando un testo secondo il font immesso come parametro di input.
+
+			\param [in] input_str			La stringa di input da renderizzare.
+			\param [in] input_font			Il font da usare per il rendering del testo.
+			\param [in] str_color			Il colore con quale si vuole renderizzare il testo.
+			\param [in] makerVideo			Uno ScreenVideo 'NECESSARIAMENTE APERTO' per il formato del driver video.
+
+			\note							Questa metodo ripristina l'area di disegno della texture.
+			\note							Questo metodo non fa altro che instanziare una nuova TextSurface ed associarla
+											alla texture corrente con i parametri di default.
+											Per un maggior controllo (più a basso livello) è possibile utilizzare la class xgame::TextSurface.
+			\see							xgame::TextSurface.
+
+			\throw Error					In caso di errore grafico interno.
+		*/
+		void LoadTexture_fromFont(const std::string& input_str, const Font& input_font, const Color& str_color, const ScreenVideo& makerVideo) throw(Error);
+
 
 		/*! \return		La dimensione in pixel in larghezza della texture tenendo presente le trasformazioni operate
 						su di essa (ridimensionamento, taglio dell'area di disegno, ecc..);

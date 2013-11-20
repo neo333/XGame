@@ -2,7 +2,7 @@
 #define __COLOR_XGAME__HPP
 
 #include <XGame/Video/Config.hpp>
-#include <SDL/SDL.h>
+#include <SDL2/SDL.h>
 
 #ifdef XGAME_WINDOWS_OS
 #pragma warning(disable:4290)

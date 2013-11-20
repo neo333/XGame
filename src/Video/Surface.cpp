@@ -1,6 +1,6 @@
 ﻿#include <XGame/Video/Surface.hpp>
 #include <XGame/Core/Error.hpp>
-#include <SDL/SDL_image.h>
+#include <SDL2/SDL_image.h>
 
 namespace xgame{
 	void Surface::Clean() throw(){

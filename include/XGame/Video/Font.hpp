@@ -5,7 +5,7 @@
 #include <XGame/Loader/MemoryPage.hpp>
 #include <XGame/Core/Error.hpp>
 #include <XGame/Video/Rect.hpp>
-#include <SDL/SDL_ttf.h>
+#include <SDL2/SDL_ttf.h>
 
 #ifdef XGAME_WINDOWS_OS
 #pragma warning(disable:4290)

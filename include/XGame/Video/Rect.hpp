@@ -2,7 +2,7 @@
 #define __RECT_XGAME__HPP
 
 #include <XGame/Video/Config.hpp>
-#include <SDL/SDL.h>
+#include <SDL2/SDL.h>
 #include <XGame/Video/Point.hpp>
 
 namespace xgame{
