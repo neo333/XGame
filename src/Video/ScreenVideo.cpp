@@ -1,11 +1,11 @@
 #include <XGame/Video/ScreenVideo.hpp>
 
 namespace xgame{
-	ScreenVideo::ScreenVideo(const size_t w_size_renderer, const size_t h_size_renderer):m_wsizeRenderer(w_size_renderer),m_hsizeRenderer(h_size_renderer),
+	ScreenVideo::ScreenVideo(const size_t w_size_renderer, const size_t h_size_renderer) throw():m_wsizeRenderer(w_size_renderer), m_hsizeRenderer(h_size_renderer),
 		m_window(nullptr),m_renderer(nullptr), m_fullscreen(false),m_id_window(-1),m_ms_last_present_call(0),m_ms_min_call_present(0){
 	}
 
-	ScreenVideo::~ScreenVideo(){
+	ScreenVideo::~ScreenVideo() throw(){
 		this->Close();
 	}
 
@@ -32,7 +32,7 @@ namespace xgame{
 		
 	}
 
-	void ScreenVideo::Open() throw(...){
+	void ScreenVideo::Open() throw(Error){
 		this->Close();
 		if(m_wsizeRenderer==0 || m_hsizeRenderer==0)
 			throw Error("ScreenVideo","Open","Impossibile inizializzare un'area grafica a dimensioni nulle!");
@@ -57,7 +57,7 @@ namespace xgame{
 			throw Error("ScreenVideo","Open","Impossibile dimensionare correttamente il renderer!\n%s",SDL_GetError());
 	}
 
-	void ScreenVideo::UpdateSize_Renderer(const size_t wSize_renderer, const size_t hSize_renderer){
+	void ScreenVideo::UpdateSize_Renderer(const size_t wSize_renderer, const size_t hSize_renderer) throw(Error){
 		m_wsizeRenderer=wSize_renderer;
 		m_hsizeRenderer=hSize_renderer;
 		if(m_renderer==nullptr) return;
@@ -74,7 +74,7 @@ namespace xgame{
 		m_fullscreen=fullscreen_active;
 	}
 
-	void ScreenVideo::SetHint_VSync(const bool vsync_active) throw(...){
+	void ScreenVideo::SetHint_VSync(const bool vsync_active) throw(Error){
 		if(vsync_active==true)
 			if(SDL_SetHint(SDL_HINT_RENDER_VSYNC,"1")==SDL_FALSE)
 				throw Error("ScreenVideo","SetHint_VSync","Impossibile abilitare il v-sync\n%s",SDL_GetError());
@@ -83,7 +83,7 @@ namespace xgame{
 				throw Error("ScreenVideo","SetHint_VSync","Impossibile disabilitare il v-sync\n%s",SDL_GetError());
 	}
 
-	void ScreenVideo::SetScaleQuality(const SCALING_QUALITY setting_quality) throw(...){
+	void ScreenVideo::SetScaleQuality(const SCALING_QUALITY setting_quality) throw(Error){
 		std::string _paramSDL;
 		switch(setting_quality){
 		case SCALING_QUALITY::LOW_QUALITY:
@@ -105,7 +105,7 @@ namespace xgame{
 		return std::string(SDL_GetCurrentVideoDriver());
 	}
 
-	std::vector<ScreenVideo::ptrSDL_DisplayMode> ScreenVideo::GetAll_AvailableDisplayMode(const int index_display) throw(...){
+	std::vector<ScreenVideo::ptrSDL_DisplayMode> ScreenVideo::GetAll_AvailableDisplayMode(const int index_display) throw(Error){
 		std::vector<ScreenVideo::ptrSDL_DisplayMode> rts;
 		int n_mod = SDL_GetNumDisplayModes(index_display);
 		if(n_mod<=0) 

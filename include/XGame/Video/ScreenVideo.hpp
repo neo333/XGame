@@ -21,11 +21,11 @@ namespace xgame{
 	class XGAME_API_VIDEO ScreenVideo : public boost::noncopyable, public ObjectInteractive{
 	public:
 		//! Costruttore di default. Specificare i parametri dimensionali dell'area del RENDERER
-		ScreenVideo(const size_t w_size_renderer =0, const size_t h_size_renderer =0);
+		ScreenVideo(const size_t w_size_renderer =0, const size_t h_size_renderer =0) throw();
 
 
 		//! Distruttore di default.
-		virtual ~ScreenVideo();
+		virtual ~ScreenVideo() throw();
 
 
 		//! Chiude lo ScreenVideo deallocando tutte le risorse dedicate ad esso.
@@ -40,7 +40,7 @@ namespace xgame{
 			\note			Prima di lanciare lo ScreenVideo, assicurarsi di settare tutte le impostazioni preferite.
 			\throw	Error	In caso di errore critico!
 		*/
-		void Open() throw(...);
+		void Open() throw(Error);
 
 
 		//! \return		La larghezza in pixel del renderer.
@@ -60,7 +60,7 @@ namespace xgame{
 			\throw	Error		In caso l'aggiornamento non vada a buonfine.
 			\note	Se viene chiamato questo metodo quando lo ScreenVideo non è attivo le dimensione saranno effettive al prossimo avvio.
 		*/
-		void UpdateSize_Renderer(const size_t wSize_renderer, const size_t hSize_renderer) throw(...);
+		void UpdateSize_Renderer(const size_t wSize_renderer, const size_t hSize_renderer) throw(Error);
 
 
 		//! Modifica e aggiorna la dimensione della finestra che contiene il renderer grafico.
@@ -87,7 +87,7 @@ namespace xgame{
 			\note	Probabilmente è necessario chiamare questo metodo all'avvio dell'applicazione.
 			\throw	Error	In caso non il vsync non sia attivabile.
 		*/
-		void SetHint_VSync(const bool vsync_active) throw(...);
+		void SetHint_VSync(const bool vsync_active) throw(Error);
 
 
 		//! Opzioni di qualità per lo SCALING da applicare al motore grafico.
@@ -101,15 +101,15 @@ namespace xgame{
 								è supportata sia per 'opengl' che per 'direct3D'.
 			\throw	Error		In caso non la qualità non sia supportata dal driver video.
 		*/
-		void SetScaleQuality(const SCALING_QUALITY setting_quality) throw(...);
+		void SetScaleQuality(const SCALING_QUALITY setting_quality) throw(Error);
 
 
 		//! Effettua la prensentazione del renderer all'interno della finestra grafica.
-		inline void PresentRenderer() throw();
+		inline void PresentRenderer();
 
 
 		//! Pulisce il renderer dello ScreenVideo.
-		inline void CleanRenderer() throw();
+		inline void CleanRenderer();
 
 
 		//! Setta il colore di background del renderer.
@@ -127,7 +127,7 @@ namespace xgame{
 		\return						Una lista di tutte le modalità supportate dal monitor.
 		\throw						Se non esiste il monitor con l'indice espresso dal parametro di input.
 		*/
-		static std::vector<ptrSDL_DisplayMode> GetAll_AvailableDisplayMode(const int index_display =0) throw(...);
+		static std::vector<ptrSDL_DisplayMode> GetAll_AvailableDisplayMode(const int index_display =0) throw(Error);
 
 
 		/*!	Disegna una texture sul renderer. La texture sarà mostrata al prossimo 'PresentRenderer'.
@@ -141,7 +141,7 @@ namespace xgame{
 			
 			\throw Error						In caso di errore video interno.
 		*/
-		inline void DrawTexture(const Texture& src_texture, const Point& xy_onRenderer, const Rect& area_renderer_active = Rect(0,0,-1,-1)) throw(...);
+		inline void DrawTexture(const Texture& src_texture, const Point& xy_onRenderer, const Rect& area_renderer_active = Rect(0,0,-1,-1)) throw(Error);
 
 		//! Operatore di conversione per puntatore a SDL_Window.
 		inline explicit operator SDL_Window*() throw();
@@ -188,7 +188,7 @@ namespace xgame{
 		return m_id_window;
 	}
 
-	inline void ScreenVideo::PresentRenderer() throw(){
+	inline void ScreenVideo::PresentRenderer(){
 		if(m_ms_min_call_present!=0){
 			const Uint32 delay = SDL_GetTicks() - m_ms_last_present_call;
 			if(delay < m_ms_min_call_present ) SDL_Delay(m_ms_min_call_present - delay);
@@ -197,7 +197,7 @@ namespace xgame{
 		m_ms_last_present_call = SDL_GetTicks();
 	}
 
-	inline void ScreenVideo::CleanRenderer() throw(){
+	inline void ScreenVideo::CleanRenderer(){
 		SDL_RenderClear(m_renderer);
 	}
 
@@ -207,7 +207,7 @@ namespace xgame{
 	}
 
 
-	inline void ScreenVideo::DrawTexture(const Texture& src_texture, const Point& xy_onRenderer,const Rect& area_renderer_active) throw(...){
+	inline void ScreenVideo::DrawTexture(const Texture& src_texture, const Point& xy_onRenderer,const Rect& area_renderer_active) throw(Error){
 		if(src_texture.IsVoid()) return;
 		SDL_Rect dest_rect;
 		dest_rect.x = xy_onRenderer.Get_X_Component();
