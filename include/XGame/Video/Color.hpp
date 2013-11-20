@@ -3,13 +3,16 @@
 
 #include <XGame/Video/Config.hpp>
 #include <SDL/SDL.h>
-#include <boost/lexical_cast.hpp>
+
+#ifdef XGAME_WINDOWS_OS
+#pragma warning(disable:4290)
+#endif
 
 namespace xgame{
 	class XGAME_API_VIDEO Color{
 	public:
 		//! Costruttore di default.
-		inline Color(const Uint8 red, const Uint8 green, const Uint8 blue, const Uint8 alpha =255);
+		inline Color(const Uint8 red, const Uint8 green, const Uint8 blue, const Uint8 alpha =255) throw();
 
 		//! Costruttore esplicito con notazione compatta.
 		inline explicit Color(const Uint32 rgba) throw();
@@ -49,7 +52,7 @@ namespace xgame{
 												Compreso tra 0 e 1.
 			\throw Error						In caso il valore di input non sia compreso nell'intervallo [0,1].
 		*/
-		inline void Set_AlphaComponentNormalized(const float alpha_set_norm) throw(...);
+		inline void Set_AlphaComponentNormalized(const float alpha_set_norm) throw(Error);
 
 		//! Converte l'oggetto Color in una struttura SDL_Color.
 		inline operator SDL_Color&() throw();
@@ -81,7 +84,7 @@ namespace xgame{
 		SDL_Color m_dataColor;
 	};
 
-	inline Color::Color(const Uint8 red, const Uint8 green, const Uint8 blue, const Uint8 alpha){
+	inline Color::Color(const Uint8 red, const Uint8 green, const Uint8 blue, const Uint8 alpha) throw(){
 		m_dataColor.r=red;
 		m_dataColor.g=green;
 		m_dataColor.b=blue;
@@ -131,7 +134,7 @@ namespace xgame{
 		return static_cast<float>(m_dataColor.a) / 255.f;
 	}
 
-	inline void Color::Set_AlphaComponentNormalized(const float alpha_set_norm) throw(...){
+	inline void Color::Set_AlphaComponentNormalized(const float alpha_set_norm) throw(Error){
 		if (alpha_set_norm < 0 && alpha_set_norm > 1)
 			throw Error("Color", "Set_AlphaComponentNormalized", "Alpha setting non normalizzato: '%s'", 
 															std::to_string(alpha_set_norm).c_str());

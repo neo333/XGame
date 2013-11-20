@@ -14,7 +14,7 @@
 #include <mutex>
 #include <vector>
 
-#ifdef WIN32 
+#ifdef XGAME_WINDOWS_OS 
 #pragma warning(disable:4251)
 #pragma warning(disable:4275)
 #endif
