@@ -34,7 +34,7 @@ namespace xgame{
 			\return const time_t	Il time (data/ora) dell'ultima modifica apportata al file specificato nel parametro di ingresso.
 			\throw Error	In caso il parametro non sia corretto o il file non esiste o è inaccessibile.
 		*/
-		static const time_t GetLastMod_file(const std::string& file_name) throw (...);
+		static const time_t GetLastMod_file(const std::string& file_name) throw (Error);
 
 
 		/*! Ottiene una firma riguardo il conenuto del file specificato sul parametro. Ogni variazione sul contenuto
@@ -44,16 +44,16 @@ namespace xgame{
 			\return const std::string	La stringa rappresentate la firma del file (in esadecimale).
 			\throw Error	In caso il parametro non sia corretto o il file non esiste o è inaccessibile.
 		*/
-		static const std::string GetSignature_file(const std::string& file_name) throw(...);
+		static const std::string GetSignature_file(const std::string& file_name) throw(Error);
 
 
 		/*! Ricava la dimensione in bytes del file specificato nel parametro di ingresso.
 
 			\param [in] file_name	Il nome del file di cui si vuole sapere la dimensione in bytes.
 			\return const size_t	La dimensione in bytes del file.
-			\throw Error			In caso il parametro non sia corretto o il file non esiste o è inaccessibile.
+			\throw exception			In caso il parametro non sia corretto o il file non esiste o è inaccessibile.
 		*/
-		inline static const size_t GetSize_file(const std::string& file_name) throw(...);
+		inline static const size_t GetSize_file(const std::string& file_name) throw(std::exception);
 
 
 		/*! Attiva il modulo di crittografia interno!
@@ -63,11 +63,11 @@ namespace xgame{
 			\param [in]	passhrase	La 'passhrase' con la quale sono state crittografati i file sul disco eventualmente.
 			\throw Error			In caso di errore del modulo.
 		*/
-		void ActiveModuleCryp(const std::string& passhrase) throw(...);
+		void ActiveModuleCryp(const std::string& passhrase) throw(Error);
 
 
 		//! Disattiva il modulo di crittografia interno! Le pagine verranno caricate dal disco senza operazioni di decrittografia!
-		void DisableModuleCryp() throw(...);
+		void DisableModuleCryp() throw(Error);
 
 
 		/*! Attiva il modulo di caching interno.
@@ -79,7 +79,7 @@ namespace xgame{
 
 
 		//! \return Il modulo caching interno al loader!
-		inline const ModuleCaches& Get_InfoModuleCaching() const;
+		inline const ModuleCaches& Get_InfoModuleCaching() const throw();
 		
 
 		//! Disattiva il modulo caching.
@@ -92,8 +92,10 @@ namespace xgame{
 
 			\param [in] namefile		Il nome del file che si vuole caricare in memoria.
 			\param [out]outpage			La pagina di memoria dove verrà ricopiato tutto il conenuto del file.
+
+			\throw Error				In caso sia impossibile accedere al file, o qualche errore di caricamento interno.
 		*/
-		void LoadFile_onMemoryPage(const std::string& namefile, MemoryPage& outpage) throw(...);
+		void LoadFile_onMemoryPage(const std::string& namefile, MemoryPage& outpage) throw(Error);
 
 		/*! Carica un file dalla memoria di massa e riporta tutto il suo contenuto sulla memoryPage di output.
 			All'operazione di caricamento seguirà, se il modulo cryp è abilitato, un'operazione di decifratura automatica sul conenuto
@@ -101,10 +103,12 @@ namespace xgame{
 
 			\param [in] namefile		Il nome del file che si vuole caricare in memoria.
 			\return						La pagina di memoria dove verrà ricopiato tutto il conenuto del file.
+			\throw						In caso sia impossibile accedere al file, o qualche errore di caricamento interno.
+			\see						ModuleLoader::LoadFile_onMemoryPage
 			\note						C++11, ora, utilizza il costruttore di MOVE per i 'return' delle funzioni.
 										la classe \see MemoryPage supporta completamente lo standard C++11
 		*/
-		inline MemoryPage LoadFile_onMemoryPage(const std::string& namefile) throw(...);
+		inline MemoryPage LoadFile_onMemoryPage(const std::string& namefile) throw(Error);
 
 
 		/*! Scrive il contenuto di una pagina di memoria su un file (sulla memoria di massa).
@@ -114,6 +118,8 @@ namespace xgame{
 			\param [in] inputpage	La pagina di memoria che deve essere scritta.
 			\param [in] namefile	Il nome del file che si desidera scrivere.
 									Attenzione: se il file esiste il conenuto precedente del file verrà completamente cancellato!
+
+			\throw					Potrebbe lanciare un'eccezione.
 		*/
 		void WriteMemoryPage_onFile(const MemoryPage& inputpage, const std::string& namefile);
 
@@ -125,6 +131,8 @@ namespace xgame{
 			\param [in] inputPack	Il pacchetto di pagine di memoria che deve essere scritto su file.
 			\param [in]	namefile	Il nome del file che si desidera scrivere.
 									Attenzione: se il file esiste verrà sovrascritto!
+
+			\throw					Potrebbe lanciare un'eccezione.
 		*/
 		bool WritePackMemoryPage_onFile(const PackMemoryPage& inputPack, const std::string& namefile);
 
@@ -136,6 +144,8 @@ namespace xgame{
 
 			\param [in] namefile		Il nome del file che si desidera leggere
 			\param [out] outpack		Il pacchetto di pagine di memoria che verrà scritto col contenuto del file.
+
+			\throw						Potrebbe lanciare un'eccezione.
 		*/
 		bool LoadPackMemoryPage_fromFile(const std::string& namefile, PackMemoryPage& outpack);
 
@@ -148,8 +158,19 @@ namespace xgame{
 			\note						Questa tipologia di caricamento non utilizza tecniche di caching o crittografia!
 			\note						La chiamata di questa metodo non avrà alcune effetto sulla memoria di input.
 		*/
-		void MakeMemoryPage_fromMemory(const void* memory_input, const size_t size_input, MemoryPage& page_out) const throw(...);
-		inline MemoryPage MakeMemoryPage_fromMemory(const void* memory_input, const size_t size_input) const throw(...);
+		void MakeMemoryPage_fromMemory(const void* memory_input, const size_t size_input, MemoryPage& page_out) const;
+
+		/*!	Carica una Pagina di Memoria come COPIA di un'area di memoria già inizializzata in RAM.
+
+			\param [in] memory_input	Il puntatore all'area di memoria da copiare.
+			\param [in] size_input		La dimensione (espressa in byte) dell'area di memoria da copiare.
+
+			\return						La pagina di memoria che custodirà la COPIA all'area di memoria in ingresso.
+
+			\note						Questa tipologia di caricamento non utilizza tecniche di caching o crittografia!
+			\note						La chiamata di questa metodo non avrà alcune effetto sulla memoria di input.
+		*/
+		inline MemoryPage MakeMemoryPage_fromMemory(const void* memory_input, const size_t size_input) const;
 
 
 
@@ -192,7 +213,7 @@ namespace xgame{
 		return *ModuleLoader::s_prtInstance;
 	}
 
-	inline const size_t ModuleLoader::GetSize_file(const std::string& file_name) throw(...){
+	inline const size_t ModuleLoader::GetSize_file(const std::string& file_name) throw(std::exception){
 		std::ifstream file;
 		file.open(file_name,std::ios_base::binary);
 		if(file.fail())
@@ -203,17 +224,17 @@ namespace xgame{
 		return rts;
 	}
 
-	inline const ModuleCaches& ModuleLoader::Get_InfoModuleCaching() const{
+	inline const ModuleCaches& ModuleLoader::Get_InfoModuleCaching() const throw(){
 		return m_modulecaches;
 	}
 
-	inline MemoryPage ModuleLoader::LoadFile_onMemoryPage(const std::string& namefile) throw(...){
+	inline MemoryPage ModuleLoader::LoadFile_onMemoryPage(const std::string& namefile) throw(Error){
 		MemoryPage rts;
 		this->LoadFile_onMemoryPage(namefile,rts);
 		return rts;
 	}
 
-	inline MemoryPage ModuleLoader::MakeMemoryPage_fromMemory(const void* memory_input, const size_t size_input) const throw(...){
+	inline MemoryPage ModuleLoader::MakeMemoryPage_fromMemory(const void* memory_input, const size_t size_input) const{
 		MemoryPage rts;
 		this->MakeMemoryPage_fromMemory(memory_input, size_input, rts);
 		return rts;

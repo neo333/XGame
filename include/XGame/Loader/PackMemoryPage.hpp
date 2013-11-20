@@ -7,7 +7,7 @@
 #include <unordered_map>
 #include <vector>
 
-#ifdef WIN32 
+#ifdef XGAME_WINDOWS_OS 
 #pragma warning(disable:4251)
 #endif
 

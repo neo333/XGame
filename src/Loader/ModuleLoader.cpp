@@ -13,16 +13,20 @@ namespace xgame{
 
 	ModuleLoader::ModuleLoader():m_modulecryp_active(false),m_modulecaches_active(true){ }
 
-	const time_t ModuleLoader::GetLastMod_file(const std::string& file_name) throw (...){
+	const time_t ModuleLoader::GetLastMod_file(const std::string& file_name) throw (Error){
 		if(file_name.size()==0) throw Error("ModuleLoader","GetLastMod_file","Parametro nullo!");
+		int rts = 0;
 		struct stat info_file;
-		int rts = stat(file_name.c_str(),&info_file);
+		try{ rts = stat(file_name.c_str(), &info_file); }
+		catch (const std::exception& err){
+			throw Error("ModuleLoader", "GetLastMod_file", err.what());
+		}
 		if(rts!=0)
 			throw Error("ModuleLoader","GetLastMod_file","Impossibile accedere al file '%s'!",file_name.c_str());
 		return info_file.st_mtime;
 	}
 
-	const std::string ModuleLoader::GetSignature_file(const std::string& file_name) throw(...){
+	const std::string ModuleLoader::GetSignature_file(const std::string& file_name) throw(Error){
 		if(file_name.size()==0) throw Error("ModuleLoader","GetSignature_file","Parametro nullo!");
 		try{
 			hashwrapper* engine_cryp = new sha1wrapper();
@@ -34,7 +38,7 @@ namespace xgame{
 		}
 	}
 
-	void ModuleLoader::LoadFile_onMemoryPage(const std::string& namefile, MemoryPage& outpage) throw(...){
+	void ModuleLoader::LoadFile_onMemoryPage(const std::string& namefile, MemoryPage& outpage) throw(Error){
 		if(namefile.size()==0) throw Error("ModuleLoader","LoadFile_onMemoryPage","Parametro di ingresso del file nullo!");
 		try{
 			bool finded_in_caches = false;
@@ -118,12 +122,12 @@ namespace xgame{
 		}
 	}
 
-	void ModuleLoader::ActiveModuleCryp(const std::string& passhrase) throw(...){
+	void ModuleLoader::ActiveModuleCryp(const std::string& passhrase) throw(Error){
 		m_modulecryp.Set_Passphrase(passhrase);
 		m_modulecryp_active=true;
 	}
 
-	void ModuleLoader::DisableModuleCryp() throw(...){
+	void ModuleLoader::DisableModuleCryp() throw(Error){
 		m_modulecryp.Set_Passphrase(std::string());
 		m_modulecryp_active=false;
 	}
@@ -274,7 +278,7 @@ namespace xgame{
 		return true;
 	}
 
-	void ModuleLoader::MakeMemoryPage_fromMemory(const void* memory_input, const size_t size_input, MemoryPage& page_out) const throw(...){
+	void ModuleLoader::MakeMemoryPage_fromMemory(const void* memory_input, const size_t size_input, MemoryPage& page_out) const{
 		page_out.Delete();
 		if (memory_input == nullptr || size_input==0) return;
 		page_out.prtMemory = new uint8_t[size_input];
