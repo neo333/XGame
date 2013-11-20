@@ -9,10 +9,10 @@ namespace xgame{
 	class XGAME_API_VIDEO Rect{
 	public:
 		//! Costruttore di default
-		inline Rect(int x=0, int y=0, int w=0, int h=0);
+		inline Rect(int x=0, int y=0, int w=0, int h=0) throw();
 
 		//! Costruttore da SDL_Rect
-		inline Rect(const SDL_Rect& oth);
+		inline Rect(const SDL_Rect& oth) throw();
 
 		//! Setta la componente X del rettangolo.
 		inline void Set_Xcomponent(const int x_set) throw();
@@ -27,7 +27,7 @@ namespace xgame{
 		inline void Set_Hcomponent(const int h_size_set) throw();
 
 		//! Setta tutte le componente con una sola chiamata a funzione.
-		inline void Set_AllComponent(const int x, const int y, const int w, const int h);
+		inline void Set_AllComponent(const int x, const int y, const int w, const int h) throw();
 
 		//! \return La componente X del rettangolo.
 		inline int Get_Xcomponent() const throw();
@@ -42,7 +42,7 @@ namespace xgame{
 		inline int Get_Hcomponent() const throw();
 
 		//! Operatore di assegnazione con SDL_Rect.
-		inline Rect& operator=(const SDL_Rect& oth);
+		inline Rect& operator=(const SDL_Rect& oth) throw();
 
 		//! Operatori di casting
 		inline operator SDL_Rect&();
@@ -65,18 +65,18 @@ namespace xgame{
 		SDL_Rect m_data;
 	};
 
-	inline Rect::Rect(int x, int y, int w, int h){
+	inline Rect::Rect(int x, int y, int w, int h) throw(){
 		m_data.x = x;
 		m_data.y = y;
 		m_data.w = w;
 		m_data.h = h;
 	}
 	
-	inline Rect::Rect(const SDL_Rect& oth){
+	inline Rect::Rect(const SDL_Rect& oth) throw(){
 		m_data = oth;
 	}
 
-	inline Rect& Rect::operator=(const SDL_Rect& oth){
+	inline Rect& Rect::operator=(const SDL_Rect& oth) throw(){
 		this->m_data=oth;
 		return *this;
 	}
@@ -102,7 +102,7 @@ namespace xgame{
 	inline void Rect::Set_Ycomponent(const int y_set) throw(){ this->m_data.y = y_set; }
 	inline void Rect::Set_Wcomponent(const int w_size_set) throw(){ this->m_data.w = w_size_set; }
 	inline void Rect::Set_Hcomponent(const int h_size_set) throw(){ this->m_data.h = h_size_set; }
-	inline void Rect::Set_AllComponent(const int x, const int y, const int w, const int h){
+	inline void Rect::Set_AllComponent(const int x, const int y, const int w, const int h) throw(){
 		this->Set_Xcomponent(x); this->Set_Ycomponent(y);
 		this->Set_Wcomponent(w); this->Set_Hcomponent(h);
 	}
