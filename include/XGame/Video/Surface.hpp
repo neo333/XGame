@@ -15,13 +15,13 @@ namespace xgame{
 		Surface() = default;
 
 		//! Costruisce una Surface di dimensioni designate con pixel di nero trasparente.
-		Surface(const size_t w, const size_t h) throw(...);
+		Surface(const size_t w, const size_t h) throw(Error);
 
 		//! Costruisce una Surface di dimensioni designate con pixel di un colore definito.
-		Surface(const size_t w, const size_t h, const Color& pixels_color) throw(...);
+		Surface(const size_t w, const size_t h, const Color& pixels_color) throw(Error);
 
 		//! Costruttore di copia.
-		Surface(const Surface& oth) throw(...);
+		Surface(const Surface& oth) throw(Error);
 
 
 		//! Costruttore di move.
@@ -29,11 +29,11 @@ namespace xgame{
 
 
 		//! Distruttore.
-		inline virtual ~Surface();
+		inline virtual ~Surface() throw();
 
 
 		//! Operatore di assegnazione.
-		Surface& operator=(const Surface& oth) throw(...);
+		Surface& operator=(const Surface& oth) throw(Error);
 
 
 		//!	Operatore di move.
@@ -51,7 +51,7 @@ namespace xgame{
 
 			\throw Error				In caso la pagina di memoria non sia valida, o qualche errore di caricamento interno.
 		*/
-		void LoadSurface_fromMemoryPage(const MemoryPage& page_input) throw(...);
+		void LoadSurface_fromMemoryPage(const MemoryPage& page_input) throw(Error);
 
 
 		//!	\return 'true' se la Surface è vuota.
@@ -71,7 +71,7 @@ namespace xgame{
 			\note	Se la surface è vuota questo metodo non farà nulla.
 			\note	La componente 'Alpha' del parametro di ingresso 'color_select' non è di interesse.
 		*/
-		void Set_ModAlpha_forThisColor(const Color& color_select,const Uint8 alpha_set) throw(...);
+		void Set_ModAlpha_forThisColor(const Color& color_select,const Uint8 alpha_set);
 
 		/*!	"Incolla" una surface di input su questa. Esegue un blit veloce in memoria centrale.
 			
@@ -84,7 +84,7 @@ namespace xgame{
 
 			\throw Error					In caso di errori interni.
 		*/
-		inline void BlitSurfaceOnThis(const Surface& input_surface, const Point& xy_blit =Point(0,0), Rect& area_cut = Rect(0,0,-1,-1)) throw(...);
+		inline void BlitSurfaceOnThis(const Surface& input_surface, const Point& xy_blit =Point(0,0), Rect& area_cut = Rect(0,0,-1,-1)) throw(Error);
 
 		//! Operatore di conversione per SDL_Surface.
 		inline explicit operator SDL_Surface*() throw();
@@ -95,7 +95,7 @@ namespace xgame{
 		/*! Operatore di assegnazione di una SDL_Surface a basso livello.
 			\note	Verrà fatta una COPIA della SDL_Surface* di input.
 		*/
-		Surface& operator=(SDL_Surface* oth_surface) throw(...);
+		Surface& operator=(SDL_Surface* oth_surface) throw(Error);
 
 	protected:
 		SDL_Surface* m_surface = nullptr;
@@ -107,7 +107,7 @@ namespace xgame{
 		static const Uint32 amask = 0x000000ff;
 	};
 
-	inline Surface::~Surface(){
+	inline Surface::~Surface() throw(){
 		this->Clean();
 	}
 
@@ -132,7 +132,7 @@ namespace xgame{
 		return 0;
 	}
 
-	inline void Surface::BlitSurfaceOnThis(const Surface& input_surface, const Point& xy_blit, Rect& area_cut) throw(...){
+	inline void Surface::BlitSurfaceOnThis(const Surface& input_surface, const Point& xy_blit, Rect& area_cut) throw(Error){
 		if (input_surface.Is_Void()) return;
 		if (area_cut.Get_Wcomponent() < 0) area_cut.Set_Wcomponent(input_surface.Get_W() - area_cut.Get_Xcomponent());
 		if (area_cut.Get_Hcomponent() < 0) area_cut.Set_Hcomponent(input_surface.Get_H() - area_cut.Get_Ycomponent());

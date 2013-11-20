@@ -10,7 +10,7 @@ namespace xgame{
 		}
 	}
 
-	Surface::Surface(const size_t w, const size_t h) throw(...) :
+	Surface::Surface(const size_t w, const size_t h) throw(Error) :
 		m_surface(SDL_CreateRGBSurface(0, w, h, 32, Surface::rmask, Surface::gmask, Surface::bmask, Surface::amask))
 	{
 		if (m_surface == nullptr)
@@ -19,7 +19,7 @@ namespace xgame{
 		SDL_SetSurfaceBlendMode(m_surface, SDL_BLENDMODE_BLEND);
 	}
 
-	Surface::Surface(const size_t w, const size_t h, const Color& pixels_color) throw(...) :
+	Surface::Surface(const size_t w, const size_t h, const Color& pixels_color) throw(Error) :
 		m_surface(SDL_CreateRGBSurface(0,w,h,32,Surface::rmask,Surface::gmask,Surface::bmask,Surface::amask))
 	{
 		if (m_surface == nullptr)
@@ -29,15 +29,21 @@ namespace xgame{
 
 		if(SDL_LockSurface(m_surface)!=0)
 			throw Error("Surface", "Surface", "Impossibile inizializzare una surface!\n%s", SDL_GetError());
-		for (register size_t row = 0; row < h; row++){
-			for (register size_t index = 0; index < w; index++){
-				static_cast<Uint32*>(this->m_surface->pixels)[index + row*m_surface->pitch / 4] = static_cast<Uint32>(pixels_color);
+		try{
+			for (register size_t row = 0; row < h; row++){
+				for (register size_t index = 0; index < w; index++){
+					static_cast<Uint32*>(this->m_surface->pixels)[index + row*m_surface->pitch / 4] = static_cast<Uint32>(pixels_color);
+				}
 			}
+		}
+		catch (const std::exception& err){
+			SDL_UnlockSurface(m_surface);
+			throw Error("Surface", "Surface", err.what());
 		}
 		SDL_UnlockSurface(m_surface);
 	}
 
-	Surface::Surface(const Surface& oth) throw(...){
+	Surface::Surface(const Surface& oth) throw(Error){
 		if (oth.m_surface)
 			m_surface = SDL_ConvertSurfaceFormat(oth.m_surface, SDL_PIXELFORMAT_RGBA8888, 0);
 
@@ -53,7 +59,7 @@ namespace xgame{
 		oth.m_surface = nullptr;
 	}
 
-	Surface& Surface::operator=(const Surface& oth) throw(...){
+	Surface& Surface::operator=(const Surface& oth) throw(Error){
 		if (this != &oth){
 			this->Clean();
 			if (oth.m_surface)
@@ -76,7 +82,7 @@ namespace xgame{
 		return *this;
 	}
 
-	void Surface::LoadSurface_fromMemoryPage(const MemoryPage& page_input) throw(...){
+	void Surface::LoadSurface_fromMemoryPage(const MemoryPage& page_input) throw(Error){
 		this->Clean();
 		if (page_input.GetSize() == 0) return;
 		SDL_RWops* data_access = SDL_RWFromConstMem(page_input.Get_PtrMemory(), page_input.GetSize());
@@ -101,7 +107,7 @@ namespace xgame{
 		}
 	}
 
-	void Surface::Set_ModAlpha_forThisColor(const Color& color_select, const Uint8 alpha_set) throw(...){
+	void Surface::Set_ModAlpha_forThisColor(const Color& color_select, const Uint8 alpha_set){
 		if (m_surface == nullptr) return;
 		if (SDL_LockSurface(m_surface) != 0)
 			throw Error("Surface", "Set_ModAlpha_forThisColor", "Impossibile accedere ai dati della surface!\n%s", SDL_GetError());
@@ -120,7 +126,7 @@ namespace xgame{
 		SDL_UnlockSurface(m_surface);
 	}
 
-	Surface& Surface::operator=(SDL_Surface* oth_surface) throw(...){
+	Surface& Surface::operator=(SDL_Surface* oth_surface) throw(Error){
 		if (this->m_surface != oth_surface){
 			this->Clean();
 			if (oth_surface!=nullptr)
