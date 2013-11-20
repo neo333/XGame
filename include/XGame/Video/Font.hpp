@@ -7,6 +7,10 @@
 #include <XGame/Video/Rect.hpp>
 #include <SDL/SDL_ttf.h>
 
+#ifdef XGAME_WINDOWS_OS
+#pragma warning(disable:4290)
+#endif
+
 namespace xgame{
 	class XGAME_API_VIDEO Font{
 	public:
@@ -26,7 +30,7 @@ namespace xgame{
 		Font& operator=(Font&& oth) throw();
 
 		//!	Distruttore.
-		~Font();
+		virtual ~Font() throw();
 
 		//!	Pulisce il font. Dealloca tutte le risorse grafiche associate. Il font diventa vuoto!
 		void Clean() throw();
@@ -48,7 +52,7 @@ namespace xgame{
 
 			\throw	Error				In caso di inleggibilità del dato.
 		*/
-		void LoadFont_fromMemoryPage(const MemoryPage& input_page, const size_t ptsize_font) throw(...);
+		void LoadFont_fromMemoryPage(const MemoryPage& input_page, const size_t ptsize_font) throw(Error);
 	
 
 		//! Wrapper degli stili dei font.
@@ -70,7 +74,7 @@ namespace xgame{
 
 			\throw	Error				In caso di errore grafico interno.
 		*/
-		void SetStyle(const STYLE_FONT style_set) throw(...);
+		void SetStyle(const STYLE_FONT style_set) throw(Error);
 
 		//!	\return Gli stili applicati correntemente al font.
 		inline const STYLE_FONT GetStyle() const throw();
@@ -86,7 +90,7 @@ namespace xgame{
 
 			\throw Error				In caso di errore interno.
 		*/
-		const Rect CalculateSizeText_withThisFont(const std::string& str_input) const throw(...);
+		const Rect CalculateSizeText_withThisFont(const std::string& str_input) const;
 
 		//!	\return		La dimensione (in pixel) che dovrebbe intercorrere tra una riga e l'altra per il font.
 		inline const int Get_H_LineSkyp() const throw();

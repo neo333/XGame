@@ -1,7 +1,7 @@
 ﻿#include <XGame/Video/Font.hpp>
 
 namespace xgame{
-	Font::~Font(){
+	Font::~Font() throw(){
 		this->Clean();
 	}
 
@@ -39,7 +39,7 @@ namespace xgame{
 		return *this;
 	}
 
-	void Font::LoadFont_fromMemoryPage(const MemoryPage& input_page, const size_t ptsize_font) throw(...){
+	void Font::LoadFont_fromMemoryPage(const MemoryPage& input_page, const size_t ptsize_font) throw(Error){
 		this->Clean();
 		if (input_page.GetSize() == 0) return;
 		SDL_RWops* data_access = SDL_RWFromConstMem(input_page.Get_PtrMemory(), input_page.GetSize());
@@ -52,7 +52,7 @@ namespace xgame{
 		m_h_lineskyp = TTF_FontLineSkip(m_font);
 	}
 
-	void Font::SetStyle(const STYLE_FONT style_set) throw(...){
+	void Font::SetStyle(const STYLE_FONT style_set) throw(Error){
 		if (this->IsVoid() || style_set==m_style_font) return;
 		try{
 			TTF_SetFontStyle(m_font, style_set);
@@ -63,7 +63,7 @@ namespace xgame{
 		}
 	}
 
-	const Rect Font::CalculateSizeText_withThisFont(const std::string& str_input) const throw(...){
+	const Rect Font::CalculateSizeText_withThisFont(const std::string& str_input) const{
 		if (m_font == nullptr) return Rect(0,0,0,0);
 		int _w, _h;
 		if (TTF_SizeText(m_font, str_input.c_str(), &_w, &_h) != 0)
