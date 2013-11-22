@@ -31,7 +31,7 @@ namespace xgame{
 			\param [in] object		Un puntatore ad un oggetto interattivo che si vuole deassociare.
 			\note					Se l'oggetto non è mai stato registrato questo metodo non farà nulla!
 		*/
-		void UnRegisterObjectInteractive(ObjectInteractive* const object);
+		void UnRegisterObjectInteractive(ObjectInteractive* const object) throw();
 		
 
 		/*! Registra un oggetto dinamico al gestore di eventi.
@@ -39,7 +39,7 @@ namespace xgame{
 			\param [in] object		Un puntatore ad un oggetto dinamico.
 			\note					Se l'oggetto è già registrato questo metodo non farà nulla!
 		*/
-		void RegisterObjectDynamic(ObjectDynamic* const object) throw();
+		void RegisterObjectDynamic(ObjectDynamic* const object);
 
 		/*! Deassocia una registrazione fatta in precedenza per un oggetto dinamico.
 

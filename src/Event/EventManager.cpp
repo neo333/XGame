@@ -17,7 +17,7 @@ namespace xgame{
 		}
 	}
 
-	void EventManager::RegisterObjectInteractive(ObjectInteractive* const object) throw(){
+	void EventManager::RegisterObjectInteractive(ObjectInteractive* const object){
 		if(object==nullptr) return;
 		RegistroObjectsInteractive::iterator find = this->m_registro_interactive.find(object);
 		if(find == this->m_registro_interactive.end()) 
@@ -31,7 +31,7 @@ namespace xgame{
 			this->m_registro_interactive.erase(find);
 	}
 
-	void EventManager::RegisterObjectDynamic(ObjectDynamic* const object) throw(){
+	void EventManager::RegisterObjectDynamic(ObjectDynamic* const object){
 		if(object==nullptr) return;
 		RegistroObjectDynamic::iterator find = this->m_registro_dynamic.find(object);
 		if(find == this->m_registro_dynamic.end())
