@@ -2,9 +2,9 @@
 #define __EVENT_MANAGER_XGAME__HPP
 
 #include <XGame/Event/Config.hpp>
+#include <XGame/Core/noncopyable.hpp>
 #include <XGame/Event/ObjectInteractive.hpp>
 #include <XGame/Event/ObjectDynamic.hpp>
-#include <boost/noncopyable.hpp>
 #include <SDL2/SDL.h>
 #include <unordered_map>
 
@@ -14,7 +14,7 @@
 #endif
 
 namespace xgame{
-	class XGAME_API_EVENT EventManager : private boost::noncopyable{
+	class XGAME_API_EVENT EventManager : private noncopyable{
 	public:
 		//! \return L'istanza globale della classe.
 		static inline EventManager& Get_GlobalInstance();

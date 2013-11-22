@@ -2,7 +2,7 @@
 #define __MODULE_CRYP__HPP
 
 #include <XGame/Loader/Config.hpp>
-#include <boost/noncopyable.hpp>
+#include <XGame/Core/noncopyable.hpp>
 #include <XGame/Core/Error.hpp>
 #include <XGame/Loader/MemoryPage.hpp>
 #include <string>
@@ -13,7 +13,7 @@
 #endif
 
 namespace xgame{
-	class XGAME_API_LOADER ModuleCryp : private boost::noncopyable{
+	class XGAME_API_LOADER ModuleCryp : private noncopyable{
 	public:
 		//! Costruttore di default
 		ModuleCryp() throw();

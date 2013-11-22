@@ -3,11 +3,11 @@
 
 #include <XGame/Loader/Config.hpp>
 #include <XGame/Core/Error.hpp>
+#include <XGame/Core/noncopyable.hpp>
 #include <XGame/Loader/MemoryPage.hpp>
 #include <XGame/Loader/ModuleCryp.hpp>
 #include <XGame/Loader/ModuleCaches.hpp>
 #include <XGame/Loader/PackMemoryPage.hpp>
-#include <boost/noncopyable.hpp>
 #include <string>
 #include <ctime>
 #include <fstream>
@@ -20,7 +20,7 @@
 #endif
 
 namespace xgame{
-	class XGAME_API_LOADER ModuleLoader : private boost::noncopyable{
+	class XGAME_API_LOADER ModuleLoader : private noncopyable{
 	public:
 		/*! Fornisce l'accesso all'instanza globale di questo componente. (Pattern: Singleton)
 			\return L'instanza globale di questa classe.

@@ -3,8 +3,8 @@
 
 #include <XGame/Loader/Config.hpp>
 #include <XGame/Core/Error.hpp>
+#include <XGame/Core/noncopyable.hpp>
 #include <XGame/Loader/MemoryPage.hpp>
-#include <boost/noncopyable.hpp>
 #include <list>
 #include <unordered_map>
 
@@ -14,7 +14,7 @@
 #endif
 
 namespace xgame{
-	class XGAME_API_LOADER ModuleCaches : private boost::noncopyable{
+	class XGAME_API_LOADER ModuleCaches : private noncopyable{
 	public:
 		//! Costruttore di default
 		ModuleCaches() throw();

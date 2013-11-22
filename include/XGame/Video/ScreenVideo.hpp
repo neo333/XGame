@@ -3,12 +3,12 @@
 
 #include <XGame/Video/Config.hpp>
 #include <XGame/Core/Error.hpp>
+#include <XGame/Core/noncopyable.hpp>
 #include <XGame/Event/ObjectInteractive.hpp>
 #include <XGame/Video/Texture.hpp>
 #include <XGame/Video/Color.hpp>
 #include <XGame/Video/Point.hpp>
 #include <XGame/Video/Rect.hpp>
-#include <boost/noncopyable.hpp>
 #include <SDL2/SDL.h>
 
 #ifdef WIN32 
@@ -18,7 +18,7 @@
 
 namespace xgame{
 
-	class XGAME_API_VIDEO ScreenVideo : public boost::noncopyable, public ObjectInteractive{
+	class XGAME_API_VIDEO ScreenVideo : public noncopyable, public ObjectInteractive{
 	public:
 		//! Costruttore di default. Specificare i parametri dimensionali dell'area del RENDERER
 		ScreenVideo(const size_t w_size_renderer =0, const size_t h_size_renderer =0) throw();
@@ -154,6 +154,12 @@ namespace xgame{
 
 		//! Operatore di conversione per puntatore costante a SDL_Renderer.
 		inline explicit operator const SDL_Renderer*() const throw();
+
+		//! Costruttore di move eliminato!
+		ScreenVideo(ScreenVideo&&) = delete;
+
+		//! Operatore di move eliminato!
+		ScreenVideo& operator=(ScreenVideo&&) = delete;
 
 	private:
 		SDL_Window* m_window;
