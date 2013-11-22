@@ -69,7 +69,7 @@ namespace xgame{
 				file.read(reinterpret_cast<char*>(outpage.prtMemory+curs_writer),static_cast<std::streamsize>(ModuleLoader::DIM_buffer));
 				curs_writer+=static_cast<size_t>(file.gcount());
 				if(m_modulecryp_active && file.gcount()>0){
-					threads_cryp.push_back(std::thread(&ModuleCryp::DeCrypMemoryPage,std::ref(m_modulecryp),&outpage,curs_last,curs_writer-curs_last));
+					threads_cryp.push_back(std::thread(&ModuleCryp::DeCrypMemoryPage,&m_modulecryp,&outpage,curs_last,curs_writer-curs_last));
 				}
 			}
 			file.close();
@@ -217,7 +217,7 @@ namespace xgame{
 			th_cryp_pages.reserve(PACK_SIZE);
 			for(size_t i=0; i<PACK_SIZE; i++){
 				MemoryPage* page_to_cryp = &(*pack_cryp)[i];
-				th_cryp_pages.push_back(std::thread(&ModuleCryp::CrypMemoryPage,std::ref(m_modulecryp),page_to_cryp,0,ModuleCryp::EndPage));
+				th_cryp_pages.push_back(std::thread(&ModuleCryp::CrypMemoryPage,&m_modulecryp,page_to_cryp,0,ModuleCryp::EndPage));
 			}
 		}
 
@@ -268,7 +268,7 @@ namespace xgame{
 				throw Error("ModuleLoader","LoadPackMemoryPage_fromFile","Impossibile leggere il file '%s'. Potrebbe essere corrotto!",namefile.c_str());
 			outpack.InsertMemoryPage(std::move(temp_mem),header.name_page[i]);
 			if(this->m_modulecryp_active){
-				th_decryp.push_back(std::thread(&ModuleCryp::DeCrypMemoryPage,std::ref(m_modulecryp),&(outpack[i]),0,ModuleCryp::EndPage));
+				th_decryp.push_back(std::thread(&ModuleCryp::DeCrypMemoryPage,&m_modulecryp,&(outpack[i]),0,ModuleCryp::EndPage));
 			}
 		}
 		file.close();
