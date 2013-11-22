@@ -28,7 +28,7 @@ namespace xgame{
 		/*! Carica il componente grafico. (Es. letture di immagini dal disco rigido).
 			\param [in] screen_ref		Lo ScreenVideo di riferimento che serve per il caricamento di eventuali texture grafiche.
 		*/
-		virtual void Load(const ScreenVideo& screen_ref);
+		virtual void Load(const ScreenVideo& screen_ref) throw();
 
 		//! Dealloca tutte le risorse del componente grafico.
 		virtual void UnLoad() =0;

@@ -3,7 +3,7 @@
 namespace xgame{
 	GraphicComponent::~GraphicComponent(){  }
 
-	void GraphicComponent::Load(const ScreenVideo& screen_ref){
+	void GraphicComponent::Load(const ScreenVideo& screen_ref) throw(){
 		this->m_screen_maker_realative = &screen_ref;
 	}
 
