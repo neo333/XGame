@@ -49,8 +49,8 @@ namespace xgame{
 		/*! Accede alla pagina di memoria all'interno del pacchetto con un determinato nome di riferimento.
 			\note	 Se non esiste alcuna pagina di memoria con quel nome, verrà lanciata un'eccezione!
 		*/
-		inline MemoryPage& operator[](const std::string& page_name) throw(...);
-		inline const MemoryPage& operator[](const std::string& page_name) const throw(...);
+		inline MemoryPage& operator[](const std::string& page_name);
+		inline const MemoryPage& operator[](const std::string& page_name) const;
 
 		//! \return Il numero di pagine di memoria attualmente contenuto all'interno di questo pacchetto di pagine
 		inline const size_t GetSize() const throw();
@@ -82,13 +82,13 @@ namespace xgame{
 	inline const MemoryPage& PackMemoryPage::operator[](const size_t index) const{
 		return this->m_pack_pages[index];
 	}
-	inline MemoryPage& PackMemoryPage::operator[](const std::string& page_name) throw(...){
+	inline MemoryPage& PackMemoryPage::operator[](const std::string& page_name){
 		std::unordered_map<std::string,size_t>::iterator finder = m_index_pages.find(page_name);
 		if(finder == m_index_pages.end()) 
 			throw Error("PackMemoryPage","operator[]","Impossibile accedere alla pagina di memoria nominata '%s'",page_name.c_str());
 		return m_pack_pages[(*finder).second];
 	}
-	inline const MemoryPage& PackMemoryPage::operator[](const std::string& page_name) const throw(...){
+	inline const MemoryPage& PackMemoryPage::operator[](const std::string& page_name) const{
 		std::unordered_map<std::string,size_t>::const_iterator finder = m_index_pages.find(page_name);
 		if(finder == m_index_pages.end()) 
 			throw Error("PackMemoryPage","operator[]","Impossibile accedere alla pagina di memoria nominata '%s'",page_name.c_str());
