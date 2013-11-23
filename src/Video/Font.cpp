@@ -8,6 +8,7 @@ namespace xgame{
 	void Font::Clean() throw(){
 		if (m_font != nullptr){
 			TTF_CloseFont(m_font);
+			m_font_data.Delete();
 			m_font = nullptr;
 			m_size_font = 0;
 			m_style_font = TTF_STYLE_NORMAL;
@@ -15,8 +16,9 @@ namespace xgame{
 		}
 	}
 
-	Font::Font(Font&& oth) throw():m_font(oth.m_font),m_size_font(oth.m_size_font),m_style_font(oth.m_style_font),
-									m_h_lineskyp(oth.m_h_lineskyp)
+	Font::Font(Font&& oth) throw():
+		m_font(oth.m_font),m_font_data(std::move(oth.m_font_data)),m_size_font(oth.m_size_font),m_style_font(oth.m_style_font),
+		m_h_lineskyp(oth.m_h_lineskyp)
 	{
 		oth.m_font = nullptr;
 		oth.m_size_font = 0;
@@ -28,6 +30,7 @@ namespace xgame{
 		if (this != &oth){
 			this->Clean();
 			this->m_font = oth.m_font;
+			this->m_font_data = std::move(oth.m_font_data);
 			this->m_size_font = oth.m_size_font;
 			this->m_style_font = oth.m_style_font;
 			this->m_h_lineskyp = oth.m_h_lineskyp;
@@ -40,13 +43,19 @@ namespace xgame{
 	}
 
 	void Font::LoadFont_fromMemoryPage(const MemoryPage& input_page, const size_t ptsize_font) throw(Error){
+		MemoryPage _int_temp = input_page;
+		this->LoadFont_fromMemoryPage(std::move(_int_temp), ptsize_font);
+	}
+
+	void Font::LoadFont_fromMemoryPage(MemoryPage&& input_page, const size_t ptsize_font) throw(Error){
 		this->Clean();
 		if (input_page.GetSize() == 0) return;
-		SDL_RWops* data_access = SDL_RWFromConstMem(input_page.Get_PtrMemory(), input_page.GetSize());
+		m_font_data = std::move(input_page);
+		SDL_RWops* data_access = SDL_RWFromConstMem(m_font_data.Get_PtrMemory(), m_font_data.GetSize());
 		if (data_access == nullptr)
 			throw Error("Font", "LoadFont_fromMemoryPage", "Pagina di memoria corrotta!\n%s", SDL_GetError());
 		m_font = TTF_OpenFontRW(data_access, 1, static_cast<int>(ptsize_font));
-		if (m_font==nullptr)
+		if (m_font == nullptr)
 			throw Error("Font", "LoadFont_fromMemoryPage", "Impossibile caricare il font richiesto!\n%s", SDL_GetError());
 		m_size_font = ptsize_font;
 		m_h_lineskyp = TTF_FontLineSkip(m_font);

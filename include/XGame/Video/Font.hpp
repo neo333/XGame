@@ -53,6 +53,20 @@ namespace xgame{
 			\throw	Error				In caso di inleggibilità del dato.
 		*/
 		void LoadFont_fromMemoryPage(const MemoryPage& input_page, const size_t ptsize_font) throw(Error);
+
+		/*!	Carica un font tramite una pagina di memoria spostandone il contenuto.
+			Questo metodo è un caricamento velocizzato poiché non effettua una copia della pagina di memoria
+			di ingresso ma uno spostamento interno.
+
+			\param [in] input_page		La pagina di memoria contenente il dato TTF o FON.
+										Dopo la chiamata di questo metodo la pagina di memoria in ingresso 
+										sarà vuota poiché tutto il suo contenuto verrà spostanto nei dati interni
+										di della classe.
+			\param [in] ptsize_font		Le dimensioni del font da caricare (basate su 72DPI).
+
+			\throw	Error				In caso di inleggibilità del dato.
+		*/
+		void LoadFont_fromMemoryPage(MemoryPage&& input_page, const size_t ptsize_font) throw(Error);
 	
 
 		//! Wrapper degli stili dei font.
@@ -97,6 +111,7 @@ namespace xgame{
 
 	private:
 		TTF_Font* m_font = nullptr;
+		MemoryPage m_font_data;
 		size_t m_size_font = 0;
 		int m_style_font = TTF_STYLE_NORMAL;
 		int m_h_lineskyp = 0;
