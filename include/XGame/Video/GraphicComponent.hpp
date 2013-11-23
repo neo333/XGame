@@ -42,9 +42,22 @@ namespace xgame{
 		//! Distruttore.
 		virtual ~GraphicComponent();
 
+		//! Costruttore di copia.
+		GraphicComponent(const GraphicComponent&) = default;
+
+		//! Operatore di assegnazione.
+		GraphicComponent& operator=(const GraphicComponent&) = default;
+
+		//! Costruttore di move.
+		inline GraphicComponent(GraphicComponent&& oth) throw();
+
+		//! Operatore di move.
+		inline GraphicComponent& operator=(GraphicComponent&& oth) throw();
+
 	protected:
+		friend class GraphicContainer;
 		Point m_xy_relative;
-		const ScreenVideo* m_screen_maker_realative = nullptr;
+		const ScreenVideo* m_screen_maker_relative = nullptr;
 
 		//! \return l'area o porzione del renderer abilitata per l'ultimo DRAWN chiamato designata per l'oggetto in questione.
 		inline const Rect& GetRendererAreaClip() const throw();
@@ -62,6 +75,24 @@ namespace xgame{
 	inline const Rect& GraphicComponent::GetRendererAreaClip() const throw(){ return this->pri_area_renderer_visible; }
 
 	inline const Point& GraphicComponent::GetXYabs() const throw(){ return this->m_xy_abs; }
+
+	inline GraphicComponent::GraphicComponent(GraphicComponent&& oth) throw():
+		m_xy_relative(std::move(oth.m_xy_relative)), m_screen_maker_relative(std::move(oth.m_screen_maker_relative)),
+		pri_area_renderer_visible(std::move(oth.pri_area_renderer_visible)), m_xy_abs(std::move(oth.m_xy_abs))
+	{
+
+	}
+
+	inline GraphicComponent& GraphicComponent::operator=(GraphicComponent&& oth) throw()
+	{
+		if (this != &oth){
+			this->m_xy_relative = std::move(oth.m_xy_relative);
+			this->m_screen_maker_relative = std::move(oth.m_screen_maker_relative);
+			this->pri_area_renderer_visible = std::move(oth.pri_area_renderer_visible);
+			this->m_xy_abs = std::move(oth.m_xy_abs);
+		}
+		return *this;
+	}
 }
 
 #endif
