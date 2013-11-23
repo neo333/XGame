@@ -15,10 +15,10 @@ namespace xgame{
 		~XPicture() = default;
 
 		//! Costruttore di copia.
-		XPicture(const XPicture&) = default;
+		inline XPicture(const XPicture&);
 
 		//! Operatore di assegnazione.
-		XPicture& operator=(const XPicture&) = default;
+		inline XPicture& operator=(const XPicture&);
 
 		//! Costruttore di move.
 		inline XPicture(XPicture&& oth) throw();
@@ -162,13 +162,28 @@ namespace xgame{
 
 	inline void XPicture::Set_Alpha(const float alpha_percent) throw (Error){
 		if (alpha_percent<0 || alpha_percent>1.f)
-			throw Error("XPicture", "Set_Alpha", "Parametro alpha non valido: '%s'", std::to_string(alpha_percent));
+			throw Error("XPicture", "Set_Alpha", "Parametro alpha non valido: '%s'", std::to_string(alpha_percent).c_str());
 		std::unique_lock<std::mutex> lock_mutex(m_dataPicture_mutex);
 		this->m_dataPicture.Set_AlphaMod(static_cast<Uint8>(255.f*alpha_percent));
 	}
 
 	inline float XPicture::Get_Alpha() const throw(){
 		return static_cast<float>(this->m_dataPicture.Get_AlphaMod())/255.f;
+	}
+
+	inline XPicture::XPicture(const XPicture& oth):
+		m_dataPicture(oth.m_dataPicture)
+	{
+
+	}
+
+	inline XPicture& XPicture::operator=(const XPicture& oth)
+	{
+		if (this != &oth){
+			std::unique_lock<std::mutex> lock_mutex_this(m_dataPicture_mutex);
+			this->m_dataPicture = oth.m_dataPicture;
+		}
+		return *this;
 	}
 }
 
