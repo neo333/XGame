@@ -39,7 +39,6 @@ namespace xgame{
 		this->Clean();
 	}
 
-
 	void Texture::LoadTexture_fromMemoryPage(const MemoryPage& input_page, const ScreenVideo& makerVideo) throw(Error){
 		this->Clean();
 		if(makerVideo.m_renderer==nullptr)
@@ -94,8 +93,6 @@ namespace xgame{
 				SDL_SetTextureBlendMode(m_texture,SDL_BLENDMODE_BLEND);
 			}
 		}
-
-
 	}
 
 	void Texture::LoadTexture_fromSurface(const Surface& input_surface, const ScreenVideo& makerVideo, Rect& area_cut) throw(Error){

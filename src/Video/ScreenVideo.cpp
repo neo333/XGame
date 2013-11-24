@@ -130,4 +130,20 @@ namespace xgame{
 		else
 			m_ms_min_call_present = 0;
 	}
+
+	ScreenVideo::ptrSDL_DisplayMode ScreenVideo::GetCurrent_DisplayMode(const int index_display) throw(Error){
+		ptrSDL_DisplayMode rts(new SDL_DisplayMode);
+		if (SDL_GetCurrentDisplayMode(index_display, rts.get()) != 0)
+			throw Error("ScreenVideo", "GetCurrent_DisplayMode", "Impossibile determinare la modalità grafica corrente!\n%s", SDL_GetError());
+		return rts;
+	}
+
+	ScreenVideo::ptrSDL_DisplayMode ScreenVideo::GetClosest_DisplayModeTo(const ScreenVideo::ptrSDL_DisplayMode& input_near, const int index_display)
+		throw(Error)
+	{
+		ptrSDL_DisplayMode rts(new SDL_DisplayMode);
+		if (SDL_GetClosestDisplayMode(index_display, input_near.get(), rts.get()) == nullptr)
+			throw Error("ScreenVideo", "GetClosest_DisplayModeTo", "Impossibile determinare la modalità grafica prossima!\n%s", SDL_GetError());
+		return rts;
+	}
 }

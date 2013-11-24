@@ -123,11 +123,29 @@ namespace xgame{
 		//! Puntatore ad un SDL_DisplayMode.
 		typedef std::shared_ptr<SDL_DisplayMode> ptrSDL_DisplayMode;
 		
-		/*! \param [in] index_display	L'indice del display di cui si vuole conoscere l'informazione.
-		\return						Una lista di tutte le modalità supportate dal monitor.
-		\throw						Se non esiste il monitor con l'indice espresso dal parametro di input.
+		/*! \param [in] index_display	L'indice del display (monitor) di cui si vuole conoscere l'informazione.
+			\return						Una lista di tutte le modalità supportate dal monitor.
+			\throw						Se non esiste il monitor con l'indice espresso dal parametro di input.
 		*/
 		static std::vector<ptrSDL_DisplayMode> GetAll_AvailableDisplayMode(const int index_display =0) throw(Error);
+
+		/*!	Calcola la risoluzione del monitor all'atto di questa chiamata (corrente).
+			\param [in] index_display	L'indice del display (monitor) di cui si vuole conoscere l'informazione.
+			\return						La modalità (risoluzione) corrente del display (monitor).
+			\throw Error				Se non esiste il monitor con l'indice di input.
+		*/
+		static ptrSDL_DisplayMode GetCurrent_DisplayMode(const int index_display =0) throw(Error);
+
+		/*!	Ritorna la risoluzione più 'vicina' (prossima) alla risoluzione di input.
+			\param [in] input_near		La risoluzione che si vorrebbe valutare.
+			\param [in] index_display	L'indice del display (monitor) di cui si vuole conoscere l'informazione.
+
+			\return						La modalità (risoluzione) del display (monitor) più prossima a quella di ingresso.
+
+			\throw Error				Se non esiste il monitor con l'indice di input.
+										O se non esiste una modalità grafica prossima a quella in input.
+		*/
+		static ptrSDL_DisplayMode GetClosest_DisplayModeTo(const ptrSDL_DisplayMode& input_near,const int index_display = 0) throw(Error);
 
 
 		/*!	Disegna una texture sul renderer. La texture sarà mostrata al prossimo 'PresentRenderer'.
@@ -171,6 +189,7 @@ namespace xgame{
 		std::string m_title_win;
 		Uint32 m_ms_last_present_call;
 		Uint32 m_ms_min_call_present;
+		SDL_Rect m_area_active_renderer;
 
 		friend class Texture;
 
@@ -222,19 +241,17 @@ namespace xgame{
 		dest_rect.w = src_texture.m_w_size_scaled;
 		dest_rect.h = src_texture.m_h_size_scaled;
 
-		if(area_renderer_active.Get_Xcomponent()==0 && area_renderer_active.Get_Ycomponent()==0 
-			&& area_renderer_active.Get_Wcomponent()==-1 && area_renderer_active.Get_Hcomponent()==-1){
-				SDL_RenderSetClipRect(m_renderer,NULL);
-		}else{
-			SDL_Rect clip = area_renderer_active;
-			if(clip.w<0) clip.w = m_wsizeRenderer - clip.x;
-			if(clip.h<0) clip.h = m_hsizeRenderer - clip.y;
-			SDL_RenderSetClipRect(m_renderer,&clip);
+		if((area_renderer_active.Get_Xcomponent()==0 && area_renderer_active.Get_Ycomponent()==0 
+			&& area_renderer_active.Get_Wcomponent()==-1 && area_renderer_active.Get_Hcomponent()==-1)==false){
+			m_area_active_renderer = area_renderer_active;
+			if (m_area_active_renderer.w<0) m_area_active_renderer.w = m_wsizeRenderer - m_area_active_renderer.x;
+			if (m_area_active_renderer.h<0) m_area_active_renderer.h = m_hsizeRenderer - m_area_active_renderer.y;
+			SDL_RenderSetClipRect(m_renderer, &m_area_active_renderer);
 		}
 		
-
 		if(SDL_RenderCopy(m_renderer,src_texture.m_texture,src_texture.m_drawnable_area,&dest_rect)!=0)
 			throw Error("ScreenVideo","DrawTexture","Impossibile effettuare il rendering della texture richiesta!\n%s",SDL_GetError());
+		SDL_RenderSetClipRect(m_renderer, NULL);
 	}
 
 	inline ScreenVideo::operator SDL_Window*() throw(){
