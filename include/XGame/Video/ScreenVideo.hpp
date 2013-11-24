@@ -50,6 +50,12 @@ namespace xgame{
 		//! \return		L'altezza in pixel del renderer.
 		inline const size_t Get_HSizeRenderer() const throw();
 
+		//!	\return		La larghezza in pixel della finestra grafica.
+		inline const size_t Get_WSizeWindow() const throw();
+
+		//!	\return		L'altezza in pixel della finestra grafica.
+		inline const size_t Get_HSizeWindow() const throw();
+
 		/*! \return		L'ID (univoco) della finestra grafica.
 			\note		Ritorna '-1' in caso la finestra grafica non sia stata ancora lanciata
 		*/
@@ -180,15 +186,17 @@ namespace xgame{
 		ScreenVideo& operator=(ScreenVideo&&) = delete;
 
 	private:
-		SDL_Window* m_window;
-		SDL_Renderer* m_renderer;
-		size_t m_wsizeRenderer;
-		size_t m_hsizeRenderer;
-		bool m_fullscreen;
-		Uint32 m_id_window;
+		SDL_Window* m_window =nullptr;
+		SDL_Renderer* m_renderer =nullptr;
+		size_t m_wsizeRenderer =0;
+		size_t m_hsizeRenderer =0;
+		size_t m_wsizeWindow =0;
+		size_t m_hsizeWindow =0;
+		bool m_fullscreen =false;
+		Uint32 m_id_window =-1;
 		std::string m_title_win;
-		Uint32 m_ms_last_present_call;
-		Uint32 m_ms_min_call_present;
+		Uint32 m_ms_last_present_call =0;
+		Uint32 m_ms_min_call_present =0;
 		SDL_Rect m_area_active_renderer;
 
 		friend class Texture;
@@ -203,11 +211,23 @@ namespace xgame{
 	}
 
 	inline const size_t ScreenVideo::Get_WSizeRenderer() const throw(){
+		if (m_renderer == nullptr) return 0;
 		return m_wsizeRenderer;
 	}
 
 	inline const size_t ScreenVideo::Get_HSizeRenderer() const throw(){
+		if (m_renderer == nullptr) return 0;
 		return m_hsizeRenderer;
+	}
+
+	inline const size_t ScreenVideo::Get_WSizeWindow() const throw(){
+		if (m_window == nullptr) return 0;
+		return m_wsizeWindow;
+	}
+
+	inline const size_t ScreenVideo::Get_HSizeWindow() const throw(){
+		if (m_window == nullptr) return 0;
+		return m_hsizeWindow;
 	}
 
 	inline const Uint32 ScreenVideo::Get_ID_Window() const throw(){

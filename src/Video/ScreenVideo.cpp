@@ -1,8 +1,10 @@
 #include <XGame/Video/ScreenVideo.hpp>
 
 namespace xgame{
-	ScreenVideo::ScreenVideo(const size_t w_size_renderer, const size_t h_size_renderer) throw():m_wsizeRenderer(w_size_renderer), m_hsizeRenderer(h_size_renderer),
-		m_window(nullptr),m_renderer(nullptr), m_fullscreen(false),m_id_window(-1),m_ms_last_present_call(0),m_ms_min_call_present(0){
+	ScreenVideo::ScreenVideo(const size_t w_size_renderer, const size_t h_size_renderer) throw():
+		m_wsizeRenderer(w_size_renderer), m_hsizeRenderer(h_size_renderer)
+	{
+
 	}
 
 	ScreenVideo::~ScreenVideo() throw(){
@@ -36,12 +38,16 @@ namespace xgame{
 		this->Close();
 		if(m_wsizeRenderer==0 || m_hsizeRenderer==0)
 			throw Error("ScreenVideo","Open","Impossibile inizializzare un'area grafica a dimensioni nulle!");
+		if (m_wsizeWindow == 0)
+			m_wsizeWindow = m_wsizeRenderer;
+		if (m_hsizeWindow == 0)
+			m_hsizeWindow = m_hsizeRenderer;
 		
 		Uint32 flags_win =SDL_WINDOW_RESIZABLE;
 		if(m_fullscreen){
 			flags_win|=SDL_WINDOW_FULLSCREEN_DESKTOP;
 		}
-		m_window = SDL_CreateWindow(m_title_win.c_str(),SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED,m_wsizeRenderer,m_hsizeRenderer,flags_win);
+		m_window = SDL_CreateWindow(m_title_win.c_str(),SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED,m_wsizeWindow,m_hsizeWindow,flags_win);
 		if(m_window==nullptr)
 			throw Error("ScreenVideo","Open","Impossibile inizializzare una finestra grafica!\n%s",SDL_GetError());
 		m_renderer = SDL_CreateRenderer(m_window,-1,SDL_RENDERER_ACCELERATED);
@@ -62,10 +68,12 @@ namespace xgame{
 		m_hsizeRenderer=hSize_renderer;
 		if(m_renderer==nullptr) return;
 		if(SDL_RenderSetLogicalSize(m_renderer,wSize_renderer,hSize_renderer)!=0)
-			throw Error("ScreenVideo","Open","Impossibile dimensionare correttamente il renderer!\n%s",SDL_GetError());
+			throw Error("ScreenVideo","UpdateSize_Renderer","Impossibile dimensionare correttamente il renderer!\n%s",SDL_GetError());
 	}
 
 	void ScreenVideo::UpdateSize_GraphicWindow(const size_t wSize_window, const size_t hSize_window) throw(){
+		m_wsizeWindow = wSize_window;
+		m_hsizeWindow = hSize_window;
 		if(m_window==nullptr) return;
 		SDL_SetWindowSize(m_window,wSize_window,hSize_window);
 	}
