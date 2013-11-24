@@ -137,8 +137,11 @@ namespace xgame{
 		if (area_cut.Get_Wcomponent() < 0) area_cut.Set_Wcomponent(input_surface.Get_W() - area_cut.Get_Xcomponent());
 		if (area_cut.Get_Hcomponent() < 0) area_cut.Set_Hcomponent(input_surface.Get_H() - area_cut.Get_Ycomponent());
 
-		if (SDL_BlitSurface(input_surface.m_surface, area_cut, m_surface,
-			Rect(xy_blit.Get_X_Component(), xy_blit.Get_Y_Component(), area_cut.Get_Wcomponent(), area_cut.Get_Hcomponent())) != 0)
+		if (SDL_BlitSurface(input_surface.m_surface, 
+			static_cast<const SDL_Rect*>(area_cut), 
+			m_surface,
+			static_cast<SDL_Rect*>(Rect(xy_blit.Get_X_Component(), xy_blit.Get_Y_Component(), area_cut.Get_Wcomponent(), area_cut.Get_Hcomponent())))
+			!= 0)
 		{
 			throw Error("Surface", "BlitSurfaceOnThis", "Impossibile eseguire il blit della surface\n%s", SDL_GetError());
 		}

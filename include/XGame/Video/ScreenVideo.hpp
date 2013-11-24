@@ -263,13 +263,13 @@ namespace xgame{
 
 		if((area_renderer_active.Get_Xcomponent()==0 && area_renderer_active.Get_Ycomponent()==0 
 			&& area_renderer_active.Get_Wcomponent()==-1 && area_renderer_active.Get_Hcomponent()==-1)==false){
-			m_area_active_renderer = area_renderer_active;
+			m_area_active_renderer = static_cast<const SDL_Rect>(area_renderer_active);
 			if (m_area_active_renderer.w<0) m_area_active_renderer.w = m_wsizeRenderer - m_area_active_renderer.x;
 			if (m_area_active_renderer.h<0) m_area_active_renderer.h = m_hsizeRenderer - m_area_active_renderer.y;
 			SDL_RenderSetClipRect(m_renderer, &m_area_active_renderer);
 		}
 		
-		if(SDL_RenderCopy(m_renderer,src_texture.m_texture,src_texture.m_drawnable_area,&dest_rect)!=0)
+		if(SDL_RenderCopy(m_renderer,src_texture.m_texture,static_cast<const SDL_Rect*>(src_texture.m_drawnable_area),&dest_rect)!=0)
 			throw Error("ScreenVideo","DrawTexture","Impossibile effettuare il rendering della texture richiesta!\n%s",SDL_GetError());
 		SDL_RenderSetClipRect(m_renderer, NULL);
 	}

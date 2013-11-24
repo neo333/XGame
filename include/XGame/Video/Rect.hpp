@@ -44,11 +44,17 @@ namespace xgame{
 		//! Operatore di assegnazione con SDL_Rect.
 		inline Rect& operator=(const SDL_Rect& oth) throw();
 
-		//! Operatori di casting
-		inline operator SDL_Rect&();
-		inline operator const SDL_Rect&() const;
-		inline operator SDL_Rect*();
-		inline operator const SDL_Rect*() const;
+		//! Operatore di casting in SDL_Rect.
+		inline explicit operator SDL_Rect&();
+
+		//! Operatore di casting in const SDL_Rect.
+		inline explicit operator const SDL_Rect&() const;
+
+		//! Operatore di casting in SDL_Rect*.
+		inline explicit operator SDL_Rect*();
+
+		//! Operatore di casting in const SDL_Rect*.
+		inline explicit operator const SDL_Rect*() const;
 
 		//! \return		'true' se due l'intersezione di due rettangoli in ingresso è non nulla!
 		inline static const bool Rects_HasIntersection(const Rect& rect_1, const Rect& rect_2) throw();
@@ -60,6 +66,11 @@ namespace xgame{
 		//! \return		'true' se il punto è dentro il rettangolo.
 		inline const bool Point_is_In(const Point& xy) const throw();
 
+		//! \return 'true' se le due Rect sono uguali!
+		inline const bool operator==(const Rect& oth) const throw();
+
+		//! \return 'true' se le due Rect sono diverse!
+		inline const bool operator!=(const Rect& oth) const throw();
 
 	private:
 		SDL_Rect m_data;
@@ -89,12 +100,14 @@ namespace xgame{
 	inline Rect::operator const SDL_Rect*() const{return &this->m_data;}
 
 	inline const bool Rect::Rects_HasIntersection(const Rect& rect_1, const Rect& rect_2) throw(){
-		if(SDL_HasIntersection(rect_1,rect_2)==SDL_TRUE) return true;
+		if(SDL_HasIntersection(static_cast<const SDL_Rect*>(rect_1),static_cast<const SDL_Rect*>(rect_2))==SDL_TRUE) return true;
 		return false;
 	}
 
 	inline const bool Rect::Rects_Intersection(const Rect& rect_1, const Rect& rect_2, Rect& rect_out) throw(){
-		if(SDL_IntersectRect(rect_1,rect_2,rect_out)==SDL_TRUE) return true;
+		if (SDL_IntersectRect(static_cast<const SDL_Rect*>(rect_1),
+			static_cast<const SDL_Rect*>(rect_2), 
+			static_cast<SDL_Rect*>(rect_out)) == SDL_TRUE) return true;
 		return false;
 	}
 
@@ -116,6 +129,19 @@ namespace xgame{
 		if (xy.Get_X_Component() >= m_data.x && xy.Get_X_Component() <= m_data.x + m_data.w &&
 			xy.Get_Y_Component() >= m_data.y && xy.Get_Y_Component() <= m_data.y + m_data.h) return true;
 		return false;
+	}
+
+	inline const bool Rect::operator==(const Rect& oth) const throw(){
+		if (this->m_data.x != oth.m_data.x) return false;
+		if (this->m_data.y != oth.m_data.y) return false;
+		if (this->m_data.w != oth.m_data.w) return false;
+		if (this->m_data.h != oth.m_data.h) return false;
+		return true;
+	}
+
+	inline const bool Rect::operator!=(const Rect& oth) const throw(){
+		if (*this == oth) return false;
+		return true;
 	}
 }
 
