@@ -222,12 +222,16 @@ namespace xgame{
 
 	inline const size_t ScreenVideo::Get_WSizeWindow() const throw(){
 		if (m_window == nullptr) return 0;
-		return m_wsizeWindow;
+		int w, h;
+		SDL_GetWindowSize(m_window, &w, &h);
+		return static_cast<size_t>(w);
 	}
 
 	inline const size_t ScreenVideo::Get_HSizeWindow() const throw(){
 		if (m_window == nullptr) return 0;
-		return m_hsizeWindow;
+		int w, h;
+		SDL_GetWindowSize(m_window, &w, &h);
+		return static_cast<size_t>(h);
 	}
 
 	inline const Uint32 ScreenVideo::Get_ID_Window() const throw(){
