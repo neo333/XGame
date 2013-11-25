@@ -43,7 +43,7 @@ namespace xgame{
 		if (m_hsizeWindow == 0)
 			m_hsizeWindow = m_hsizeRenderer;
 		
-		Uint32 flags_win =SDL_WINDOW_RESIZABLE;
+		Uint32 flags_win = SDL_WINDOW_RESIZABLE;
 		if(m_fullscreen){
 			flags_win|=SDL_WINDOW_FULLSCREEN_DESKTOP;
 		}
