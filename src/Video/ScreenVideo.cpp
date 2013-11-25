@@ -11,13 +11,17 @@ namespace xgame{
 		this->Close();
 	}
 
-	void ScreenVideo::NotificationEvent(const SDL_Event& event){
-		if(m_window !=nullptr) if(event.type == SDL_WINDOWEVENT) if(event.window.windowID == m_id_window){
-			switch(event.window.event){
-			case SDL_WINDOWEVENT_CLOSE:
-				this->Close();
-				break;
+	void ScreenVideo::NotificationEvents(ListEvents& events){
+		for (auto event = events.begin(); event != events.end(); ){
+			if (m_window != nullptr) if (event->type == SDL_WINDOWEVENT) if (event->window.windowID == m_id_window){
+				switch (event->window.event){
+				case SDL_WINDOWEVENT_CLOSE:
+					this->Close();
+					event = events.erase(event);
+					continue;
+				}
 			}
+			event++;
 		}
 	}
 
@@ -61,6 +65,27 @@ namespace xgame{
 
 		if(SDL_RenderSetLogicalSize(m_renderer,m_wsizeRenderer,m_hsizeRenderer)!=0)
 			throw Error("ScreenVideo","Open","Impossibile dimensionare correttamente il renderer!\n%s",SDL_GetError());
+	}
+
+	void ScreenVideo::DrawTexture(const Texture& src_texture, const Point& xy_onRenderer, const Rect& area_renderer_active) throw(Error){
+		if (src_texture.IsVoid()) return;
+		SDL_Rect dest_rect;
+		dest_rect.x = xy_onRenderer.Get_X_Component();
+		dest_rect.y = xy_onRenderer.Get_Y_Component();
+		dest_rect.w = src_texture.m_w_size_scaled;
+		dest_rect.h = src_texture.m_h_size_scaled;
+
+		if ((area_renderer_active.Get_Xcomponent() == 0 && area_renderer_active.Get_Ycomponent() == 0
+			&& area_renderer_active.Get_Wcomponent() == -1 && area_renderer_active.Get_Hcomponent() == -1) == false){
+			m_area_active_renderer = static_cast<const SDL_Rect>(area_renderer_active);
+			if (m_area_active_renderer.w<0) m_area_active_renderer.w = m_wsizeRenderer - m_area_active_renderer.x;
+			if (m_area_active_renderer.h<0) m_area_active_renderer.h = m_hsizeRenderer - m_area_active_renderer.y;
+			SDL_RenderSetClipRect(m_renderer, &m_area_active_renderer);
+		}
+
+		if (SDL_RenderCopy(m_renderer, src_texture.m_texture, static_cast<const SDL_Rect*>(src_texture.m_drawnable_area), &dest_rect) != 0)
+			throw Error("ScreenVideo", "DrawTexture", "Impossibile effettuare il rendering della texture richiesta!\n%s", SDL_GetError());
+		SDL_RenderSetClipRect(m_renderer, nullptr);
 	}
 
 	void ScreenVideo::UpdateSize_Renderer(const size_t wSize_renderer, const size_t hSize_renderer) throw(Error){

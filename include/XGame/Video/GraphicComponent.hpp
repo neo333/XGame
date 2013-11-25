@@ -4,9 +4,12 @@
 #include <XGame/Video/Config.hpp>
 #include <XGame/Video/Point.hpp>
 #include <XGame/Video/ScreenVideo.hpp>
+#include <XGame/Event/ObjectInteractive.hpp>
 
 namespace xgame{
-	class XGAME_API_VIDEO GraphicComponent{
+	class XGAME_API_VIDEO GraphicComponent:
+	public ObjectInteractive
+	{
 	public:
 		/*! Setta la posizione relativa dell'oggetto sullo schermo.
 			\note La posizione è realtiva perché l'oggetto grafico potrebbe trovarsi in un contenitore posto in qualche punto
@@ -28,13 +31,19 @@ namespace xgame{
 		/*! Carica il componente grafico. (Es. letture di immagini dal disco rigido).
 			\param [in] screen_ref		Lo ScreenVideo di riferimento che serve per il caricamento di eventuali texture grafiche.
 		*/
-		virtual void Load(const ScreenVideo& screen_ref) throw();
+		virtual void Load(const ScreenVideo& screen_ref);
 
 		//! Dealloca tutte le risorse del componente grafico.
-		virtual void UnLoad() =0;
+		virtual void UnLoad() = 0;
 
 		//! \return		'true' se il componente grafico è carico, 'false' altrimenti.
-		virtual const bool IsLoad() const =0;
+		virtual const bool IsLoad() const = 0;
+
+		/*! Aggiorna l'oggetto interattivo passandogli gli eventi verificatosi.
+			\see	ObjectInteractive::NotificationEvents
+			\note	Generalmente un'oggetto interattivo cancella l'evento che lo ha interessato dalla lista.
+		*/
+		virtual void NotificationEvents(ListEvents& events) = 0;
 
 		//! Costruttore di default.
 		GraphicComponent() = default;

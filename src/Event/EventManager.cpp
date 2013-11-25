@@ -3,45 +3,20 @@
 namespace xgame{
 	EventManager* EventManager::s_ptrInstance = nullptr;
 
-	EventManager::EventManager(){ }
-
-	void EventManager::UpdateAll(){
-		while(SDL_PollEvent(&this->m_event_sdl)){
-			for(auto& object_registered : this->m_registro_interactive){
-				object_registered.first->NotificationEvent(m_event_sdl);
+	const size_t EventManager::PopEvents_andADDtoList(ListEvents& out_events, const size_t n_max_pop){
+		size_t pop_done = 0;
+		bool no_event = false;
+		while (pop_done < n_max_pop && no_event==false){
+			if (SDL_PollEvent(&m_event_sdl) != 0){
+				out_events.push_front(std::move(m_event_sdl));
+				pop_done++;
+			}
+			else{
+				no_event = true;
 			}
 		}
-
-		for(auto& object_register : this->m_registro_dynamic){
-			object_register.first->UpdateObject();
-		}
+		return pop_done;
 	}
 
-	void EventManager::RegisterObjectInteractive(ObjectInteractive* const object){
-		if(object==nullptr) return;
-		RegistroObjectsInteractive::iterator find = this->m_registro_interactive.find(object);
-		if(find == this->m_registro_interactive.end()) 
-			this->m_registro_interactive.insert(std::pair<ObjectInteractive*,InfoObject>(object,InfoObject()));
-	}
 
-	void EventManager::UnRegisterObjectInteractive(ObjectInteractive* const object) throw(){
-		if(object==nullptr) return;
-		RegistroObjectsInteractive::iterator find = this->m_registro_interactive.find(object);
-		if(find != this->m_registro_interactive.end())
-			this->m_registro_interactive.erase(find);
-	}
-
-	void EventManager::RegisterObjectDynamic(ObjectDynamic* const object){
-		if(object==nullptr) return;
-		RegistroObjectDynamic::iterator find = this->m_registro_dynamic.find(object);
-		if(find == this->m_registro_dynamic.end())
-			this->m_registro_dynamic.insert(std::pair<ObjectDynamic*,InfoObject>(object,InfoObject()));
-	}
-
-	void EventManager::UnRegisterObjectDynamic(ObjectDynamic* const object) throw(){
-		if(object==nullptr) return;
-		RegistroObjectDynamic::iterator find = this->m_registro_dynamic.find(object);
-		if(find != this->m_registro_dynamic.end())
-			this->m_registro_dynamic.erase(find);
-	}
 }

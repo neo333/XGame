@@ -6,19 +6,20 @@
 namespace xgame{
 	class XGAME_API_EVENT ObjectDynamic{
 	public:
-		//! Distruttore. Deassocia la registrazione presso l'EventManager.
-		virtual ~ObjectDynamic() throw();
+		//! Costruttore di default.
+		ObjectDynamic() = default;
 
-	protected:
-		protected:
-		/*! Questo metodo viene chiamato automaticamente dall'EventManager per aggiornare periodicamente l'oggetto*/
-		virtual void UpdateObject() =0;
-		
-		//! Costruisce un oggetto dinamico registrandolo presso l'EventManager
-		ObjectDynamic() throw();
+		//! Distruttore.
+		virtual ~ObjectDynamic() = default;
 
-	private:
-		friend class EventManager;
+		//! Costruttore di copia.
+		ObjectDynamic(const ObjectDynamic&) = default;
+
+		//! Operatore di assegnazione.
+		ObjectDynamic& operator=(const ObjectDynamic&) = default;
+
+		//! Aggiorna l'oggetto dinamico.
+		virtual void UpdateObject() = 0; 
 	};
 }
 

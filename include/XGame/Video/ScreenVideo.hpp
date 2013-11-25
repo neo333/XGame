@@ -165,7 +165,7 @@ namespace xgame{
 			
 			\throw Error						In caso di errore video interno.
 		*/
-		inline void DrawTexture(const Texture& src_texture, const Point& xy_onRenderer, const Rect& area_renderer_active = Rect(0,0,-1,-1)) throw(Error);
+		void DrawTexture(const Texture& src_texture, const Point& xy_onRenderer, const Rect& area_renderer_active = Rect(0,0,-1,-1)) throw(Error);
 
 		//! Operatore di conversione per puntatore a SDL_Window.
 		inline explicit operator SDL_Window*() throw();
@@ -185,6 +185,9 @@ namespace xgame{
 		//! Operatore di move eliminato!
 		ScreenVideo& operator=(ScreenVideo&&) = delete;
 
+		//! Aggiorna la finestra grafica con gli eventi di input.
+		virtual void NotificationEvents(ListEvents& events) override;
+
 	private:
 		SDL_Window* m_window =nullptr;
 		SDL_Renderer* m_renderer =nullptr;
@@ -200,9 +203,6 @@ namespace xgame{
 		SDL_Rect m_area_active_renderer;
 
 		friend class Texture;
-
-	protected:
-		virtual void NotificationEvent(const SDL_Event& event) override;
 	};
 
 	inline const bool ScreenVideo::IsOpen() const throw(){
@@ -254,28 +254,6 @@ namespace xgame{
 	inline void ScreenVideo::SetColorBackgroundRenderer(const Color& color_setting) throw(){
 		SDL_SetRenderDrawColor(m_renderer,color_setting.Get_RedComponent(),
 			color_setting.Get_GreenComponent(),color_setting.Get_BlueComponent(),color_setting.Get_AlphaComponent());
-	}
-
-
-	inline void ScreenVideo::DrawTexture(const Texture& src_texture, const Point& xy_onRenderer,const Rect& area_renderer_active) throw(Error){
-		if(src_texture.IsVoid()) return;
-		SDL_Rect dest_rect;
-		dest_rect.x = xy_onRenderer.Get_X_Component();
-		dest_rect.y = xy_onRenderer.Get_Y_Component();
-		dest_rect.w = src_texture.m_w_size_scaled;
-		dest_rect.h = src_texture.m_h_size_scaled;
-
-		if((area_renderer_active.Get_Xcomponent()==0 && area_renderer_active.Get_Ycomponent()==0 
-			&& area_renderer_active.Get_Wcomponent()==-1 && area_renderer_active.Get_Hcomponent()==-1)==false){
-			m_area_active_renderer = static_cast<const SDL_Rect>(area_renderer_active);
-			if (m_area_active_renderer.w<0) m_area_active_renderer.w = m_wsizeRenderer - m_area_active_renderer.x;
-			if (m_area_active_renderer.h<0) m_area_active_renderer.h = m_hsizeRenderer - m_area_active_renderer.y;
-			SDL_RenderSetClipRect(m_renderer, &m_area_active_renderer);
-		}
-		
-		if(SDL_RenderCopy(m_renderer,src_texture.m_texture,static_cast<const SDL_Rect*>(src_texture.m_drawnable_area),&dest_rect)!=0)
-			throw Error("ScreenVideo","DrawTexture","Impossibile effettuare il rendering della texture richiesta!\n%s",SDL_GetError());
-		SDL_RenderSetClipRect(m_renderer, NULL);
 	}
 
 	inline ScreenVideo::operator SDL_Window*() throw(){

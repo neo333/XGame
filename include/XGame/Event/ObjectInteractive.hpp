@@ -2,23 +2,26 @@
 #define __OBJECT_INTERACTIVE__XGAME__HPP
 
 #include <XGame/Event/Config.hpp>
-#include <SDL2/SDL.h>
 
 namespace xgame{
 	class XGAME_API_EVENT ObjectInteractive{
 	public:
-		//! Distruttore. Deassocia la registrazione presso l'EventManager.
-		virtual ~ObjectInteractive();
+		//! Costruttore di default.
+		ObjectInteractive() = default;
 
-	protected:
-		/*! Questo metodo viene chiamato automaticamente dall'EventManager quando si scatena un evento.*/
-		virtual void NotificationEvent(const SDL_Event& event) =0;
-		
-		//! Costruisce un oggetto interattivo registrandolo presso l'EventManager
-		ObjectInteractive();
-		
-	private:
-		friend class EventManager;
+		//! Distruttore. Deassocia la registrazione presso l'EventManager.
+		virtual ~ObjectInteractive() = default;
+
+		//! Costruttore di copia.
+		ObjectInteractive(const ObjectInteractive&) = default;
+
+		//! Operatore di assegnazione.
+		ObjectInteractive& operator=(const ObjectInteractive&) = default;
+
+		/*! Aggiorna l'oggetto interattivo passandogli gli eventi verificatosi.
+			\note	Generalmente un'oggetto interattivo cancella l'evento che lo ha interessato dalla lista.
+		*/
+		virtual void NotificationEvents(ListEvents& events) = 0;
 	};
 }
 
