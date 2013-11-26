@@ -43,7 +43,7 @@ namespace xgame{
 			\see	ObjectInteractive::NotificationEvents
 			\note	Generalmente un'oggetto interattivo cancella l'evento che lo ha interessato dalla lista.
 		*/
-		virtual void NotificationEvents(ListEvents& events) = 0;
+		virtual void NotificationEvents(xgame::ListEvents& events) = 0;
 
 		//! Costruttore di default.
 		GraphicComponent() = default;

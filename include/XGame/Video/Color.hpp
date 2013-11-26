@@ -4,7 +4,7 @@
 #include <XGame/Video/Config.hpp>
 #include <SDL2/SDL.h>
 
-#ifdef XGAME_WINDOWS_OS
+#ifdef XGAME_MSVC
 #pragma warning(disable:4290)
 #endif
 

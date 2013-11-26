@@ -7,7 +7,7 @@
 #include <XGame/Loader/MemoryPage.hpp>
 #include <string>
 
-#ifdef XGAME_WINDOWS_OS 
+#ifdef XGAME_MSVC 
 #pragma warning(disable:4251)
 #pragma warning(disable:4290)
 #endif

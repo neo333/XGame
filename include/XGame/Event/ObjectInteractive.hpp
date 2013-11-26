@@ -21,7 +21,7 @@ namespace xgame{
 		/*! Aggiorna l'oggetto interattivo passandogli gli eventi verificatosi.
 			\note	Generalmente un'oggetto interattivo cancella l'evento che lo ha interessato dalla lista.
 		*/
-		virtual void NotificationEvents(ListEvents& events) = 0;
+		virtual void NotificationEvents(xgame::ListEvents& events) = 0;
 	};
 }
 

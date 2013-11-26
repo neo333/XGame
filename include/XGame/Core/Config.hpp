@@ -16,6 +16,9 @@
 
 #endif
 
+#ifdef _MSC_VER
+#define XGAME_MSVC
+#endif
 
 
 #ifdef XGAME_BUILD_DLL_CORE

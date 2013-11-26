@@ -7,7 +7,7 @@
 #include <XGame/Video/Rect.hpp>
 #include <SDL2/SDL_ttf.h>
 
-#ifdef XGAME_WINDOWS_OS
+#ifdef XGAME_MSVC
 #pragma warning(disable:4290)
 #endif
 
