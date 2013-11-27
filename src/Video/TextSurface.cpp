@@ -45,8 +45,12 @@ namespace xgame{
 		if (!render_process)
 			throw Error("TextSurface", "LoadSurface_fromFont", "Funzione di render text non specificata!");
 
+		std::string str_line;
 		for (size_t i = 0; i < N_LINES; i++){
-			data_surface_text = render_process(input_font.m_font, str_input.substr(offset_lines[i],len_lines[i]).c_str(), color_text);
+			str_line = std::move(str_input.substr(offset_lines[i], len_lines[i]));
+			if (str_line.size() == 0)
+				str_line = " ";
+			data_surface_text = render_process(input_font.m_font, str_line.c_str(), color_text);
 				
 			if (data_surface_text == nullptr)
 				throw Error("TextSurface", "LoadSurface_fromFont", "Impossibile eseguire un render del testo!\n%s", TTF_GetError());
