@@ -9,6 +9,10 @@
 #pragma warning(disable:4251)
 #endif
 
+#include <XGame/Script/luabind/luabind.hpp>
+
+
+
 namespace xgame{
 	class XGAME_API_SCRIPT Script{
 	public:
@@ -44,17 +48,84 @@ namespace xgame{
 		*/
 		void LoadScript(const std::string& name_script, MemoryPage&& input_page) throw(Error);
 
+		//! \return 'true' se lo script è stato caricato precedentemente correttamente, 'false' altrimenti.
 		inline const bool Is_Load() const throw();
 
-		void Run();
+		/*! Esegue lo script se 'caricato'. Altrimenti non fa nulla.
+
+			\throw Error	In caso di errore nell'esecuzione o l'interpretazione dello script.
+		*/
+		void Run() throw(Error);
+
+		/*! Registra una funzione C,C++ allo script.
+			Una volta agganciata la funzione con questo metodo sarà possibile richiamare la stessa
+			dallo script.
+
+			\note	Questo metodo va chiamato PRIMA di eseguire lo script. Prima del metodo 'Script::Run'.
+		*/
+		template<class Fn>void RegisterFunction(const std::string& funct_name,Fn&& function);
+
+		template<class Type>void AddRegisterClass(const luabind::class_<Type>& bind_class);
+
+		/*! Chiama ed esegue una funzione dello script.
+			
+			\note	Questo metodo va chiamato DOPO aver eseguito lo script (in modo che sia stato interpretato).
+					Quindi prima del metodo 'Script::Run'.
+		*/
+		template<class RetValue, class... Arg>RetValue CallFunction(const std::string& funct_name, Arg&&... args) throw(Error);
+
+		//! Operatore di casting esplicito a puntatore lua_State.
+		inline explicit operator lua_State*() throw();
+
+		//! Operatore di casting esplicito a puntatore cost lua_State.
+		inline explicit operator const lua_State*() const throw();
 	private:
 		lua_State* m_state_script = nullptr;
 		MemoryPage m_ref_script;
 		std::string m_name_script;
+		bool m_runned = false;
+
+		static int handle_error(lua_State*);
 	};
 
 	inline const bool Script::Is_Load() const throw(){
 		if (m_state_script) return true;
 		return false;
+	}
+
+	template<class Fn>void Script::RegisterFunction(const std::string& funct_name, Fn&& function){
+		luabind::module(m_state_script)
+			[
+				luabind::def(funct_name.c_str(), function)
+			];
+	}
+
+	template<class RetValue, class... Arg>RetValue Script::CallFunction(const std::string& funct_name, Arg&&... args) throw(Error){
+		try{
+			return luabind::call_function<RetValue>(m_state_script, funct_name.c_str(), args...);
+		}
+		catch (const std::exception& err){
+			std::string _what = err.what();
+			_what += '\n';
+			const char* info_debug = lua_tostring(m_state_script, 1);
+			if (info_debug)
+				_what += info_debug;
+			throw Error("Script", "CallFunction", _what.c_str());
+		}
+	}
+
+	template<class Type>void Script::AddRegisterClass(const luabind::class_<Type>& bind_class){
+		luabind::module(m_state_script)
+			[
+				bind_class
+			];
+	}
+
+	inline Script::operator lua_State*() throw(){
+		return m_state_script;
+	}
+
+	inline Script::operator const lua_State*() const throw(){
+		return m_state_script;
 	}
 }

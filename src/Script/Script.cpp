@@ -1,4 +1,5 @@
 ﻿#include <XGame/Script/Script.hpp>
+#include <sstream>
 
 namespace xgame{
 	Script::~Script(){
@@ -12,6 +13,7 @@ namespace xgame{
 		}
 		this->m_ref_script.Delete();
 		this->m_name_script.clear();
+		this->m_runned = false;
 	}
 
 	void Script::LoadScript(const std::string& name_script, MemoryPage&& input_page) throw(Error){
@@ -35,11 +37,48 @@ namespace xgame{
 			throw Error("Script", "LoadScript", "Errore nell'allocazione di memoria nello script '%s'", m_name_script.c_str());
 		else if (result == LUA_ERRGCMM)
 			throw Error("Script", "LoadScript", "Errore di interpretazione dello script '%s'", m_name_script.c_str());
+
+		try{
+			luabind::open(m_state_script);
+			luabind::set_pcall_callback(Script::handle_error);
+		}
+		catch (const std::exception& err){
+			throw Error("Script", "LoadScript", err.what());
+		}
 	}
 
-	void Script::Run(){
+	void Script::Run() throw(Error){
 		if (this->Is_Load()){
 			int result = lua_pcall(m_state_script, 0, LUA_MULTRET, 0);
+			if (result == LUA_ERRRUN)
+				throw Error("Script", "Run", "Errore a run time nello script '%s'!", m_name_script.c_str());
+			else if (result == LUA_ERRMEM)
+				throw Error("Script", "Run", "Errore allocazione della memoria nello script '%s'!", m_name_script.c_str());
+			else if (result == LUA_ERRERR)
+				throw Error("Script", "Run", "Errore messaggio nello script '%s'", m_name_script.c_str());
+			else if (result == LUA_ERRGCMM)
+				throw Error("Script", "LoadScript", "Errore di interpretazione dello script '%s'", m_name_script.c_str());
+			if (result != LUA_OK)
+				throw Error("Script", "LoadScript", "Errore sconosiuto dello script '%s'", m_name_script.c_str());
+			this->m_runned = true;
 		}
+	}
+
+	int Script::handle_error(lua_State* L){
+		lua_Debug d;
+		lua_getstack(L, 1, &d);
+		lua_getinfo(L, "Sln", &d);
+		std::string err = lua_tostring(L, -1);
+		lua_pop(L, 1);
+		std::stringstream msg;
+		msg << d.short_src << ":" << d.currentline;
+
+		if (d.name != 0)
+		{
+			msg << "(" << d.namewhat << " " << d.name << ")";
+		}
+		msg << " " << err;
+		lua_pushstring(L, msg.str().c_str());
+		return 1;
 	}
 }
