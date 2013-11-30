@@ -6,14 +6,14 @@
 
 namespace xgame{
 
-	Texture::Texture()throw():m_render(nullptr),m_texture(nullptr),m_w_size(0),m_h_size(0),m_w_size_scaled(0),m_h_size_scaled(0){
+	Texture::Texture()throw():m_texture(nullptr),m_render(nullptr),m_w_size(0),m_h_size(0),m_w_size_scaled(0),m_h_size_scaled(0){
 
 	}
 
 	Texture::Texture(const size_t w_size, const size_t h_size, const ScreenVideo& makerVideo) throw(Error):
-			m_render(makerVideo.m_renderer),m_w_size(w_size),m_h_size(h_size),m_w_size_scaled(w_size),m_h_size_scaled(h_size),
-			m_drawnable_area(Rect(0,0,w_size,h_size)),
-			m_texture(SDL_CreateTexture(makerVideo.m_renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, w_size, h_size))
+			m_texture(SDL_CreateTexture(makerVideo.m_renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, w_size, h_size)),
+			m_render(makerVideo.m_renderer),m_w_size(w_size),m_h_size(h_size),
+			m_drawnable_area(Rect(0,0,w_size,h_size)),m_w_size_scaled(w_size),m_h_size_scaled(h_size)
 	{
 		if (m_render == nullptr)
 			throw Error("Texture", "Texture", "Impossibile inizializzare una texture con uno specifico renderer nullo!");
@@ -159,9 +159,13 @@ namespace xgame{
 		SDL_SetTextureBlendMode(m_texture, SDL_BLENDMODE_BLEND);
 	}
 
-	Texture::Texture(const Texture& oth)throw(Error) :m_render(oth.m_render), m_w_size(oth.m_w_size), m_h_size(oth.m_h_size),
-		m_texture(Texture::CopyInternalTexture(oth)),m_drawnable_area(oth.m_drawnable_area),m_w_size_scaled(oth.m_w_size_scaled),
-		m_h_size_scaled(oth.m_h_size_scaled){
+	Texture::Texture(const Texture& oth)throw(Error):
+		m_texture(Texture::CopyInternalTexture(oth)),
+		m_render(oth.m_render),
+		m_w_size(oth.m_w_size), m_h_size(oth.m_h_size),
+		m_drawnable_area(oth.m_drawnable_area),
+		m_w_size_scaled(oth.m_w_size_scaled), m_h_size_scaled(oth.m_h_size_scaled)
+	{
 
 	}
 
@@ -179,8 +183,13 @@ namespace xgame{
 		return *this;
 	}
 
-	Texture::Texture(Texture&& oth) throw():m_render(oth.m_render),m_w_size(oth.m_w_size),m_h_size(oth.m_h_size),m_texture(oth.m_texture),
-		m_drawnable_area(oth.m_drawnable_area),m_w_size_scaled(oth.m_w_size_scaled),m_h_size_scaled(oth.m_h_size_scaled){
+	Texture::Texture(Texture&& oth) throw():
+		m_texture(oth.m_texture),
+		m_render(oth.m_render),
+		m_w_size(oth.m_w_size),m_h_size(oth.m_h_size),
+		m_drawnable_area(oth.m_drawnable_area),
+		m_w_size_scaled(oth.m_w_size_scaled),m_h_size_scaled(oth.m_h_size_scaled)
+	{
 		oth.m_texture = nullptr;
 		oth.m_w_size = 0;
 		oth.m_h_size = 0;

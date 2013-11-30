@@ -1,7 +1,7 @@
 #include <XGame/Video/GraphicComponent.hpp>
 
 namespace xgame{
-	GraphicComponent::~GraphicComponent(){  }
+	GraphicComponent::~GraphicComponent() throw(){  }
 
 	void GraphicComponent::Load(const ScreenVideo& screen_ref){
 		this->m_screen_maker_relative = &screen_ref;

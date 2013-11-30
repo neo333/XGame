@@ -23,7 +23,7 @@
 #ifndef WEAK_REF_040402_HPP
 #define WEAK_REF_040402_HPP
 
-#include <XGame/Script/config.hpp>
+#include <XGame/Script/luabind/config.hpp>
 
 struct lua_State;
 

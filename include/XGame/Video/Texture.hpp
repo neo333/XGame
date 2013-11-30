@@ -52,13 +52,20 @@ namespace xgame{
 
 			\param [in]	input_surface		La surface da cui copiare il contenuto grafico.
 			\param [in]	makerVideo			Uno ScreenVideo 'NECESSARIAMENTE APERTO' per il formato del driver video.
-			\param [in]	area_cut			La porzione della Surface che si vuole copiare.
+			\param [in,out]	area_cut		La porzione della Surface che si vuole copiare.
 
 			\note							Questa funzione ripristina l'area di disegno della texture.
+			\note							Il parametro 'area_cut' è anche di output perché viene 'ridimensionato' dalla funzione
+											nel caso le grandezze siano troppo grandi rispetto alle dimensioni della surface da copiare.
 
 			\throw Error					In caso di errore grafico interno.
 		*/
-		void LoadTexture_fromSurface(const Surface& input_surface, const ScreenVideo& makerVideo, Rect& area_cut = Rect(0, 0, -1, -1)) throw(Error);
+		void LoadTexture_fromSurface(const Surface& input_surface, const ScreenVideo& makerVideo, Rect& area_cut) throw(Error);
+
+		/*!	\see 		Texture::LoadTexture_fromSurface(const Surface&, const ScreenVideo&, Rect&)
+		  	\note		Questa funzione copia TUTTA la surface.
+		*/
+		inline void LoadTexture_fromSurface(const Surface& input_surface, const ScreenVideo& makerVideo) throw(Error);
 
 
 		/*! Carica la texture renderizzando un testo secondo il font immesso come parametro di input.
@@ -233,6 +240,11 @@ namespace xgame{
 
 	inline Texture::operator const SDL_Texture*() const throw(){
 		return this->m_texture;
+	}
+
+	inline void Texture::LoadTexture_fromSurface(const Surface& input_surface, const ScreenVideo& makerVideo) throw(Error){
+		Rect default_area = Rect(0,0,-1,-1);
+		this->LoadTexture_fromSurface(input_surface,makerVideo,default_area);
 	}
 }
 

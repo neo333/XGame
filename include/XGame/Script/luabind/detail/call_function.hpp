@@ -26,7 +26,7 @@
 #ifndef LUABIND_CALL_FUNCTION_HPP_INCLUDED
 #define LUABIND_CALL_FUNCTION_HPP_INCLUDED
 
-#include <XGame/Script/config.hpp>
+#include <XGame/Script/luabind/config.hpp>
 
 #include <boost/mpl/if.hpp>
 #include <boost/tuple/tuple.hpp>

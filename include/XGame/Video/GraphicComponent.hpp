@@ -49,7 +49,7 @@ namespace xgame{
 		GraphicComponent() = default;
 
 		//! Distruttore.
-		virtual ~GraphicComponent();
+		virtual ~GraphicComponent() throw();
 
 		//! Costruttore di copia.
 		GraphicComponent(const GraphicComponent&) = default;

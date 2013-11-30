@@ -81,10 +81,17 @@ namespace xgame{
 
 			\note Questa funzione tiene in conto delle trasparenze della surface di input, ma non quelle della surface destinazione.
 					Se la destione contiene delle aree trasparenti non verrà eseguito il blit su quelle aree.
+			\note							Specificare dimensioni negative per il parametro 'area_cut' per indicare 'tutta la dimensione'.
 
 			\throw Error					In caso di errori interni.
 		*/
-		inline void BlitSurfaceOnThis(const Surface& input_surface, const Point& xy_blit =Point(0,0), Rect& area_cut = Rect(0,0,-1,-1)) throw(Error);
+		inline void BlitSurfaceOnThis(const Surface& input_surface, const Point& xy_blit, Rect& area_cut) throw(Error);
+
+		/*!	\see		Surface::BlitSurfaceOnThis(const Surface&, const Point&, Rect&)
+			\note		Stessa funzionalità, ma con l'ultimo parametro di default!
+							Rect(0,0,-1,-1).
+		*/
+		inline void BlitSurfaceOnThis(const Surface& input_surface, const Point& xy_blit) throw(Error);
 
 		//! Operatore di conversione per SDL_Surface.
 		inline explicit operator SDL_Surface*() throw();
@@ -145,6 +152,11 @@ namespace xgame{
 		{
 			throw Error("Surface", "BlitSurfaceOnThis", "Impossibile eseguire il blit della surface\n%s", SDL_GetError());
 		}
+	}
+
+	inline void Surface::BlitSurfaceOnThis(const Surface& input_surface, const Point& xy_blit) throw(Error){
+		Rect default_area = Rect(0,0,-1,-1);
+		this->BlitSurfaceOnThis(input_surface,xy_blit,default_area);
 	}
 }
 

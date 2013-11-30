@@ -15,7 +15,7 @@ namespace xgame{
 		GraphicContainer() = default;
 
 		//! Distruttore virtuale.
-		virtual ~GraphicContainer() = default;
+		virtual ~GraphicContainer() override = default;
 
 		//! Costruttore di copia.
 		GraphicContainer(const GraphicContainer&) = default;

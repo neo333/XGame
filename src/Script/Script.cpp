@@ -6,7 +6,7 @@ namespace xgame{
 		this->Clean();
 	}
 
-	void Script::Clean(){
+	void Script::Clean() throw(){
 		if (this->m_state_script){
 			lua_close(this->m_state_script);
 			this->m_state_script = nullptr;
