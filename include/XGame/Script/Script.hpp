@@ -9,8 +9,7 @@
 #pragma warning(disable:4251)
 #endif
 
-#include <XGame/Script/luabind/luabind.hpp>
-
+#include <XGame/Script/BinderClass.hpp>
 
 
 namespace xgame{
@@ -65,7 +64,13 @@ namespace xgame{
 		*/
 		template<class Fn>void RegisterFunction(const std::string& funct_name,Fn&& function);
 
-		template<class Type>void AddRegisterClass(const luabind::class_<Type>& bind_class);
+		/*! Registra una class C++ allo script.
+			Una volta agganciata la classe con questo metodo sarà possibile richiamare la stessa dallo script,
+			o usare oggetti di quella classe come parametri.
+
+			\note	Questo metodo va chiamato PRIMA di eseguire lo script. Prima del metodo 'Script::Run'.
+		*/
+		template<class Type>void RegisterClass(const BinderClass<Type>& bind_class);
 
 		/*! Chiama ed esegue una funzione dello script.
 			
@@ -114,10 +119,10 @@ namespace xgame{
 		}
 	}
 
-	template<class Type>void Script::AddRegisterClass(const luabind::class_<Type>& bind_class){
+	template<class Type>void Script::RegisterClass(const BinderClass<Type>& bind_class){
 		luabind::module(m_state_script)
 			[
-				bind_class
+				bind_class.m_ref_class
 			];
 	}
 
