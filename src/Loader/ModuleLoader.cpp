@@ -7,6 +7,7 @@
 #include <limits>
 #include <future>
 #include <stdexcept>
+#include <cstring>
 
 namespace xgame{
 	ModuleLoader* ModuleLoader::s_prtInstance = nullptr;
@@ -283,7 +284,7 @@ namespace xgame{
 		if (memory_input == nullptr || size_input==0) return;
 		page_out.prtMemory = new uint8_t[size_input];
 		page_out.sizePage = size_input;
-		memcpy(static_cast<void*>(page_out.prtMemory), memory_input, size_input);
+		std::memcpy(static_cast<void*>(page_out.prtMemory), memory_input, size_input);
 	}
 
 }
