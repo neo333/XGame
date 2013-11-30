@@ -76,6 +76,8 @@ namespace xgame{
 			
 			\note	Questo metodo va chiamato DOPO aver eseguito lo script (in modo che sia stato interpretato).
 					Quindi prima del metodo 'Script::Run'.
+
+			\note	Utilizzare 'boost::ref' per passare un argomento per riferimento.
 		*/
 		template<class RetValue, class... Arg>RetValue CallFunction(const std::string& funct_name, Arg&&... args) throw(Error);
 
