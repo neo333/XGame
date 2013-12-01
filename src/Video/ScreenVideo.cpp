@@ -88,6 +88,19 @@ namespace xgame{
 		SDL_RenderSetClipRect(m_renderer, nullptr);
 	}
 
+	void ScreenVideo::DrawPoint(const Point& src_point, const Rect& area_renderer_active) throw(Error)
+	{
+		Rect area_scisor = area_renderer_active;
+		if (area_scisor.Get_Wcomponent() < 0)
+			area_scisor.Set_Wcomponent(m_wsizeRenderer - area_scisor.Get_Xcomponent());
+		if (area_scisor.Get_Hcomponent() < 0)
+			area_scisor.Set_Hcomponent(m_hsizeRenderer - area_scisor.Get_Ycomponent());
+		if (area_scisor.Point_is_In(src_point)){
+			if (SDL_RenderDrawPoint(m_renderer, src_point.Get_X_Component(), src_point.Get_Y_Component()) != 0)
+				throw Error("ScreenVideo", "DrawPoint", "Impossibile disegnare il pixel richiesto!\n%s", SDL_GetError());
+		}
+	}
+
 	void ScreenVideo::UpdateSize_Renderer(const size_t wSize_renderer, const size_t hSize_renderer) throw(Error){
 		m_wsizeRenderer=wSize_renderer;
 		m_hsizeRenderer=hSize_renderer;

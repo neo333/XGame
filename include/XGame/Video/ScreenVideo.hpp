@@ -167,6 +167,30 @@ namespace xgame{
 		*/
 		void DrawTexture(const Texture& src_texture, const Point& xy_onRenderer, const Rect& area_renderer_active = Rect(0,0,-1,-1)) throw(Error);
 
+		/*! Disegna un punto (un pixel) sul renderer.
+			\param [in] src_point				Le coordinate sul renderer di dove si vuole disegnare il punto.
+			\param [in] area_renderer_active	L'area del renderer abilitata al disegno per questo disegno.
+												Se la texture non si troverà all'interno di quest area non sarà visibile.
+												Specificare le componenti '-1' per indicare tutto lo schermo.
+
+			\note								Il punto verrà disegnato col colore impostato precedentemente dal
+												metodo ScreenVideo::SetColorBackgroundRenderer.
+		*/
+		void DrawPoint(const Point& src_point, const Rect& area_renderer_active = Rect(0, 0, -1, -1)) throw(Error);
+
+		/*! Disegna un vettore di punti.
+			\param [in] src_points				Un vettore di punti da disegnare.
+			\param [in] area_renderer_active	L'area del renderer abilitata al disegno per questo disegno.
+												Se la texture non si troverà all'interno di quest area non sarà visibile.
+												Specificare le componenti '-1' per indicare tutto lo schermo.
+
+			\note								Il punto verrà disegnato col colore impostato precedentemente dal
+												metodo ScreenVideo::SetColorBackgroundRenderer.
+			
+			\see								ScreenVideo::DrawPoint.
+		*/
+		inline void DrawVectPoint(const std::vector<Point>& src_points, const Rect& area_renderer_active = Rect(0, 0, -1, -1)) throw(Error);
+
 		//! Operatore di conversione per puntatore a SDL_Window.
 		inline explicit operator SDL_Window*() throw();
 
@@ -270,6 +294,12 @@ namespace xgame{
 
 	inline ScreenVideo::operator const SDL_Renderer*() const throw(){
 		return this->m_renderer;
+	}
+
+	inline void ScreenVideo::DrawVectPoint(const std::vector<Point>& src_points, const Rect& area_renderer_active) throw(Error)
+	{
+		for (auto& point : src_points)
+			this->DrawPoint(point, area_renderer_active);
 	}
 }
 
