@@ -6,14 +6,21 @@
 
 namespace xgame{
 
-	Texture::Texture()throw():m_texture(nullptr),m_render(nullptr),m_w_size(0),m_h_size(0),m_w_size_scaled(0),m_h_size_scaled(0){
+	Texture::Texture()throw():
+		m_texture(nullptr),
+		m_render(nullptr),
+		m_w_size(0),m_h_size(0),
+		m_w_size_scaled(0),m_h_size_scaled(0)
+	{
 
 	}
 
 	Texture::Texture(const size_t w_size, const size_t h_size, const ScreenVideo& makerVideo) throw(Error):
 			m_texture(SDL_CreateTexture(makerVideo.m_renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, w_size, h_size)),
-			m_render(makerVideo.m_renderer),m_w_size(w_size),m_h_size(h_size),
-			m_drawnable_area(Rect(0,0,w_size,h_size)),m_w_size_scaled(w_size),m_h_size_scaled(h_size)
+			m_render(makerVideo.m_renderer),
+			m_w_size(w_size),m_h_size(h_size),
+			m_drawnable_area(Rect(0,0,w_size,h_size)),
+			m_w_size_scaled(w_size),m_h_size_scaled(h_size)
 	{
 		if (m_render == nullptr)
 			throw Error("Texture", "Texture", "Impossibile inizializzare una texture con uno specifico renderer nullo!");
@@ -32,6 +39,7 @@ namespace xgame{
 			this->m_w_size_scaled=0;
 			this->m_h_size_scaled=0;
 			this->m_drawnable_area.Set_AllComponent(0,0,0,0);
+			m_alpha_mod = SDL_ALPHA_OPAQUE;
 		}
 	}
 
@@ -86,6 +94,7 @@ namespace xgame{
 				m_w_size_scaled = image_opt->w;
 				m_h_size_scaled = image_opt->h;
 				m_drawnable_area.Set_AllComponent(0,0,image_opt->w,image_opt->h);
+				m_alpha_mod = SDL_ALPHA_OPAQUE;
 				
 				SDL_FreeSurface(image_opt);
 				image_opt=nullptr;
@@ -155,6 +164,7 @@ namespace xgame{
 		m_w_size_scaled = m_w_size;
 		m_h_size_scaled = m_h_size;
 		m_drawnable_area.Set_AllComponent(0, 0, m_w_size, m_h_size);
+		m_alpha_mod = SDL_ALPHA_OPAQUE;
 
 		SDL_SetTextureBlendMode(m_texture, SDL_BLENDMODE_BLEND);
 	}
@@ -166,7 +176,7 @@ namespace xgame{
 		m_drawnable_area(oth.m_drawnable_area),
 		m_w_size_scaled(oth.m_w_size_scaled), m_h_size_scaled(oth.m_h_size_scaled)
 	{
-
+		this->Set_AlphaMod(oth.m_alpha_mod);
 	}
 
 	Texture& Texture::operator=(const Texture& oth) throw(Error){
@@ -179,6 +189,7 @@ namespace xgame{
 			this->m_drawnable_area = oth.m_drawnable_area;
 			this->m_w_size_scaled = oth.m_w_size_scaled;
 			this->m_h_size_scaled = oth.m_h_size_scaled;
+			this->Set_AlphaMod(oth.m_alpha_mod);
 		}
 		return *this;
 	}
@@ -188,7 +199,8 @@ namespace xgame{
 		m_render(oth.m_render),
 		m_w_size(oth.m_w_size),m_h_size(oth.m_h_size),
 		m_drawnable_area(oth.m_drawnable_area),
-		m_w_size_scaled(oth.m_w_size_scaled),m_h_size_scaled(oth.m_h_size_scaled)
+		m_w_size_scaled(oth.m_w_size_scaled),m_h_size_scaled(oth.m_h_size_scaled),
+		m_alpha_mod(oth.m_alpha_mod)
 	{
 		oth.m_texture = nullptr;
 		oth.m_w_size = 0;
@@ -196,6 +208,7 @@ namespace xgame{
 		oth.m_drawnable_area.Set_AllComponent(0,0,0,0);
 		oth.m_w_size_scaled=0;
 		oth.m_h_size_scaled=0;
+		oth.m_alpha_mod = SDL_ALPHA_OPAQUE;
 	}
 
 	Texture& Texture::operator=(Texture&& oth) throw(){
@@ -208,13 +221,15 @@ namespace xgame{
 			this->m_drawnable_area = oth.m_drawnable_area;
 			this->m_w_size_scaled = oth.m_w_size_scaled;
 			this->m_h_size_scaled = oth.m_h_size_scaled;
+			this->m_alpha_mod = oth.m_alpha_mod;
 
 			oth.m_texture = nullptr;
-			oth.m_w_size =0;
-			oth.m_h_size =0;
+			oth.m_w_size = 0;
+			oth.m_h_size = 0;
 			oth.m_drawnable_area.Set_AllComponent(0,0,0,0);
-			oth.m_w_size_scaled=0;
-			oth.m_h_size_scaled=0;
+			oth.m_w_size_scaled = 0;
+			oth.m_h_size_scaled = 0;
+			oth.m_alpha_mod = SDL_ALPHA_OPAQUE;
 		}
 		return *this;
 	}

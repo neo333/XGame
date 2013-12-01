@@ -174,7 +174,7 @@ namespace xgame{
 		Rect m_drawnable_area;
 		int m_w_size_scaled;
 		int m_h_size_scaled;
-		Uint8 alpha_mod = 255;
+		Uint8 m_alpha_mod = SDL_ALPHA_OPAQUE;
 
 		friend class ScreenVideo;
 
@@ -227,11 +227,11 @@ namespace xgame{
 		if (m_texture == nullptr) return;
 		if (SDL_SetTextureAlphaMod(m_texture, alpha_set) != 0)
 			throw Error("Texture", "Set_AplhaMod", "Impossibile applicare la trasformazione alpha!\n%s", SDL_GetError());
-		alpha_mod = alpha_set;
+		m_alpha_mod = alpha_set;
 	}
 
 	inline Uint8 Texture::Get_AlphaMod() const throw(){
-		return alpha_mod;
+		return m_alpha_mod;
 	}
 
 	inline Texture::operator SDL_Texture*() throw(){
