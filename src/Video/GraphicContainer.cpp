@@ -15,23 +15,6 @@ namespace xgame{
 		}
 	}
 
-	const bool GraphicContainer::AllInternalComponents_IsLoaded() const throw(){
-		for (auto& obj : m_internComponent)
-		if (obj->IsLoad() == false)
-			return false;
-		return true;
-	}
-
-	void GraphicContainer::LoadAllInternalComponents(const ScreenVideo& screen_ref){
-		for (auto& obj : m_internComponent)
-			obj->Load(screen_ref);
-	}
-
-	void GraphicContainer::UnLoadAllInternalComponents() throw(){
-		for (auto& obj : m_internComponent)
-			obj->UnLoad();
-	}
-
 	void GraphicContainer::NotificationAllInternalComponents(ListEvents& events){
 		for (auto obj = m_internComponent.rbegin(); obj != m_internComponent.rend(); obj++)
 			(*obj)->NotificationEvents(events);

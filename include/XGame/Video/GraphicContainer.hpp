@@ -15,7 +15,7 @@ namespace xgame{
 		GraphicContainer() = default;
 
 		//! Distruttore virtuale.
-		virtual ~GraphicContainer() override = default;
+		virtual ~GraphicContainer() = default;
 
 		//! Costruttore di copia.
 		GraphicContainer(const GraphicContainer&) = default;
@@ -56,25 +56,6 @@ namespace xgame{
 											L'area definita dalle variabili membro 'm_w_size_container' & 'm_h_size_container'.
 		*/
 		virtual void DrawnAllInternalComponents_InSizeArea(ScreenVideo& screen_out) const throw(Error);
-
-		/*!	Controlla che tutti i componenti interni (associati a questo contenitore) sono stati caricati.
-			\return		'true' se TUTTI i componenti sono Loaded.
-		*/
-		virtual const bool AllInternalComponents_IsLoaded() const throw();
-
-		/*! Carica tutti i componenti interni (associati a questo contenitore).
-			Il caricamento verrà gestito con polita FIFO.
-			[Il primo inserito è il primo ad essere caricato]
-
-			\param [in] screen_ref		Uno ScreenVideo di riferimento.
-		*/
-		virtual void LoadAllInternalComponents(const ScreenVideo& screen_ref);
-
-		/*! Chiude le risorse di tutti i componenti interni (associati a questo contenitore).
-			Il deallocamento verrà gestito con polita FIFO.
-			[Il primo inserito è il primo ad essere chiuso]
-		*/
-		virtual void UnLoadAllInternalComponents() throw();
 
 		/*! Notifica tutti i componenti interni (associati a questo contenitore) con una lista di eventi che si sono scatenati.
 			La notifica viene gestita con polita LIFO.

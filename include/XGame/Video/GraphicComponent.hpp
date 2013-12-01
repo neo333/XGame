@@ -28,17 +28,6 @@ namespace xgame{
 		*/
 		virtual void DrawOnScreenVideo(ScreenVideo& screen_out, const Point& abs_xy, const Rect& area_clip =Rect(0,0,-1,-1));
 
-		/*! Carica il componente grafico. (Es. letture di immagini dal disco rigido).
-			\param [in] screen_ref		Lo ScreenVideo di riferimento che serve per il caricamento di eventuali texture grafiche.
-		*/
-		virtual void Load(const ScreenVideo& screen_ref);
-
-		//! Dealloca tutte le risorse del componente grafico.
-		virtual void UnLoad() = 0;
-
-		//! \return		'true' se il componente grafico è carico, 'false' altrimenti.
-		virtual const bool IsLoad() const = 0;
-
 		/*! Aggiorna l'oggetto interattivo passandogli gli eventi verificatosi.
 			\see	ObjectInteractive::NotificationEvents
 			\note	Generalmente un'oggetto interattivo cancella l'evento che lo ha interessato dalla lista.
@@ -49,7 +38,7 @@ namespace xgame{
 		GraphicComponent() = default;
 
 		//! Distruttore.
-		virtual ~GraphicComponent() throw();
+		virtual ~GraphicComponent() = default;
 
 		//! Costruttore di copia.
 		GraphicComponent(const GraphicComponent&) = default;
@@ -64,9 +53,7 @@ namespace xgame{
 		inline GraphicComponent& operator=(GraphicComponent&& oth) throw();
 
 	protected:
-		friend class GraphicContainer;
 		Point m_xy_relative;
-		const ScreenVideo* m_screen_maker_relative = nullptr;
 
 		//! \return l'area o porzione del renderer abilitata per l'ultimo DRAWN chiamato designata per l'oggetto in questione.
 		inline const Rect& GetRendererAreaClip() const throw();
@@ -77,6 +64,7 @@ namespace xgame{
 	private:
 		Rect pri_area_renderer_visible;
 		Point m_xy_abs;
+		friend class GraphicContainer;
 	};
 
 	inline void GraphicComponent::SetPosition(const Point& xy_relative) throw(){ this->m_xy_relative = xy_relative; }
@@ -85,9 +73,11 @@ namespace xgame{
 
 	inline const Point& GraphicComponent::GetXYabs() const throw(){ return this->m_xy_abs; }
 
-	inline GraphicComponent::GraphicComponent(GraphicComponent&& oth) throw():
-		m_xy_relative(std::move(oth.m_xy_relative)), m_screen_maker_relative(std::move(oth.m_screen_maker_relative)),
-		pri_area_renderer_visible(std::move(oth.pri_area_renderer_visible)), m_xy_abs(std::move(oth.m_xy_abs))
+	inline GraphicComponent::GraphicComponent(GraphicComponent&& oth) throw() :
+		ObjectInteractive(std::move(oth)),
+		m_xy_relative(std::move(oth.m_xy_relative)),
+		pri_area_renderer_visible(std::move(oth.pri_area_renderer_visible)),
+		m_xy_abs(std::move(oth.m_xy_abs))
 	{
 
 	}
@@ -95,8 +85,8 @@ namespace xgame{
 	inline GraphicComponent& GraphicComponent::operator=(GraphicComponent&& oth) throw()
 	{
 		if (this != &oth){
+			ObjectInteractive::operator=(std::move(oth));
 			this->m_xy_relative = std::move(oth.m_xy_relative);
-			this->m_screen_maker_relative = std::move(oth.m_screen_maker_relative);
 			this->pri_area_renderer_visible = std::move(oth.pri_area_renderer_visible);
 			this->m_xy_abs = std::move(oth.m_xy_abs);
 		}
