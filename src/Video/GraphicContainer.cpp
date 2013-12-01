@@ -2,10 +2,17 @@
 
 namespace xgame{
 	void GraphicContainer::DrawnAllInternalComponents_InSizeArea(ScreenVideo& screen_out) const throw(Error){
+		Rect scissor_area;
 		for (auto& obj : m_internComponent)
-			obj->DrawOnScreenVideo(screen_out,
-				this->GetXYabs() + obj->m_xy_relative,
-				Rect(this->GetXYabs().Get_X_Component(), this->GetXYabs().Get_Y_Component(), this->m_w_size_container, this->m_h_size_container));
+		{
+			if (Rect::Rects_Intersection(
+					Rect(this->GetXYabs().Get_X_Component(), this->GetXYabs().Get_Y_Component(), this->m_w_size_container, this->m_h_size_container),
+					this->GetRendererAreaClip(),
+					scissor_area))
+			{
+				obj->DrawOnScreenVideo(screen_out,this->GetXYabs() + obj->m_xy_relative,scissor_area);
+			}
+		}
 	}
 
 	const bool GraphicContainer::AllInternalComponents_IsLoaded() const throw(){
@@ -28,11 +35,5 @@ namespace xgame{
 	void GraphicContainer::NotificationAllInternalComponents(ListEvents& events){
 		for (auto obj = m_internComponent.rbegin(); obj != m_internComponent.rend(); obj++)
 			(*obj)->NotificationEvents(events);
-	}
-
-	template<class T> std::shared_ptr<T> GraphicContainer::InsertGraphicComponent(const std::shared_ptr<T>& adder_obj)
-	{
-		m_internComponent.push_back(adder_obj);
-		return adder_obj;
 	}
 }

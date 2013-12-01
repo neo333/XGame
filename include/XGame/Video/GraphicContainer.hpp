@@ -36,7 +36,7 @@ namespace xgame{
 			
 			\return						Un puntatore SMART al componente inserito all'interno del contenitore.
 		*/
-		template<class T> std::shared_ptr<T> InsertGraphicComponent(const std::shared_ptr<T>& adder_obj);
+		template<class T> inline std::shared_ptr<T> InsertGraphicComponent(const std::shared_ptr<T>& adder_obj);
 
 
 	protected:
@@ -108,6 +108,12 @@ namespace xgame{
 			oth.m_h_size_container = 0;
 		}
 		return *this;
+	}
+
+	template<class T> inline std::shared_ptr<T> GraphicContainer::InsertGraphicComponent(const std::shared_ptr<T>& adder_obj)
+	{
+		m_internComponent.push_back(adder_obj);
+		return adder_obj;
 	}
 }
 
