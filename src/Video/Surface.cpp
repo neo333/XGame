@@ -172,6 +172,8 @@ namespace xgame{
 							}
 							x++;
 						}
+						if (find_end==false)
+							riga_key.push_back(Point((size_t)(input_surface.m_surface->w)-1, y));
 					}
 					else{
 						x++;
