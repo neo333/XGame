@@ -140,4 +140,51 @@ namespace xgame{
 		}
 		return *this;
 	}
+
+	KeyPoints Surface::GetKeyPoint_fromSurface(const Surface& input_surface) throw(Error){
+		KeyPoints output_edge;
+		output_edge.m_key.clear();
+		if (input_surface.Is_Void()) return output_edge;
+		output_edge.m_key.reserve(input_surface.Get_H());
+		if (SDL_LockSurface(input_surface.m_surface) != 0)
+			throw Error("Surface", "GetEdge_fromSurface", "Impossibile accedere ai dati della surface!\n%s", SDL_GetError());
+		if (input_surface.m_surface->format->format != SDL_PIXELFORMAT_RGBA8888)
+			throw Error("Surface", "GetEdge_fromSurface", "Formato surface non riconosciuto!");
+		try{
+			auto dataPixel = static_cast<const Uint32*>(input_surface.m_surface->pixels);
+			register size_t x;
+			for (register size_t y = 0; y < (size_t)(input_surface.m_surface->h); y++){
+				x = 0;
+				std::vector<Point> riga_key;
+				while (x < (size_t)input_surface.m_surface->w){
+					const Uint32& pixel_a = (dataPixel[x + y*input_surface.m_surface->w]) & Surface::amask;
+					if (pixel_a > 0)
+					{
+						riga_key.push_back(Point(x, y));
+						x++;
+						bool find_end = false;
+						while (x <  (size_t)(input_surface.m_surface->w) &&  find_end == false){
+							const Uint32& pixel_a = (dataPixel[x + y*input_surface.m_surface->w]) & Surface::amask;
+							if (pixel_a == 0)
+							{
+								riga_key.push_back(Point(x, y));
+								find_end = true;
+							}
+							x++;
+						}
+					}
+					else{
+						x++;
+					}
+				}
+				output_edge.m_key.push_back(std::move(riga_key));
+			}
+		}
+		catch (const std::exception& err){
+			SDL_UnlockSurface(input_surface.m_surface);
+			throw Error("Surface", "GetEdge_fromSurface", err.what());
+		}
+		SDL_UnlockSurface(input_surface.m_surface);
+		return output_edge;
+	}
 }

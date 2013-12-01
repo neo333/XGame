@@ -6,6 +6,7 @@
 #include <XGame/Loader/MemoryPage.hpp>
 #include <XGame/Video/Rect.hpp>
 #include <XGame/Video/Color.hpp>
+#include <XGame/Video/KeyPoints.hpp>
 #include <SDL2/SDL.h>
 
 namespace xgame{
@@ -103,6 +104,15 @@ namespace xgame{
 			\note	Verrà fatta una COPIA della SDL_Surface* di input.
 		*/
 		Surface& operator=(SDL_Surface* oth_surface) throw(Error);
+
+		/*! Ricava i 'KeyPoints' (punti chiave) dalla surface.
+			Questi insieme di punti solitamente coincidono approssimativamente col bordo del soggetto
+			della surface (i pixel trasparenti [alpha==0] vengono omessi).
+
+			\param [in] input_surface		Una surface di cui si vogliono calcolare i keypoints.
+			\return							I keyPoints relativi alla surface di input.
+		*/
+		static KeyPoints GetKeyPoint_fromSurface(const Surface& input_surface) throw(Error);
 
 	protected:
 		SDL_Surface* m_surface = nullptr;
