@@ -117,6 +117,7 @@ namespace xgame{
 	protected:
 		SDL_Surface* m_surface = nullptr;
 		friend class Texture;
+		friend class SurfaceDataAccess;
 
 		static const Uint32 rmask = 0xff000000;
 		static const Uint32 gmask = 0x00ff0000;
