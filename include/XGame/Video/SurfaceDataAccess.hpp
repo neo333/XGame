@@ -56,7 +56,15 @@ namespace xgame{
 		*/
 		inline void GetPixelData_at(const size_t x, const size_t y, Color& output_color) const;
 
+		/*! Setta il valore del pixel della surface alle coordinate 'x' 'y'.
+			\param [in] x					La coordinata 'x' del pixel da settare.
+			\param [in] y					La coordinata 'y' del pixel da settare.
+			\param [in] input_color			Il valore del pixel di input.
 
+			\note							E' necessario bloccare la surface prima di chiamare questo metodo!
+			\see							SurfaceDataAccess::LockSurface()
+		*/
+		inline void SetPixelData_at(const size_t x, const size_t y, const Color& input_color);
 
 
 	private:
@@ -81,6 +89,16 @@ namespace xgame{
 			throw Error("SurfaceDataAccess", "GetPixelData_at", "Parametri out-of-range!");
 
 		output_color = Color(m_dataPixel_read[x + y*m_surface_ref->m_surface->w]);
+	}
+
+	inline void SurfaceDataAccess::SetPixelData_at(const size_t x, const size_t y, const Color& input_color)
+	{
+		if (m_surface_locked == false)
+			throw Error("SurfaceDataAccess", "GetPixelData_at", "Impossibile accedere a basso livello ad una surface non bloccata!");
+		if (x<0 || x >= (size_t)m_surface_ref->m_surface->w || y<0 || y >= (size_t)m_surface_ref->m_surface->h)
+			throw Error("SurfaceDataAccess", "GetPixelData_at", "Parametri out-of-range!");
+
+		m_dataPixel_write[x + y*m_surface_ref->m_surface->w] = static_cast<Uint32>(input_color);
 	}
 }
 
