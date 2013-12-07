@@ -38,11 +38,17 @@ namespace xgame{
 		//! \return		Il modulo del punto
 		inline double Get_Module() const throw();
 
-		//! Casting in SDL_point
-		inline operator SDL_Point&();
-		inline operator const SDL_Point&() const;
-		inline operator SDL_Point*();
-		inline operator const SDL_Point*() const;
+		//! Casting esplicito a SDL_Point
+		inline explicit operator SDL_Point&();
+
+		//! Casting esplicito a const SDL_Point
+		inline explicit operator const SDL_Point&() const;
+
+		//! Casting esplicito a SDL_Point*
+		inline explicit operator SDL_Point*();
+
+		//! Casting esplicito a const SDL_Point*
+		inline explicit operator const SDL_Point*() const;
 
 	private:
 		SDL_Point m_data;
