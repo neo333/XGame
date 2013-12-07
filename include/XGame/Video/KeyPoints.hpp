@@ -31,13 +31,11 @@ namespace xgame{
 		//! Operatore di move.
 		inline KeyPoints& operator=(KeyPoints&&) throw();
 
-		//! \return		Tutti i keypoint ordinati in un unico vettore di punti.
-		std::vector<Point> GetAs_VectPoint() const throw();
-
-
+		//! Operatore di casting esplicito a vettore di punti!
+		inline explicit operator const std::vector<Point>&() const throw();
 	private:
 		friend class Surface;
-		std::vector<std::vector<Point>> m_key;
+		std::vector<Point> m_key;
 	};
 
 	inline KeyPoints::KeyPoints(KeyPoints&& oth) throw():
@@ -51,6 +49,11 @@ namespace xgame{
 			this->m_key = std::move(oth.m_key);
 		}
 		return *this;
+	}
+
+	inline KeyPoints::operator const std::vector<Point>&() const throw()
+	{
+		return m_key;
 	}
 }
 

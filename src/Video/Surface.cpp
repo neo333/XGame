@@ -155,31 +155,29 @@ namespace xgame{
 			register size_t x;
 			for (register size_t y = 0; y < (size_t)(input_surface.m_surface->h); y++){
 				x = 0;
-				std::vector<Point> riga_key;
 				while (x < (size_t)input_surface.m_surface->w){
 					const Uint32& pixel_a = (dataPixel[x + y*input_surface.m_surface->w]) & Surface::amask;
 					if (pixel_a > 0)
 					{
-						riga_key.push_back(Point(x, y));
+						output_edge.m_key.push_back(Point(x, y));
 						x++;
 						bool find_end = false;
 						while (x <  (size_t)(input_surface.m_surface->w) &&  find_end == false){
 							const Uint32& pixel_a = (dataPixel[x + y*input_surface.m_surface->w]) & Surface::amask;
 							if (pixel_a == 0)
 							{
-								riga_key.push_back(Point(x, y));
+								output_edge.m_key.push_back(Point(x, y));
 								find_end = true;
 							}
 							x++;
 						}
 						if (find_end==false)
-							riga_key.push_back(Point((size_t)(input_surface.m_surface->w)-1, y));
+							output_edge.m_key.push_back(Point((size_t)(input_surface.m_surface->w) - 1, y));
 					}
 					else{
 						x++;
 					}
 				}
-				output_edge.m_key.push_back(std::move(riga_key));
 			}
 		}
 		catch (const std::exception& err){
