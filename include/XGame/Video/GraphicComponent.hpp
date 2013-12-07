@@ -8,7 +8,7 @@
 
 namespace xgame{
 	class XGAME_API_VIDEO GraphicComponent:
-	public ObjectInteractive
+		public ObjectInteractive
 	{
 	public:
 		/*! Setta la posizione relativa dell'oggetto sullo schermo.
@@ -67,28 +67,48 @@ namespace xgame{
 		friend class GraphicContainer;
 	};
 
-	inline void GraphicComponent::SetPosition(const Point& xy_relative) throw(){ this->m_xy_relative = xy_relative; }
-	inline const Point& GraphicComponent::GetPosition() const throw(){ return this->m_xy_relative; }
-	inline const Rect& GraphicComponent::GetRendererAreaClip() const throw(){ return this->pri_area_renderer_visible; }
+	inline void GraphicComponent::SetPosition(const Point& xy_relative) throw()
+	{
+		this->m_xy_relative = xy_relative; 
+	}
 
-	inline const Point& GraphicComponent::GetXYabs() const throw(){ return this->m_xy_abs; }
+	inline const Point& GraphicComponent::GetPosition() const throw()
+	{ 
+		return this->m_xy_relative; 
+	}
+
+	inline const Rect& GraphicComponent::GetRendererAreaClip() const throw()
+	{ 
+		return this->pri_area_renderer_visible; 
+	}
+
+	inline const Point& GraphicComponent::GetXYabs() const throw()
+	{
+		return this->m_xy_abs; 
+	}
 
 	inline GraphicComponent::GraphicComponent(GraphicComponent&& oth) throw() :
 		ObjectInteractive(std::move(oth)),
-		m_xy_relative(std::move(oth.m_xy_relative)),
-		pri_area_renderer_visible(std::move(oth.pri_area_renderer_visible)),
-		m_xy_abs(std::move(oth.m_xy_abs))
+		m_xy_relative(oth.m_xy_relative),
+		pri_area_renderer_visible(oth.pri_area_renderer_visible),
+		m_xy_abs(oth.m_xy_abs)
 	{
-
+		pri_area_renderer_visible.Set_AllComponent(0, 0, 0, 0);
+		m_xy_abs.Set_X_Component(0);
+		m_xy_abs.Set_Y_Component(0);
 	}
 
 	inline GraphicComponent& GraphicComponent::operator=(GraphicComponent&& oth) throw()
 	{
 		if (this != &oth){
 			ObjectInteractive::operator=(std::move(oth));
-			this->m_xy_relative = std::move(oth.m_xy_relative);
-			this->pri_area_renderer_visible = std::move(oth.pri_area_renderer_visible);
-			this->m_xy_abs = std::move(oth.m_xy_abs);
+			this->m_xy_relative = oth.m_xy_relative;
+			this->pri_area_renderer_visible = oth.pri_area_renderer_visible;
+			this->m_xy_abs = oth.m_xy_abs;
+
+			oth.pri_area_renderer_visible.Set_AllComponent(0, 0, 0, 0);
+			oth.m_xy_abs.Set_X_Component(0);
+			oth.m_xy_abs.Set_Y_Component(0);
 		}
 		return *this;
 	}
