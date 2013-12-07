@@ -69,11 +69,10 @@ namespace xgame{
 
 	void ScreenVideo::DrawTexture(const Texture& src_texture, const Point& xy_onRenderer, const Rect& area_renderer_active) throw(Error){
 		if (src_texture.IsVoid()) return;
-		SDL_Rect dest_rect;
-		dest_rect.x = xy_onRenderer.Get_X_Component();
-		dest_rect.y = xy_onRenderer.Get_Y_Component();
-		dest_rect.w = src_texture.m_w_size_scaled;
-		dest_rect.h = src_texture.m_h_size_scaled;
+		m_dest_rect.x = xy_onRenderer.Get_X_Component();
+		m_dest_rect.y = xy_onRenderer.Get_Y_Component();
+		m_dest_rect.w = src_texture.m_w_size_scaled;
+		m_dest_rect.h = src_texture.m_h_size_scaled;
 
 		if ((area_renderer_active.Get_Xcomponent() == 0 && area_renderer_active.Get_Ycomponent() == 0
 			&& area_renderer_active.Get_Wcomponent() == -1 && area_renderer_active.Get_Hcomponent() == -1) == false){
@@ -83,7 +82,7 @@ namespace xgame{
 			SDL_RenderSetClipRect(m_renderer, &m_area_active_renderer);
 		}
 
-		if (SDL_RenderCopy(m_renderer, src_texture.m_texture, static_cast<const SDL_Rect*>(src_texture.m_drawnable_area), &dest_rect) != 0)
+		if (SDL_RenderCopy(m_renderer, src_texture.m_texture, static_cast<const SDL_Rect*>(src_texture.m_drawnable_area), &m_dest_rect) != 0)
 			throw Error("ScreenVideo", "DrawTexture", "Impossibile effettuare il rendering della texture richiesta!\n%s", SDL_GetError());
 		SDL_RenderSetClipRect(m_renderer, nullptr);
 	}

@@ -224,7 +224,9 @@ namespace xgame{
 		std::string m_title_win;
 		Uint32 m_ms_last_present_call =0;
 		Uint32 m_ms_min_call_present =0;
+
 		SDL_Rect m_area_active_renderer;
+		SDL_Rect m_dest_rect;
 
 		friend class Texture;
 	};
