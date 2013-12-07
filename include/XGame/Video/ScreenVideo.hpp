@@ -11,7 +11,7 @@
 #include <XGame/Video/Rect.hpp>
 #include <SDL2/SDL.h>
 
-#ifdef WIN32 
+#ifdef XGAME_MSVC 
 #pragma warning(disable:4251)
 #pragma warning(disable:4275)
 #endif

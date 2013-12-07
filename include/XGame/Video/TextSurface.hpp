@@ -5,7 +5,7 @@
 #include <XGame/Video/Surface.hpp>
 #include <XGame/Video/Font.hpp>
 
-#ifdef WIN32 
+#ifdef XGAME_MSVC 
 #pragma warning(disable:4251)
 #endif
 
