@@ -15,6 +15,12 @@ namespace xgame{
 
 	}
 
+	Texture::Texture(const Surface& input_surface, const ScreenVideo& makerVideo) throw(Error) :
+		Texture()
+	{
+		this->LoadTexture_fromSurface(input_surface, makerVideo);
+	}
+
 	Texture::Texture(const size_t w_size, const size_t h_size, const ScreenVideo& makerVideo) throw(Error):
 			m_texture(SDL_CreateTexture(makerVideo.m_renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, w_size, h_size)),
 			m_render(makerVideo.m_renderer),

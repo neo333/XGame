@@ -20,6 +20,14 @@ namespace xgame{
 		//! Costruttore di default. Instanzia una Texture vuota.
 		Texture() throw();
 
+		/*! Costruisce una texture copiando una surface di input.
+			\param [in]	input_surface		La surface da cui copiare il contenuto grafico.
+			\param [in]	makerVideo			Uno ScreenVideo 'NECESSARIAMENTE APERTO' per il formato del driver video.
+
+			\throw Error					In caso di errore grafico interno.
+		*/
+		Texture(const Surface& input_surface, const ScreenVideo& makerVideo) throw(Error);
+
 		/*! Costruisce una texture non vuota! Con una determinata area.
 			I pixel interni saranno tutti neri!
 		*/
