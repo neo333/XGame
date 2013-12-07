@@ -180,6 +180,7 @@ namespace xgame{
 
 		/*! Disegna un vettore di punti.
 			\param [in] src_points				Un vettore di punti da disegnare.
+			\param [in] xy_onRenderer			La posizione (in pixel) sul renderer che indica DOVE disegnare il vettore di punti.
 			\param [in] area_renderer_active	L'area del renderer abilitata al disegno per questo disegno.
 												Se la texture non si troverà all'interno di quest area non sarà visibile.
 												Specificare le componenti '-1' per indicare tutto lo schermo.
@@ -189,7 +190,7 @@ namespace xgame{
 			
 			\see								ScreenVideo::DrawPoint.
 		*/
-		inline void DrawVectPoint(const std::vector<Point>& src_points, const Rect& area_renderer_active = Rect(0, 0, -1, -1)) throw(Error);
+		inline void DrawVectPoint(const std::vector<Point>& src_points, const Point& xy_onRenderer, const Rect& area_renderer_active = Rect(0, 0, -1, -1)) throw(Error);
 
 		//! Operatore di conversione per puntatore a SDL_Window.
 		inline explicit operator SDL_Window*() throw();
@@ -298,10 +299,10 @@ namespace xgame{
 		return this->m_renderer;
 	}
 
-	inline void ScreenVideo::DrawVectPoint(const std::vector<Point>& src_points, const Rect& area_renderer_active) throw(Error)
+	inline void ScreenVideo::DrawVectPoint(const std::vector<Point>& src_points, const Point& xy_onRenderer, const Rect& area_renderer_active) throw(Error)
 	{
 		for (auto& point : src_points)
-			this->DrawPoint(point, area_renderer_active);
+			this->DrawPoint(point + xy_onRenderer, area_renderer_active);
 	}
 }
 
